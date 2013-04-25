@@ -16,6 +16,9 @@
         height: 600px;
         border-bottom: 1px solid #ccc;
     }
+    #samples {
+        display: none;
+    }
     #output { 
         float: left;
         min-height: 610px;
@@ -28,14 +31,19 @@
 
 {% block content %}
 <div id="left">
-<div id="editor">graphInit({
+
+<div id="editor"></div>
+
+<div id="samples">
+<script type="text/graphie" data-title="1. Simple plot">
+graphInit({
     range: 10,
     scale: 20,
     tickStep: 1,
     labelStep: 1,
     unityLabels: false,
-    labelFormat: function( s ) { return "\\small{" + s + "}"; },
-    axisArrows: "&lt;-&gt;"
+    labelFormat: function(s) { return "\\small{" + s + "}"; },
+    axisArrows: "<->"
 });
 
 style({
@@ -47,19 +55,62 @@ plot(function(x) {
     // Write down the function you want to plot here
     return -0.5 * x * x + 2 * x + 3.0;
 }, [-10, 10]);
+</script>
+<script type="text/graphie" data-title="2. Piecewise function">
+graphInit({
+    range: 10,
+    scale: 20,
+    tickStep: 1,
+    labelStep: 1,
+    unityLabels: false,
+    labelFormat: function(s) { return "\\small{" + s + "}"; },
+    axisArrows: "<->"
+});
 
 style({
     stroke: BLUE,
-    fill: BLUE
+    fill: "none"
 });
 
-circle([0, 3], 3 / 20);
-circle([2, 5], 3 / 20);
-circle([6, -3], 3 / 20);
+plot(function(x) {
+    return -0.5 * x * x + 2 * x + 3.0;
+}, [-10, 3]);
+
+plot(function(x) {
+    return x - 7.0;
+}, [3, 10]);
+
+circle([3, 4.5], 3 / 20, {fill: BLUE});
+circle([3, -4], 3 / 20, {fill: "white"});
+</script>
+<script type="text/graphie" data-title="3. Triangle">
+var triangle = solveTriangle({
+    sides: [13, 14, 15],
+    angles: [null, null, null],
+    sideLabels: ["a", "b", "c"],
+    angleLabels: ["25^\\circ", null, null],
+    vertexLabels: ["A", "B", "C"],
+
+    xPos: 1,
+    yPos: 1,
+    width: 10,
+    height: 6,
+    rot: 0
+});
+
+triangle = addTriangle(triangle);
+init({
+    range: [[0, triangle.width + 2], [0, triangle.height + 2]]
+});
+
+triangle.draw();
+</script>
 </div>
 
+<div id="controls">
 <input type="button" value="Regraph" class="btn-rerender">
 <input type="button" value="Convert to Image" class="btn-create-png">
+</div>
 </div>
 
 <div id="output">
@@ -76,29 +127,55 @@ circle([6, -3], 3 / 20);
 
 <script>
 (function() {
-    var updateGraphie = window.updg = _.debounce(function() {
-        $("#output > div").text(editor.getValue()).graphie();
-    }, 10);
-
     var editor = ace.edit("editor");
     var session = editor.getSession();
+
+    var $samples = $("#samples").children();
+    var $sampleSelect = $("<select>").appendTo("#controls");
+    var samples = _.map($samples, function(el, i) {
+        var $el = $(el);
+        var sample = {
+            title: $el.data("title"),
+            js: $.trim($el.html()) + "\n"
+        };
+        $("<option>")
+                .val(i).text(sample.title)
+                .data("js", sample.js)
+                .appendTo($sampleSelect);
+        return sample;
+    });
+
+    var sampleJS = samples[0].js;
+    session.setValue(sampleJS);
+
+    // $(window).on("beforeunload", function() {
+    //     if (session.getValue() !== sampleJS) {
+    //         return "All modifications will be lost.";
+    //     }
+    // });
+
+    $sampleSelect.val(0).on("change", function() {
+        var i = +$(this).val();
+        sampleJS = samples[i].js;
+        editor.setValue(sampleJS, /* cursorPos: */ -1);
+        updateGraphie();
+    });
 
     session.setMode("ace/mode/javascript");
     session.setUseWrapMode(true);
 
-    //session.on("change", updateGraphie);
     editor.commands.addCommand({
         name: "updateGraphie",
-        bindKey: {win: "Ctrl-G", mac: "Command-G"},
+        bindKey: {win: "Ctrl-R", mac: "Command-R"},
         exec: updateGraphie,
         readOnly: false
     });
     $(".btn-rerender")
             .val(function() {
                 if ((/mac/i).test(navigator.platform)) {
-                    return "Regraph (\u2318G)";
+                    return "Regraph (\u2318R)";
                 } else {
-                    return "Regraph (Ctrl-G)";
+                    return "Regraph (Ctrl-R)";
                 }
             })
             .on("click", updateGraphie);
@@ -110,6 +187,10 @@ circle([6, -3], 3 / 20);
                 editor.getValue()));
         $form.submit();
     });
+
+    function updateGraphie() {
+        $("#output > div").text(editor.getValue()).graphie();
+    }
 })();
 </script>
 
