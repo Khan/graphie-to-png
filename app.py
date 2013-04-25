@@ -10,19 +10,23 @@ import flask
 from flask import request
 import werkzeug.contrib.cache
 
+import auth
 import secrets
 
 app = flask.Flask(__name__)
+auth.configure_app(app, False)
 root = os.path.realpath(os.path.dirname(__file__))
 cache = werkzeug.contrib.cache.SimpleCache()
 
 
 @app.route('/', methods=['GET'])
+@auth.login_required
 def hello():
     return flask.render_template('hello.html')
 
 
 @app.route('/png', methods=['POST'])
+@auth.login_required
 def png():
     js = request.form['js']
     png = _js_to_png(js)
