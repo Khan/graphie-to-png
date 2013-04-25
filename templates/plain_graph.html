@@ -1,0 +1,48 @@
+{# TODO(alpert): Figure out how to combine this layout with the other one -#}
+
+<!doctype html>
+<html>
+<head>
+<title>graphie to png</title>
+<style type="text/css" media="screen">
+    body {
+        margin: 0;
+    }
+</style>
+</head>
+<body>
+<div class="graphie">{{js}}</div>
+
+<script>
+    var KhanUtil = {
+        debugLog: function() {}
+    };
+    var Khan = {
+        Util: KhanUtil,
+        error: function() { 0 && alert(_.toArray(arguments)); }
+    };
+</script>
+
+<script src="static/js/khan-exercises/jquery.js"></script>
+<script src="static/js/khan-exercises/utils/jed.js"></script>
+<script src="static/js/khan-exercises/utils/i18n.js"></script>
+<script src="static/js/khan-exercises/utils/underscore.js"></script>
+<script src="static/js/khan-exercises/utils/MathJax/2.1/MathJax.js?config=KAthJax-da9a7f53e588f3837b045a600e1dc439"></script>
+
+<script src="static/js/khan-exercises/utils/tmpl.js"></script>
+<script src="static/js/khan-exercises/utils/raphael.js"></script>
+<script src="static/js/khan-exercises/utils/math.js"></script>
+<script src="static/js/khan-exercises/utils/graphie.js"></script>
+
+<script>
+window.webkit2png = window.webkit2png || {start: $.noop, stop: $.noop};
+
+webkit2png.stop();
+$(".graphie").graphie();
+MathJax.Hub.Queue(function() {
+    webkit2png.start();
+});
+</script>
+
+</body>
+</html>
