@@ -26,6 +26,10 @@
         width: 480px;
         padding: 10px;
     }
+    #output .error {
+        font: 12px Menlo, Courier, monospace;
+        color: red;
+    }
 </style>
 {% endblock head %}
 
@@ -164,15 +168,17 @@ triangle.draw();
     session.setMode("ace/mode/javascript");
     session.setUseWrapMode(true);
 
-    editor.commands.addCommand({
-        name: "updateGraphie",
-        bindKey: {win: "Ctrl-R", mac: "Command-R"},
-        exec: updateGraphie,
-        readOnly: false
+    var isMac = (/mac/i).test(navigator.platform);
+    $(document).on("keydown", function(e) {
+        if (e.keyCode === "R".charCodeAt(0) &&
+                (e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey) {
+            e.preventDefault();
+            updateGraphie();
+        }
     });
     $(".btn-rerender")
             .val(function() {
-                if ((/mac/i).test(navigator.platform)) {
+                if (isMac) {
                     return "Regraph (\u2318R)";
                 } else {
                     return "Regraph (Ctrl-R)";
@@ -189,7 +195,15 @@ triangle.draw();
     });
 
     function updateGraphie() {
-        $("#output > div").text(editor.getValue()).graphie();
+        try {
+            $("#output > div")
+                    .removeClass("error")
+                    .text(editor.getValue()).graphie();
+        } catch (e) {
+            $("#output > div")
+                    .addClass("error")
+                    .text(e.name + ": " + e.message);
+        }
     }
 })();
 </script>
