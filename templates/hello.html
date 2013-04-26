@@ -30,6 +30,9 @@
         font: 12px Menlo, Courier, monospace;
         color: red;
     }
+    form.form-create-png {
+        display: inline;
+    }
 </style>
 {% endblock head %}
 
@@ -113,7 +116,10 @@ triangle.draw();
 
 <div id="controls">
 <input type="button" value="Regraph" class="btn-rerender">
-<input type="button" value="Convert to Image" class="btn-create-png">
+<form action="/png" target="_blank" method="POST" class="form-create-png">
+<input type="hidden" name="js">
+<input type="submit" value="Convert to Image">
+</form>
 </div>
 </div>
 
@@ -187,11 +193,9 @@ triangle.draw();
             .on("click", updateGraphie);
     updateGraphie();
 
-    $(".btn-create-png").on("click", function() {
-        var $form = $("<form action='/png' target='_blank' method='POST'>");
-        $form.append($("<input name='js' type='hidden'>").val(
-                editor.getValue()));
-        $form.submit();
+    $(".form-create-png").on("submit", function() {
+        var $form = $(this);
+        $form.find("input[type=hidden]").val(editor.getValue());
     });
 
     function updateGraphie() {
