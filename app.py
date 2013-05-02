@@ -51,6 +51,7 @@ def _js_to_png(js):
         subprocess.check_call([
                 os.path.join(root, 'webkit2png', 'webkit2png'),
                 '--fullsize',
+                '--selector=.graphie',
                 '--width=20',
                 '--height=20',
                 '--clipwidth=20',
