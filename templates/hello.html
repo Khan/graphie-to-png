@@ -44,7 +44,8 @@
 <div id="samples">
 <script type="text/graphie" data-title="1. Simple plot">
 graphInit({
-    range: 10,
+    gridRange: 10,
+    range: [[-10, 11], [-10, 11]],
     scale: 20,
     tickStep: 1,
     labelStep: 1,
@@ -52,6 +53,9 @@ graphInit({
     labelFormat: function(s) { return "\\small{" + s + "}"; },
     axisArrows: "<->"
 });
+
+label([0, 10], "y", "above");
+label([10, 0], "x", "right");
 
 style({
     stroke: BLUE,
