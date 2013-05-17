@@ -43,19 +43,39 @@
 
 <div id="samples">
 <script type="text/graphie" data-title="1. Simple plot">
+// X and Y ranges of the graph
+var X_RANGE = [-10, 10];
+var Y_RANGE = [-10, 10];
+
+// Width of the graph in pixels
+// Let's use 400 for "normal" graphs and 170 for "small" graphs
+var SIZE = 400;
+
+
+var scale = SIZE / (X_RANGE[1] - X_RANGE[0]);
+var axisPadding = 20 / scale;
+var step = max(round(20 / scale), 1);
 graphInit({
-    gridRange: 10,
-    range: [[-10, 11], [-10, 11]],
-    scale: 20,
+    gridRange: [X_RANGE, Y_RANGE],
+    range: [[X_RANGE[0], X_RANGE[1] + axisPadding],
+            [Y_RANGE[0], Y_RANGE[1] + axisPadding]],
+    scale: scale,
+    gridStep: step,
     tickStep: 1,
     labelStep: 1,
     unityLabels: false,
     labelFormat: function(s) { return "\\small{" + s + "}"; },
     axisArrows: "<->"
 });
+style({
+    clipRect: [[X_RANGE[0], Y_RANGE[0]],
+            [X_RANGE[1] - X_RANGE[0],
+            Y_RANGE[1] - Y_RANGE[0]]]
+})
 
-label([0, 10], "y", "above");
-label([10, 0], "x", "right");
+label([0, Y_RANGE[1]], "y", "above");
+label([X_RANGE[1], 0], "x", "right");
+
 
 style({
     stroke: BLUE,
@@ -65,18 +85,42 @@ style({
 plot(function(x) {
     // Write down the function you want to plot here
     return -0.5 * x * x + 2 * x + 3.0;
-}, [-10, 10]);
+}, X_RANGE);
 </script>
 <script type="text/graphie" data-title="2. Piecewise function">
+// X and Y ranges of the graph
+var X_RANGE = [-10, 10];
+var Y_RANGE = [-10, 10];
+
+// Width of the graph in pixels
+// Let's use 400 for "normal" graphs and 170 for "small" graphs
+var SIZE = 400;
+
+
+var scale = SIZE / (X_RANGE[1] - X_RANGE[0]);
+var axisPadding = 20 / scale;
+var step = max(round(20 / scale), 1);
 graphInit({
-    range: 10,
-    scale: 20,
+    gridRange: [X_RANGE, Y_RANGE],
+    range: [[X_RANGE[0], X_RANGE[1] + axisPadding],
+            [Y_RANGE[0], Y_RANGE[1] + axisPadding]],
+    scale: scale,
+    gridStep: step,
     tickStep: 1,
     labelStep: 1,
     unityLabels: false,
     labelFormat: function(s) { return "\\small{" + s + "}"; },
     axisArrows: "<->"
 });
+style({
+    clipRect: [[X_RANGE[0], Y_RANGE[0]],
+            [X_RANGE[1] - X_RANGE[0],
+            Y_RANGE[1] - Y_RANGE[0]]]
+})
+
+label([0, Y_RANGE[1]], "y", "above");
+label([X_RANGE[1], 0], "x", "right");
+
 
 style({
     stroke: BLUE,
@@ -91,8 +135,8 @@ plot(function(x) {
     return x - 7.0;
 }, [3, 10]);
 
-circle([3, 4.5], 3 / 20, {fill: BLUE});
-circle([3, -4], 3 / 20, {fill: "white"});
+circle([3, 4.5], 4 / scale, {fill: BLUE});
+circle([3, -4], 4 / scale, {fill: "white"});
 </script>
 <script type="text/graphie" data-title="3. Triangle">
 var triangle = solveTriangle({
