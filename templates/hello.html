@@ -26,6 +26,9 @@
         width: 480px;
         padding: 10px;
     }
+    #output .graphie:hover {
+        outline: 1px dashed #df0030;
+    }
     #output .error {
         font: 12px Menlo, Courier, monospace;
         color: red;
@@ -68,7 +71,7 @@ plot(function(x) {
 
 function setup() {
     scale = SIZE / (X_RANGE[1] - X_RANGE[0]);
-    var axisPadding = 20 / scale;
+    var axisPadding = 25 / scale;
     var step = max(round(20 / scale), 1);
     graphInit({
         gridRange: [X_RANGE, Y_RANGE],
@@ -124,7 +127,7 @@ circle([3, -4], 4 / scale, {fill: "white"});
 
 function setup() {
     scale = SIZE / (X_RANGE[1] - X_RANGE[0]);
-    var axisPadding = 20 / scale;
+    var axisPadding = 25 / scale;
     var step = max(round(20 / scale), 1);
     graphInit({
         gridRange: [X_RANGE, Y_RANGE],
