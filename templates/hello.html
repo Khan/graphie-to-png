@@ -151,7 +151,67 @@ function setup() {
     label([X_RANGE[1], 0], "x", "right");
 }
 </script>
-<script type="text/graphie" data-title="3. Triangle">
+<script type="text/graphie" data-title="3. Parametric plots">
+// X and Y ranges of the graph
+var X_RANGE = [-10, 10];
+var Y_RANGE = [-10, 10];
+
+// Width of the graph in pixels
+// Let's use 400 for "normal" graphs and 170 for "small" graphs
+var SIZE = 400;
+
+var scale;
+setup();
+
+style({
+    stroke: BLUE,
+    fill: "none"
+});
+
+plotParametric(function(t) {
+    // Write down the function you want to plot here as [x, y] in terms of t
+    return [4, t];
+}, Y_RANGE);
+
+style({
+    stroke: GREEN,
+    fill: "none"
+});
+
+plotParametric(function(t) {
+    // Write down the function you want to plot here as [x, y] in terms of t
+    return [t + 2 * cos(t), 2 * sin(t)];
+}, [-12, 12]);
+
+
+
+function setup() {
+    scale = SIZE / (X_RANGE[1] - X_RANGE[0]);
+    var axisPadding = 25 / scale;
+    var step = max(round(20 / scale), 1);
+    graphInit({
+        gridRange: [X_RANGE, Y_RANGE],
+        range: [[X_RANGE[0], X_RANGE[1] + axisPadding],
+                [Y_RANGE[0], Y_RANGE[1] + axisPadding]],
+        scale: scale,
+        gridStep: step,
+        tickStep: 1,
+        labelStep: 1,
+        unityLabels: false,
+        labelFormat: function(s) { return "\\small{" + s + "}"; },
+        axisArrows: "<->"
+    });
+    style({
+        clipRect: [[X_RANGE[0], Y_RANGE[0]],
+                [X_RANGE[1] - X_RANGE[0],
+                Y_RANGE[1] - Y_RANGE[0]]]
+    });
+
+    label([0, Y_RANGE[1]], "y", "above");
+    label([X_RANGE[1], 0], "x", "right");
+}
+</script>
+<script type="text/graphie" data-title="4. Triangle">
 var triangle = solveTriangle({
     sides: [13, 14, 15],
     angles: [null, null, null],
