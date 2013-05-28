@@ -70,15 +70,18 @@ plot(function(x) {
 
 
 function setup() {
-    scale = SIZE / (X_RANGE[1] - X_RANGE[0]);
-    var axisPadding = 25 / scale;
-    var step = max(round(20 / scale), 1);
+    xScale = SIZE / (X_RANGE[1] - X_RANGE[0]);
+    yScale = SIZE / (Y_RANGE[1] - Y_RANGE[0]);
+    var xAxisPadding = 25 / xScale;
+    var yAxisPadding = 25 / yScale;
+    var xStep = max(round(20 / xScale), 1);
+    var yStep = max(round(20 / yScale), 1);
     graphInit({
         gridRange: [X_RANGE, Y_RANGE],
-        range: [[X_RANGE[0], X_RANGE[1] + axisPadding],
-                [Y_RANGE[0], Y_RANGE[1] + axisPadding]],
-        scale: scale,
-        gridStep: step,
+        range: [[X_RANGE[0], X_RANGE[1] + xAxisPadding],
+                [Y_RANGE[0], Y_RANGE[1] + yAxisPadding]],
+        scale: [xScale, yScale],
+        gridStep: [xStep, yStep],
         tickStep: 1,
         labelStep: 1,
         unityLabels: false,
@@ -126,15 +129,18 @@ circle([3, -4], 4 / scale, {fill: "white"});
 
 
 function setup() {
-    scale = SIZE / (X_RANGE[1] - X_RANGE[0]);
-    var axisPadding = 25 / scale;
-    var step = max(round(20 / scale), 1);
+    xScale = SIZE / (X_RANGE[1] - X_RANGE[0]);
+    yScale = SIZE / (Y_RANGE[1] - Y_RANGE[0]);
+    var xAxisPadding = 25 / xScale;
+    var yAxisPadding = 25 / yScale;
+    var xStep = max(round(20 / xScale), 1);
+    var yStep = max(round(20 / yScale), 1);
     graphInit({
         gridRange: [X_RANGE, Y_RANGE],
-        range: [[X_RANGE[0], X_RANGE[1] + axisPadding],
-                [Y_RANGE[0], Y_RANGE[1] + axisPadding]],
-        scale: scale,
-        gridStep: step,
+        range: [[X_RANGE[0], X_RANGE[1] + xAxisPadding],
+                [Y_RANGE[0], Y_RANGE[1] + yAxisPadding]],
+        scale: [xScale, yScale],
+        gridStep: [xStep, yStep],
         tickStep: 1,
         labelStep: 1,
         unityLabels: false,
@@ -186,15 +192,18 @@ plotParametric(function(t) {
 
 
 function setup() {
-    scale = SIZE / (X_RANGE[1] - X_RANGE[0]);
-    var axisPadding = 25 / scale;
-    var step = max(round(20 / scale), 1);
+    xScale = SIZE / (X_RANGE[1] - X_RANGE[0]);
+    yScale = SIZE / (Y_RANGE[1] - Y_RANGE[0]);
+    var xAxisPadding = 25 / xScale;
+    var yAxisPadding = 25 / yScale;
+    var xStep = max(round(20 / xScale), 1);
+    var yStep = max(round(20 / yScale), 1);
     graphInit({
         gridRange: [X_RANGE, Y_RANGE],
-        range: [[X_RANGE[0], X_RANGE[1] + axisPadding],
-                [Y_RANGE[0], Y_RANGE[1] + axisPadding]],
-        scale: scale,
-        gridStep: step,
+        range: [[X_RANGE[0], X_RANGE[1] + xAxisPadding],
+                [Y_RANGE[0], Y_RANGE[1] + yAxisPadding]],
+        scale: [xScale, yScale],
+        gridStep: [xStep, yStep],
         tickStep: 1,
         labelStep: 1,
         unityLabels: false,
