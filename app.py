@@ -32,7 +32,10 @@ def png():
     _put_to_s3('%s.js' % hash, js, 'application/javascript')
     url = _put_to_s3('%s.png' % hash, png, 'image/png')
 
-    return flask.redirect(url)
+    if request.args.get("url_only"):
+        return url
+    else:
+        return flask.redirect(url)
 
 
 def _js_to_png(js):
