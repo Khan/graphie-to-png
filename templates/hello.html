@@ -54,7 +54,8 @@ var Y_RANGE = [-10, 10];
 // Let's use 400 for "normal" graphs and 170 for "small" graphs
 var SIZE = 400;
 
-var scale;
+var xScale;
+var yScale;
 setup();
 
 style({
@@ -107,7 +108,8 @@ var Y_RANGE = [-10, 10];
 // Let's use 400 for "normal" graphs and 170 for "small" graphs
 var SIZE = 400;
 
-var scale;
+var xScale;
+var yScale;
 setup();
 
 style({
@@ -123,8 +125,8 @@ plot(function(x) {
     return x - 7.0;
 }, [3, 10]);
 
-circle([3, 4.5], 4 / scale, {fill: BLUE});
-circle([3, -4], 4 / scale, {fill: "white"});
+ellipse([3, 4.5], [4 / xScale, 4 / yScale], {fill: BLUE});
+ellipse([3, -4], [4 / xScale, 4 / yScale], {fill: "white"});
 
 
 
@@ -166,7 +168,8 @@ var Y_RANGE = [-10, 10];
 // Let's use 400 for "normal" graphs and 170 for "small" graphs
 var SIZE = 400;
 
-var scale;
+var xScale;
+var yScale;
 setup();
 
 style({
