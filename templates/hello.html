@@ -245,6 +245,88 @@ init({
 
 triangle.draw();
 </script>
+<script type="text/graphie" data-title="5. Tape diagram">
+// Top label for the entire tape
+var TOP_LABEL = "\\text{Original Price}";
+
+// Labels for each division. Add as many divisions as you like
+var LABELS = [
+        "20\\%",
+        "20\\%",
+        "20\\%",
+        "20\\%",
+        "20\\%",
+    ];
+
+// Label for the left partition
+var BOT_LEFT_LABEL = "\\text{Sale Price}";
+
+// Number of divisions in the left partition
+var BREAK = 4;
+
+// Label for the right partition
+var BOT_RIGHT_LABEL = "$5";
+
+////////////////////////////////////////////////////////////////
+
+var scale = 40;
+init({
+    range: [[-0.1, 10.1], [0, 4]],
+    scale: scale
+});
+
+style({ stroke: BLUE });
+
+var boxWidth = 10 / LABELS.length;
+_.each(LABELS, function(lbl, n) {
+    path([[boxWidth * n, 1.5], [boxWidth * (n + 1), 1.5],
+          [boxWidth * (n + 1), 2.5], [boxWidth * n, 2.5], true]);
+    label([boxWidth * (n + 0.5), 2], lbl);
+});
+
+var BRACE_PATH = "M 0,20" +
+        "C 2,17 9,14 18,13" +
+        "C 26,11 39,10 58,10" +
+        "L 138,10" +
+        "C 152,10 162,10 170,9" +
+        "C 178,8 185,7 189,6" +
+        "C 193,4 197,2 200,0" +
+        "C 206,4 213,7 223,8" +
+        "C 233,9 248,10 268,10" +
+        "L 341,10" +
+        "C 359,10 373,11 382,13" +
+        "C 387,14 391,15 393,16" +
+        "C 396,17 398,18 399,18" +
+        "C 399,19 400,19 400,20";
+
+var topBrace = raphael.path(BRACE_PATH);
+var botLeftBrace = raphael.path(BRACE_PATH);
+var botRightBrace = raphael.path(BRACE_PATH);
+
+botLeftBrace.rotate(180);
+botRightBrace.rotate(180);
+
+topBrace.attr({ stroke: GRAY, "stroke-width": 1.5 });
+botLeftBrace.attr({ stroke: GRAY, "stroke-width": 1.5 });
+botRightBrace.attr({ stroke: GRAY, "stroke-width": 1.5 });
+
+topBrace.scale(scale / 40, scale / 40, 0, 0);
+botLeftBrace.scale((BREAK / LABELS.length) * (scale / 40),
+        scale / 40, 0, 0);
+botRightBrace.scale((1 - (BREAK / LABELS.length)) * (scale / 40),
+        scale / 40, 0, 0);
+
+topBrace.translate(scale * 0.1, scale * 0.9);
+botLeftBrace.translate(scale * 0.1, scale * 2.6);
+botRightBrace.translate(scale * (0.1 + 10 *
+        BREAK / LABELS.length), scale * 2.6);
+
+
+label([5, 3.1], TOP_LABEL, "above");
+label([5 * BREAK / LABELS.length, 0.9], BOT_LEFT_LABEL, "below");
+label([5 * BREAK / LABELS.length + 5, 0.9], BOT_RIGHT_LABEL,
+        "below");
+</script>
 </div>
 
 <div id="controls">
