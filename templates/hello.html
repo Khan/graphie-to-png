@@ -327,6 +327,26 @@ label([5 * BREAK / LABELS.length, 0.9], BOT_LEFT_LABEL, "below");
 label([5 * BREAK / LABELS.length + 5, 0.9], BOT_RIGHT_LABEL,
         "below");
 </script>
+<script type="text/graphie" data-title="6. Area model">
+var CHART = [
+        [[2, 3], [BLUE, GRAY]],
+        [[4, 6], [BLUE, GRAY]],
+        [ ],
+        [[1, 1, 1, 1, 1], [RED, ORANGE, GREEN, BLUE, PINK ]]
+    ];
+
+
+init({
+    range: [[0, 1], [0, CHART.length]],
+    scale: [400,30]
+});
+
+_.each(CHART.reverse(), function(row, n) {
+    if (row.length) {
+        rectchart(row[0], row[1], n);
+    }
+});
+</script>
 </div>
 
 <div id="controls">
