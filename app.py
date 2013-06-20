@@ -25,6 +25,7 @@ def hello():
 @app.route('/png', methods=['POST'])
 def png():
     js = request.form['js']
+    js += "\nforceLabelTypeset();\n"
     png = _js_to_png(js)
 
     # TODO(alpert): If graphie changes and gives a new png this just overwrites
