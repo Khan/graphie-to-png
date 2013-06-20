@@ -327,6 +327,7 @@ label([5 * BREAK / LABELS.length, 0.9], BOT_LEFT_LABEL, "below");
 label([5 * BREAK / LABELS.length + 5, 0.9], BOT_RIGHT_LABEL,
         "below");
 </script>
+
 <script type="text/graphie" data-title="6. Area model">
 var CHART = [
         [[2, 3], [BLUE, GRAY]],
@@ -347,6 +348,111 @@ _.each(CHART.reverse(), function(row, n) {
     }
 });
 </script>
+
+<script type="text/graphie" data-title="7. Number line">
+var RANGE = [-5, 10]
+var TICK_STEP = 1;
+var LABEL_TICKS = true;
+
+var LABELS = [
+    {
+        value:      0,
+        text:       "0",
+        position:   "below",
+        color:      BLUE
+    },
+    {
+        value:      5,
+        text:       "x",
+        position:   "above",
+        color:      BLACK
+    },
+];
+
+var HIGHLIGHTED_TICKS = [
+    [ 0, BLUE ],
+];
+
+var POINTS = [
+    [ 2, RED ],
+]
+
+var ARROWS = [
+    [ 2, 11.05, RED ],
+]
+
+///////////////////////////////////////////////////////////////
+
+init({
+    range: [[RANGE[0] - 1.1, RANGE[1] + 1.1], [-1, 1]],
+    scale: [400 / (RANGE[1] - RANGE[0]), 40]
+});
+
+var minusIgnorer = function(a) {
+    return (a + "").replace(/-(\d)/g, "\\llap{-}$1");
+};
+
+line([RANGE[0] - 1, 0 ], [RANGE[1] + 1, 0], {
+    arrows: "->"
+});
+
+line([RANGE[1] + 1, 0 ], [RANGE[0] - 1, 0], {
+    arrows: "->"
+});
+
+for (var x = RANGE[0]; x <= RANGE[1]; x += TICK_STEP) {
+    line([x, -0.2], [x, 0.2]);
+    if (!_.findWhere(LABELS, {value: x, position: "below"})) {
+        label([x, -0.53],  minusIgnorer(x), "center");
+    }
+}
+
+if (typeof(LABELS) !== "undefined") {
+    _.each(LABELS, function(lbl) {
+        if (lbl.position === "above") {
+            label([lbl.value, 0.53],  minusIgnorer(lbl.text),
+                    "center", {
+                color: lbl.color
+            });
+        } else {
+            label([lbl.value, -0.53],  minusIgnorer(lbl.text),
+                    "center", {
+                color: lbl.color
+            });
+        }
+    });
+}
+
+if (typeof(HIGHLIGHTED_TICKS) !== "undefined") {
+    _.each(HIGHLIGHTED_TICKS, function(tick) {
+        line([tick[0], -0.2], [tick[0], 0.2], {
+            stroke: tick[1],
+            strokeWidth: 3.5
+        });
+    });
+}
+
+if (typeof(ARROWS) !== "undefined") {
+    _.each(ARROWS, function(arrow) {
+        line([arrow[0], 0 ], [arrow[1], 0], {
+            arrows: "->",
+            stroke: arrow[2],
+            strokeWidth: 3.5
+        });
+    });
+}
+
+if (typeof(POINTS) !== "undefined") {
+    _.each(POINTS, function(point) {
+        ellipse([point[0], 0],
+                [5 / (400 / (RANGE[1] - RANGE[0])), 5 / 40], {
+            fill: point[1],
+            stroke: null
+        });
+    });
+}
+</script>
+
 </div>
 
 <div id="controls">
