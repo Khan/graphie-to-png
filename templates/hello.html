@@ -350,7 +350,7 @@ _.each(CHART.reverse(), function(row, n) {
 </script>
 
 <script type="text/graphie" data-title="7. Number line">
-var RANGE = [-5, 10]
+var RANGE = [-5, 10];
 var TICK_STEP = 1;
 var LABEL_TICKS = true;
 
@@ -377,8 +377,13 @@ var POINTS = [
     [ 2, RED ],
 ]
 
+var CIRCLES = [
+    [ -4, RED ],
+]
+
 var ARROWS = [
     [ 2, 11.05, RED ],
+    [ -4, -6.05, RED ],
 ]
 
 ///////////////////////////////////////////////////////////////
@@ -448,6 +453,17 @@ if (typeof(POINTS) !== "undefined") {
                 [5 / (400 / (RANGE[1] - RANGE[0])), 5 / 40], {
             fill: point[1],
             stroke: null
+        });
+    });
+}
+
+if (typeof(CIRCLES) !== "undefined") {
+    _.each(CIRCLES, function(point) {
+        ellipse([point[0], 0],
+                [5 / (400 / (RANGE[1] - RANGE[0])), 5 / 40], {
+            fill: BACKGROUND,
+            stroke: point[1],
+            strokeWidth: 3
         });
     });
 }
