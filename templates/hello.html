@@ -407,7 +407,8 @@ line([RANGE[1] + 1, 0 ], [RANGE[0] - 1, 0], {
 
 for (var x = RANGE[0]; x <= RANGE[1]; x += TICK_STEP) {
     line([x, -0.2], [x, 0.2]);
-    if (!_.findWhere(LABELS, {value: x, position: "below"})) {
+    if (LABEL_TICKS && !_.findWhere(LABELS,
+            {value: x, position: "below"})) {
         label([x, -0.53],  minusIgnorer(x), "center");
     }
 }
