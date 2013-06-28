@@ -382,30 +382,36 @@ var CIRCLES = [
 ]
 
 var ARROWS = [
-    [ 2, 11.05, RED ],
-    [ -4, -6.05, RED ],
+    [ 2, 12, RED ],
+    [ -4, -7, RED ],
 ]
 
 ///////////////////////////////////////////////////////////////
 
+var SCALE = 400 / (RANGE[1] - RANGE[0]);
+
 init({
-    range: [[RANGE[0] - 1.1, RANGE[1] + 1.1], [-1, 1]],
-    scale: [400 / (RANGE[1] - RANGE[0]), 40]
+    range: [[RANGE[0] - (30 / SCALE), RANGE[1] + (30 / SCALE)],
+            [-1, 1]],
+    scale: [SCALE, 40]
 });
 
 var minusIgnorer = function(a) {
     return (a + "").replace(/-(\d)/g, "\\llap{-}$1");
 };
 
-line([RANGE[0] - 1, 0 ], [RANGE[1] + 1, 0], {
+line([RANGE[0] - (25 / SCALE), 0],
+     [RANGE[1] + (25 / SCALE), 0], {
     arrows: "->"
 });
 
-line([RANGE[1] + 1, 0 ], [RANGE[0] - 1, 0], {
+line([RANGE[1] + (25 / SCALE), 0],
+     [RANGE[0] - (25 / SCALE), 0], {
     arrows: "->"
 });
 
-for (var x = RANGE[0]; x <= RANGE[1]; x += TICK_STEP) {
+for (var x = RANGE[0]; x <= RANGE[1];
+        x = roundTo(10, x + TICK_STEP)) {
     line([x, -0.2], [x, 0.2]);
     if (LABEL_TICKS && !_.findWhere(LABELS,
             {value: x, position: "below"})) {
@@ -440,6 +446,10 @@ if (typeof(HIGHLIGHTED_TICKS) !== "undefined") {
 
 if (typeof(ARROWS) !== "undefined") {
     _.each(ARROWS, function(arrow) {
+        arrow[0] = min(arrow[0], RANGE[1] + (26 / SCALE));
+        arrow[0] = max(arrow[0], RANGE[0] - (26 / SCALE));
+        arrow[1] = min(arrow[1], RANGE[1] + (26 / SCALE));
+        arrow[1] = max(arrow[1], RANGE[0] - (26 / SCALE));
         line([arrow[0], 0 ], [arrow[1], 0], {
             arrows: "->",
             stroke: arrow[2],
