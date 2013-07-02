@@ -25,7 +25,6 @@ def hello():
 @app.route('/png', methods=['POST'])
 def png():
     js = request.form['js']
-    js += "\nforceLabelTypeset();\n"
     png = _js_to_png(js)
 
     # TODO(alpert): If graphie changes and gives a new png this just overwrites
@@ -40,6 +39,7 @@ def png():
 
 
 def _js_to_png(js):
+    js += "\nforceLabelTypeset();\n"
     key = os.urandom(8).encode('hex')
     html_path = os.path.join(root, 'plain_graph_%s.html' % key)
     with open(html_path, 'w') as f:
