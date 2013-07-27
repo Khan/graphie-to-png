@@ -7,6 +7,6 @@
 [submodule "ace-builds"]
 	path = ace-builds
 	url = https://github.com/ajaxorg/ace-builds.git
-[submodule "boto"]
-	path = boto
+[submodule "boto-src"]
+	path = boto-src
 	url = git://github.com/boto/boto.git
