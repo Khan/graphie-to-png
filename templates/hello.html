@@ -19,7 +19,7 @@
     #samples {
         display: none;
     }
-    #output { 
+    #output {
         float: left;
         min-height: 610px;
         outline: 1px solid #ccc;
@@ -44,11 +44,14 @@
 
 <div id="editor"></div>
 
-<div id="samples">
-<script type="text/graphie" data-title="1. Simple plot">
+<script id="grid-setup-pre" type="text/graphie">
 // X and Y ranges of the graph
 var X_RANGE = [-10, 10];
 var Y_RANGE = [-10, 10];
+
+// var STEP = [<x tick step>, <y tick step>];
+// var STEP = [10, 25];
+var STEP = "auto";
 
 // Width of the graph in pixels
 // Let's use 400 for "normal" graphs and 170 for "small" graphs
@@ -57,37 +60,49 @@ var SIZE = 400;
 var xScale;
 var yScale;
 setup();
+//////////////////////////////////////////////////////////////
 
-style({
-    stroke: BLUE,
-    fill: "none"
-});
+</script>
 
-plot(function(x) {
-    // Write down the function you want to plot here
-    return -0.5 * x * x + 2 * x + 3.0;
-}, X_RANGE);
+<script id="grid-setup-post" type="text/graphie">
 
-
-
+//////////////////////////////////////////////////////////////
+// Setup grid, ticks, and labels and initialize graph.
 function setup() {
-    xScale = SIZE / (X_RANGE[1] - X_RANGE[0]);
-    yScale = SIZE / (Y_RANGE[1] - Y_RANGE[0]);
-    var xAxisPadding = 25 / xScale;
-    var yAxisPadding = 25 / yScale;
-    var xStep = max(round(20 / xScale), 1);
-    var yStep = max(round(20 / yScale), 1);
+    var dimensions = [SIZE, SIZE];
+    var range = [X_RANGE, Y_RANGE];
+    var step = STEP;
+    if (step === "auto") {
+        step = _.map(range, function(extent, i) {
+            return Perseus.Util.tickStepFromExtent(
+                    extent, dimensions[i]);
+        });
+    }
+    var gridConfig = _.map(range, function(extent, i) {
+        return Perseus.Util.gridDimensionConfig(
+                step[i],
+                extent,
+                dimensions[i]);
+    });
+    var scale = _.pluck(gridConfig, "scale");
+    xScale = scale[0];
+    yScale = scale[1];
+    var paddedRange = _.map(range, function(extent, i) {
+        var padding = 25 / scale[i];
+        return [extent[0], extent[1] + padding];
+    });
     graphInit({
-        gridRange: [X_RANGE, Y_RANGE],
-        range: [[X_RANGE[0], X_RANGE[1] + xAxisPadding],
-                [Y_RANGE[0], Y_RANGE[1] + yAxisPadding]],
-        scale: [xScale, yScale],
-        gridStep: [xStep, yStep],
-        tickStep: 1,
+        gridRange: range,
+        range: paddedRange,
+        scale: scale,
+        axisArrows: "<->",
+        labelFormat: function(s) {
+            return "\\small{" + s + "}";
+        },
+        gridStep: _.pluck(gridConfig, "gridStep"),
+        tickStep: _.pluck(gridConfig, "tickStep"),
         labelStep: 1,
-        unityLabels: false,
-        labelFormat: function(s) { return "\\small{" + s + "}"; },
-        axisArrows: "<->"
+        unityLabels: _.pluck(gridConfig, "unityLabel")
     });
     style({
         clipRect: [[X_RANGE[0], Y_RANGE[0]],
@@ -98,20 +113,25 @@ function setup() {
     label([0, Y_RANGE[1]], "y", "above");
     label([X_RANGE[1], 0], "x", "right");
 }
+
 </script>
-<script type="text/graphie" data-title="2. Piecewise function">
-// X and Y ranges of the graph
-var X_RANGE = [-10, 10];
-var Y_RANGE = [-10, 10];
 
-// Width of the graph in pixels
-// Let's use 400 for "normal" graphs and 170 for "small" graphs
-var SIZE = 400;
 
-var xScale;
-var yScale;
-setup();
+<div id="samples">
 
+<script type="text/graphie" data-use-grid="true" data-title="1. Simple plot">
+style({
+    stroke: BLUE,
+    fill: "none"
+});
+
+plot(function(x) {
+    // Write down the function you want to plot here
+    return -0.5 * x * x + 2 * x + 3.0;
+}, X_RANGE);
+</script>
+
+<script type="text/graphie" data-use-grid="true" data-title="2. Piecewise function">
 style({
     stroke: BLUE,
     fill: "none"
@@ -127,51 +147,10 @@ plot(function(x) {
 
 ellipse([3, 4.5], [4 / xScale, 4 / yScale], {fill: BLUE});
 ellipse([3, -4], [4 / xScale, 4 / yScale], {fill: "white"});
-
-
-
-function setup() {
-    xScale = SIZE / (X_RANGE[1] - X_RANGE[0]);
-    yScale = SIZE / (Y_RANGE[1] - Y_RANGE[0]);
-    var xAxisPadding = 25 / xScale;
-    var yAxisPadding = 25 / yScale;
-    var xStep = max(round(20 / xScale), 1);
-    var yStep = max(round(20 / yScale), 1);
-    graphInit({
-        gridRange: [X_RANGE, Y_RANGE],
-        range: [[X_RANGE[0], X_RANGE[1] + xAxisPadding],
-                [Y_RANGE[0], Y_RANGE[1] + yAxisPadding]],
-        scale: [xScale, yScale],
-        gridStep: [xStep, yStep],
-        tickStep: 1,
-        labelStep: 1,
-        unityLabels: false,
-        labelFormat: function(s) { return "\\small{" + s + "}"; },
-        axisArrows: "<->"
-    });
-    style({
-        clipRect: [[X_RANGE[0], Y_RANGE[0]],
-                [X_RANGE[1] - X_RANGE[0],
-                Y_RANGE[1] - Y_RANGE[0]]]
-    });
-
-    label([0, Y_RANGE[1]], "y", "above");
-    label([X_RANGE[1], 0], "x", "right");
-}
 </script>
-<script type="text/graphie" data-title="3. Parametric plots">
-// X and Y ranges of the graph
-var X_RANGE = [-10, 10];
-var Y_RANGE = [-10, 10];
 
-// Width of the graph in pixels
-// Let's use 400 for "normal" graphs and 170 for "small" graphs
-var SIZE = 400;
 
-var xScale;
-var yScale;
-setup();
-
+<script type="text/graphie" data-use-grid="true" data-title="3. Parametric plots">
 style({
     stroke: BLUE,
     fill: "none"
@@ -191,38 +170,8 @@ plotParametric(function(t) {
     // Write down the function you want to plot here as [x, y] in terms of t
     return [t + 2 * cos(t), 2 * sin(t)];
 }, [-12, 12]);
-
-
-
-function setup() {
-    xScale = SIZE / (X_RANGE[1] - X_RANGE[0]);
-    yScale = SIZE / (Y_RANGE[1] - Y_RANGE[0]);
-    var xAxisPadding = 25 / xScale;
-    var yAxisPadding = 25 / yScale;
-    var xStep = max(round(20 / xScale), 1);
-    var yStep = max(round(20 / yScale), 1);
-    graphInit({
-        gridRange: [X_RANGE, Y_RANGE],
-        range: [[X_RANGE[0], X_RANGE[1] + xAxisPadding],
-                [Y_RANGE[0], Y_RANGE[1] + yAxisPadding]],
-        scale: [xScale, yScale],
-        gridStep: [xStep, yStep],
-        tickStep: 1,
-        labelStep: 1,
-        unityLabels: false,
-        labelFormat: function(s) { return "\\small{" + s + "}"; },
-        axisArrows: "<->"
-    });
-    style({
-        clipRect: [[X_RANGE[0], Y_RANGE[0]],
-                [X_RANGE[1] - X_RANGE[0],
-                Y_RANGE[1] - Y_RANGE[0]]]
-    });
-
-    label([0, Y_RANGE[1]], "y", "above");
-    label([X_RANGE[1], 0], "x", "right");
-}
 </script>
+
 <script type="text/graphie" data-title="4. Triangle">
 var triangle = solveTriangle({
     sides: [13, 14, 15],
@@ -245,6 +194,7 @@ init({
 
 triangle.draw();
 </script>
+
 <script type="text/graphie" data-title="5. Tape diagram">
 // Top label for the entire tape
 var TOP_LABEL = "\\text{Original Price}";
@@ -594,11 +544,17 @@ if (SHOW_LABELS && ones > 0) {
 
     var $samples = $("#samples").children();
     var $sampleSelect = $("<select>").appendTo("#controls");
+    var gridSetupPre = $("#grid-setup-pre").html();
+    var gridSetupPost = $("#grid-setup-post").html();
     var samples = _.map($samples, function(el, i) {
         var $el = $(el);
+        var code = $el.html();
+        if ($el.data("use-grid")) {
+            code = gridSetupPre + code + gridSetupPost;
+        }
         var sample = {
             title: $el.data("title"),
-            js: $.trim($el.html()) + "\n"
+            js: $.trim(code) + "\n"
         };
         $("<option>")
                 .val(i).text(sample.title)
