@@ -514,6 +514,88 @@ if (SHOW_LABELS && ones > 0) {
 }
 </script>
 
+<script type="text/graphie" data-title="9. Trigonometric function">
+// X and Y ranges of the graph
+var X_RANGE = [-PI, 2.5 * PI];
+var Y_RANGE = [-3, 3];
+
+// var STEP = [<x tick step>, <y tick step>];
+// var STEP = [10, 25];
+var STEP = "auto";
+
+// Width of the graph in pixels
+// Let's use 400 for "normal" graphs and 170 for "small" graphs
+var SIZE = 400;
+
+var xScale;
+var yScale;
+setup();
+//////////////////////////////////////////////////////////////
+
+
+style({
+    stroke: BLUE,
+    fill: "none"
+});
+
+plot(function(x) {
+    // Write down the function you want to plot here
+    return sin(x);
+}, X_RANGE);
+
+
+//////////////////////////////////////////////////////////////
+// Setup grid, ticks, and labels and initialize graph.
+function setup() {
+    var dimensions = [SIZE, SIZE];
+    var range = [X_RANGE, Y_RANGE];
+    var step = STEP;
+    if (step === "auto") {
+        xs = Perseus.Util.tickStepFromExtent(
+                [range[0][0] / PI, range[0][1] / PI],
+                dimensions[0]);
+        ys = Perseus.Util.tickStepFromExtent(
+                range[1], dimensions[1]);
+        step = [xs * PI, ys];
+    }
+    var gridConfig = _.map(range, function(extent, i) {
+        return Perseus.Util.gridDimensionConfig(
+                step[i],
+                extent,
+                dimensions[i]);
+    });
+    var scale = _.pluck(gridConfig, "scale");
+    xScale = scale[0];
+    yScale = scale[1];
+    var paddedRange = _.map(range, function(extent, i) {
+        var padding = 25 / scale[i];
+        return [extent[0], extent[1] + padding];
+    });
+    graphInit({
+        gridRange: range,
+        range: paddedRange,
+        scale: scale,
+        axisArrows: "<->",
+        labelFormat: function(s) {
+            return "\\small{" + s + "}";
+        },
+        gridStep: _.pluck(gridConfig, "gridStep"),
+        tickStep: _.pluck(gridConfig, "tickStep"),
+        labelStep: 1,
+        unityLabels: _.pluck(gridConfig, "unityLabel"),
+        xLabelFormat: piFraction
+    });
+    style({
+        clipRect: [[X_RANGE[0], Y_RANGE[0]],
+                [X_RANGE[1] - X_RANGE[0],
+                Y_RANGE[1] - Y_RANGE[0]]]
+    });
+
+    label([0, Y_RANGE[1]], "y", "above");
+    label([X_RANGE[1], 0], "x", "right");
+}
+</script>
+
 </div>
 
 <div id="controls">
