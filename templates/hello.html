@@ -280,7 +280,8 @@ label([5 * BREAK / LABELS.length + 5, 0.9], BOT_RIGHT_LABEL,
 
 <script type="text/graphie" data-title="6. Area model">
 var CHART = [
-        [[2, 3], [BLUE, GRAY]],
+        // Number, fill color, stroke color
+        [[2, 3], [BLUE, null], [null, GRAY]],
         [[4, 6], [BLUE, GRAY]],
         [ ],
         [[1, 1, 1, 1, 1], [RED, ORANGE, GREEN, BLUE, PINK ]]
@@ -294,7 +295,7 @@ init({
 
 _.each(CHART.reverse(), function(row, n) {
     if (row.length) {
-        rectchart(row[0], row[1], n);
+        rectchart(row[0], row[1], n, row[2]);
     }
 });
 </script>
