@@ -39,7 +39,6 @@ def png():
 
 
 def _js_to_png(js):
-    js += "\nforceLabelTypeset();\n"
     key = os.urandom(8).encode('hex')
     html_path = os.path.join(root, 'plain_graph_%s.html' % key)
     with open(html_path, 'w') as f:
