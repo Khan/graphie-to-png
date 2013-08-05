@@ -598,6 +598,103 @@ function setup() {
 }
 </script>
 
+
+<script type="text/graphie" data-title="10. Arrow Table">
+// Rows for table are of the form
+//
+//  [["Label-1", "Label-2", ..., "Label-N"], "Arrow label"]
+//
+// Note: if arrow label is set to "" no arrow will be drawn.
+var TABLE = [
+    [["\\textbf{percent}",  "\\textbf{dollars}"],   ""],
+    [["100\\%",             "\\$140"],              "{} \\div 5"],
+    [["20\\%",              "\\$28"],               "{} \\times 6"],
+    [["100\\%",             "\\$168"],              ""]
+];
+
+// If arrow labels don't fit within red square increase this
+var sideGap = 2;
+////////////////////////////////////////////////////////////////
+
+
+var height = TABLE.length;
+var dWidth = 3;
+if (TABLE[0][0].length === 1) {
+    var width = 1 + 2 * sideGap;
+} else {
+    var width = 1 + 2 * sideGap + dWidth * (TABLE[0][0].length - 1);
+}
+var scale = 40;
+
+init({
+    range: [[-0.1, width + 0.1], [-0.1, height + 0.1]],
+    scale: scale
+});
+
+style({
+    strokeWidth: 1
+});
+
+
+var y = 0.5;
+_.each(TABLE.reverse(), function(row) {
+    _.each(row[0], function(cell, c) {
+        if (c === 0) {
+            label([sideGap + 0.5, y], cell);
+        } else {
+            var x = 1 + sideGap + dWidth * (c - 1);
+            label([x + 1, y], "\\longrightarrow");
+            label([x + 2.5, y], cell);
+        }
+    });
+
+    if (row[1].length > 0) {
+        var pad = 0.3;
+        var labelPad = pad + 0.9;
+        var x = 1 + dWidth * (row[0].length - 1);
+        var labelY = y - 0.5;
+        var arrowRadius = 0.4;
+
+        curvyArrow([sideGap - pad, labelY], arrowRadius, "left", false);
+        curvyArrow([x + sideGap + pad, labelY], arrowRadius, "right", true);
+
+        label([sideGap - labelPad, labelY], row[1]);
+        label([x + sideGap + labelPad, labelY], row[1]);
+    }
+
+    y++;
+});
+</script>
+
+
+<script type="text/graphie" data-title="11. Pie Chart">
+// CHART is a list of piecharts. Each row has format:
+// [
+//      [list of pie pieces with...],
+//      [these associated colors],
+//      radius,
+//      translation
+// ]
+var CHART = [
+    [[2, 3], [BLUE, GRAY], 3, [100, 0]],
+    [[4, 6], [BLUE, GRAY], 5, [-90, 0]],
+    [[1, 1, 1, 1, 1], [GREEN, GRAY, PURPLE, RED, BLUE], 2, [30, -100]]
+];
+
+
+init({
+    range: [[-10, 10], [-10, 10]],
+    scale: [20, 20]
+});
+
+_.each(CHART, function(row, n) {
+    var tr = row[3];
+    piechart(row[0], row[1], row[2]).translate(tr[0], tr[1]);
+});
+
+</script>
+
+
 </div>
 
 <div id="controls">
