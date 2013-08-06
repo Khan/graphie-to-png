@@ -658,12 +658,13 @@ _.each(TABLE.reverse(), function(row) {
 //      [list of pie pieces with...],
 //      [these associated colors],
 //      radius,
-//      translation
+//      translation,
+//      stroke color  // optional
 // ]
 var CHART = [
     [[2, 3], [BLUE, GRAY], 3, [100, 0]],
     [[4, 6], [BLUE, GRAY], 5, [-90, 0]],
-    [[1, 1, 1, 1, 1], [GREEN, GRAY, PURPLE, RED, BLUE], 2, [30, -100]]
+    [[1, 1, 1, 1, 1], [GREEN, GRAY, PURPLE, RED, BLUE], 2, [30, -100], BLACK]
 ];
 
 
@@ -674,7 +675,8 @@ init({
 
 _.each(CHART, function(row, n) {
     var tr = row[3];
-    piechart(row[0], row[1], row[2]).translate(tr[0], tr[1]);
+    var color = row[4];
+    piechart(row[0], row[1], row[2], color).translate(tr[0], tr[1]);
 });
 
 </script>
