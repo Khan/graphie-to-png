@@ -667,6 +667,9 @@ var CHART = [
     [[1, 1, 1, 1, 1], [GREEN, GRAY, PURPLE, RED, BLUE], 40, [30, -100], BLACK]
 ];
 
+
+///////////////////////////////////////////////
+
 var boundingBoxes = _.map(CHART, function (row) {
     var coords = row[3];
     var x = coords[0];
@@ -675,17 +678,14 @@ var boundingBoxes = _.map(CHART, function (row) {
     return [x - radius, x + radius, -y - radius, -y + radius];
 });
 
-var signs = [-1, 1, -1, 1];
 var pad = 3;
-var ranges = _.map(signs, function (sign, i) {
-    var max = _.max(boundingBoxes, function (row) {
-        return sign * row[i];
-    });
-    return max[i] + sign * pad;
-});
+var minX = _.min(_.pluck(boundingBoxes, 0)) - pad;
+var maxX = _.max(_.pluck(boundingBoxes, 1)) + pad;
+var minY = _.min(_.pluck(boundingBoxes, 2)) - pad;
+var maxY = _.max(_.pluck(boundingBoxes, 3)) + pad;
 
 init({
-    range: [[ranges[0], ranges[1]], [ranges[2], ranges[3]]],
+    range: [[minX, maxX], [minY, maxY]],
     scale: 1
 });
 
