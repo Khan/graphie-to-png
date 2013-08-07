@@ -662,15 +662,31 @@ _.each(TABLE.reverse(), function(row) {
 //      stroke color  // optional
 // ]
 var CHART = [
-    [[2, 3], [BLUE, GRAY], 3, [100, 0]],
-    [[4, 6], [BLUE, GRAY], 5, [-90, 0]],
-    [[1, 1, 1, 1, 1], [GREEN, GRAY, PURPLE, RED, BLUE], 2, [30, -100], BLACK]
+    [[2, 3], [BLUE, GRAY], 60, [100, 0]],
+    [[4, 6], [BLUE, GRAY], 100, [-90, 0]],
+    [[1, 1, 1, 1, 1], [GREEN, GRAY, PURPLE, RED, BLUE], 40, [30, -100], BLACK]
 ];
 
+var boundingBoxes = _.map(CHART, function (row) {
+    var coords = row[3];
+    var x = coords[0];
+    var y = coords[1];
+    var radius = row[2];
+    return [x - radius, x + radius, -y - radius, -y + radius];
+});
+
+var signs = [-1, 1, -1, 1];
+var pad = 3;
+var ranges = _.map(signs, function (sign, i) {
+    var max = _.max(boundingBoxes, function (row) {
+        return sign * row[i];
+    });
+    return max[i] + sign * pad;
+});
 
 init({
-    range: [[-10, 10], [-10, 10]],
-    scale: [20, 20]
+    range: [[ranges[0], ranges[1]], [ranges[2], ranges[3]]],
+    scale: 1
 });
 
 _.each(CHART, function(row, n) {
