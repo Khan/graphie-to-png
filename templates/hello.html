@@ -821,7 +821,7 @@ function sum(arr, a, b) {
 }
 </script>
 
-<script type="text/graphie" data-use-simple="true" data-title="13. Drawing API Intro">
+<script type="text/graphie" data-use-simple="true" data-title="13. Intro to the Drawing API">
 drawLine({
     points: [[-5, 8.5], [5, 8.5]],
     showPoints: true, // whether to actually show points
@@ -861,7 +861,7 @@ drawPoint({
     fill: PURPLE    // only changes the color of the point
 });
 
-// For more about polygons, see 17. Polygon
+// For much more about polygons, see template #17 (Polygon)
 drawPolygon({
     points: [
         [-7, 0],
@@ -881,6 +881,14 @@ drawCircle({
    fillOpacity: 0.2 // all styles can be overriden
 });
 
+drawArc({
+    center: [3, 0],
+    radius: 2.5, // circular arc
+    start: 225,
+    end: 315,
+    stroke: RED
+});
+
 drawEllipse({
    center: [-3, -6],
    radii: [5, 2],
@@ -888,8 +896,29 @@ drawEllipse({
    fillOpacity: 0.2
 });
 
+drawArc({
+    center: [-3, -6],
+    radii: [4.5, 1.5], // elliptical arc
+    start: 225,
+    end: 315,
+    color: RED
+});
+
+drawSegment({
+   points: [[3, 0], [6, 0]],
+   stroke: ORANGE
+});
+
+var offset = polar(3, 135); // polar coordinate (radius, angle)
+var onCircle = addPoints([3, 0], offset); // sum 2+ points
+
+drawSegment({
+   points: [[3, 0], onCircle],
+   stroke: ORANGE
+});
+
 drawAngleLabel({
-    points: [[6, 0], [3, 0], [0, 0]],
+    points: [[6, 0], [3, 0], onCircle], // in clockwise order
     label: "$deg2", // "$deg" is relaced by angle measure
     arcs: 2         // the 2 means 2 decimal places are shown
 });
@@ -1019,13 +1048,13 @@ drawPolygon({
     // (in which case each element applies to one angle/side/
     // vertex) or a single element (in which case it applies to
     // each angle/side/vertex)
-    showPoints: true,
-    angleLabels: "$deg0",
-    sideLabels: "$len0",
+    showPoints: true,     // whether to draw the actual vertices
+    angleLabels: "$deg0", // angle measure in degrees, no decimals
+    sideLabels: "$len0",  // side length in units, no decimals
     vertexLabels: ["A", "B", "C", "D"],
-    arcs: [1, 2, 1, 2],
-    ticks: 1,
-    arrows: [1, 2, 1, 2]
+    arcs: [1, 2, 1, 2],     // number of angle arcs
+    ticks: 1,               // number of side ticks
+    arrows: [1, 2, 1, 2]    // number of side arrows
 });
 </script>
 
