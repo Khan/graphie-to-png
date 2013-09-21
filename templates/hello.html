@@ -27,12 +27,18 @@
         width: 480px;
         padding: 10px;
     }
-    #output .graphie:hover {
+    #output .graphie {
         outline: 1px dashed #df0030;
     }
     #output .error {
         font: 12px Menlo, Courier, monospace;
         color: red;
+    }
+    #output .size {
+        font-size: 12px;
+        color: #df0030;
+        display: block;
+        margin-top: 3px;
     }
     form.form-create-png {
         display: inline;
@@ -117,6 +123,27 @@ function setup() {
 
 </script>
 
+<script id="simple-setup-pre" type="text/graphie">
+/* The X and Y ranges of this canvas */
+var range = RANGE;
+
+/* The output's largest side is limited to this many pixels */
+var size = 400;
+
+setup();
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+</script>
+
+<script id="simple-setup-post" type="text/graphie">
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+function setup() {
+    var scales = _.map(range, function(extent) {
+        return Perseus.Util.scaleFromExtent(extent, size);
+    });
+    init({range: range, scale: _.min(scales)});
+}
+
+</script>
 
 <div id="samples">
 
@@ -174,7 +201,7 @@ plotParametric(function(t) {
 </script>
 
 
-<script type="text/graphie" data-title="4. Triangle">
+<script type="text/graphie" data-title="4. Triangle (old)">
 var triangle = solveTriangle({
     sides: [13, 14, 15],
     angles: [null, null, null],
@@ -697,7 +724,440 @@ _.each(CHART, function(row, n) {
 
 </script>
 
+<script type="text/graphie" data-title="12. Area model 2">
+// The total width is the sum of these plus 70, so keep the sum of
+// these to no more than 410.
+var WIDTHS = [210, 130, 70];
+var HEIGHTS = [
+    130,
+    70
+];
 
+var COLORS = [
+    [PURPLE, BLUE, ORANGE],
+    [GREEN, RED, GRAY]
+];
+
+var INNER_LABELS = [
+    ["800 \\times 40", "a \\times 40", "5 \\times 40"],
+    ["800 \\times b", "a \\times b", "5 \\times b"],
+];
+
+var TOP_LABELS = ["800", "+", "a", "+", "4"];
+var LEFT_LABELS = ["40", "+", "b"];
+var RIGHT_LABELS = ["{}+16", "", ""];
+
+////////////////////////////////////////////////////////////////
+
+
+init({
+    range: [
+        [-30, sum(WIDTHS) + 40],
+        [-sum(HEIGHTS), 30]],
+    scale: [1, 1]
+});
+
+style({
+    fillOpacity: 0.5,
+    stroke: BACKGROUND
+})
+
+_.each(COLORS, function(row, j) {
+    _.each(row, function(color, i) {
+        if (!color) {
+            return;
+        }
+        style({ fill: color });
+        nrect(sum(WIDTHS, 0, i), -sum(HEIGHTS, 0, j), WIDTHS[i], -HEIGHTS[j]);
+    });
+});
+
+style({fillOpacity: 1.0});
+
+_.each(INNER_LABELS, function(row, j) {
+    _.each(row, function(text, i) {
+        if (!text) {
+            return;
+        }
+        label([sum(WIDTHS, 0, i + 1) - WIDTHS[i] / 2, -(sum(HEIGHTS, 0, j + 1) - HEIGHTS[j] / 2)], text);
+    });
+});
+
+_.each(TOP_LABELS, function(text, i) {
+    var ii = Math.floor((i + 1) / 2);
+    if (i % 2 === 0) {
+        label([sum(WIDTHS, 0, ii + 1) - WIDTHS[ii] / 2, 15], text);
+    } else {
+        label([sum(WIDTHS, 0, ii), 15], text);
+    }
+});
+
+_.each(LEFT_LABELS, function(text, i) {
+    var ii = Math.floor((i + 1) / 2);
+    if (i % 2 === 0) {
+        label([-15, -sum(HEIGHTS, 0, ii + 1) + HEIGHTS[ii] / 2], text);
+    } else {
+        label([-15, -sum(HEIGHTS, 0, ii)], text);
+    }
+});
+
+_.each(RIGHT_LABELS, function(text, i) {
+    var ii = Math.floor((i + 1) / 2);
+    if (i % 2 === 0) {
+        label([sum(WIDTHS) + 20, -sum(HEIGHTS, 0, ii + 1) + HEIGHTS[ii] / 2], text);
+    } else {
+        label([sum(WIDTHS) + 20, -sum(HEIGHTS, 0, ii)], text);
+    }
+});
+
+function nrect(x, y, w, h) {
+    rect(x + min(0, w), y + min(0, h), abs(w), abs(h));
+}
+
+function sum(arr, a, b) {
+    return _.reduce(arr.slice(a, b), function(x, y) {
+        return x + y;
+    }, 0);
+}
+</script>
+
+<script type="text/graphie" data-use-simple="true" data-title="13. Drawing API Intro">
+drawLine({
+    points: [[-5, 8.5], [5, 8.5]],
+    showPoints: true, // whether to actually show points
+    vertexLabels: ["A", "B"],
+    color: BLUE // changes the color of both line and labels
+});
+
+drawSegment({
+    points: [[-5, 7], [5, 7]],
+    dashed: true,
+    sideLabel: "x",
+    stroke: GREEN // only changes the color of the line
+});
+
+drawRay({
+    points: [[-5, 6], [5, 6]],
+    dotted: true
+});
+
+drawRay({
+    point: [-5, 5], // you can also create a ray from one point
+    angle: 0,       // and an angle direction
+    dashed: true,
+    dotted: true
+});
+
+drawPoint({
+    point: [-7, 7],
+    label: "Y",
+    color: PINK // changes the color of both point and labels
+});
+
+drawPoint({
+    point: [7, 7],
+    label: "Z",
+    stroke: PURPLE, // only changes the color of the point
+    fill: PURPLE    // only changes the color of the point
+});
+
+// For more about polygons, see 17. Polygon
+drawPolygon({
+    points: [
+        [-7, 0],
+        [-7, 4],
+        [-4, 0]
+    ],
+    vertexLabels: ["A", "B", "C"],
+    arcs: 1,
+    sideLabels: "$len0",
+    showPoints: false
+});
+
+drawCircle({
+   center: [3, 0],
+   radius: 3,
+   color: ORANGE, // changes the color of both stroke and fill
+   fillOpacity: 0.2 // all styles can be overriden
+});
+
+drawEllipse({
+   center: [-3, -6],
+   radii: [5, 2],
+   fill: ORANGE, // only changes the color of the fill
+   fillOpacity: 0.2
+});
+
+drawAngleLabel({
+    points: [[6, 0], [3, 0], [0, 0]],
+    label: "$deg2", // "$deg" is relaced by angle measure
+    arcs: 2         // the 2 means 2 decimal places are shown
+});
+</script>
+
+<script type="text/graphie" data-use-simple="true" data-range="[[-10, 10], [-5, 5]]" data-title="14. Angle between lines">
+var a = [-1, 0],
+    b = [1, 0],
+    c = polar(-1, 25),
+    d = polar(1, 25),
+    e = [0, 0];
+
+drawLine({
+    points: [a, b]
+});
+
+drawLine({
+    points: [c, d],
+    color: BLUE
+});
+
+drawAngleLabel({
+    points: [a, e, c],
+    label: "5x",
+    distance: 4,    // distance from vertex to label
+    color: PINK
+});
+
+drawAngleLabel({
+    points: [b, e, d],
+    label: "$deg0", // $deg is replaced by actual angle measure
+    distance: 4,    // the 0 means 0 decimal places are shown
+    arcs: 2,
+    color: PURPLE
+});
+</script>
+
+<script type="text/graphie" data-use-simple="true" data-range="[[-2, 8], [-1, 4]]" data-title="15. Complementary angles 1">
+var a = [0, 0],
+    b = [1, 0],
+    c = polar(1, 20),
+    d = [0, 1];
+
+drawLine({
+    points: [a, b]
+});
+
+drawRay({
+    points: [a, c]
+});
+
+drawRay({
+    points: [a, d]
+});
+
+drawAngleLabel({
+    points: [b, a, c],
+    label: "2x",
+    distance: 4,    // distance from vertex to label
+    color: PINK
+});
+
+drawAngleLabel({
+    points: [c, a, d],
+    label: "$deg1", // $deg is replaced by actual angle measure
+    distance: 4,    // the 1 means 1 decimal place is shown
+    color: PURPLE
+});
+
+drawAngleLabel({
+    points: [b, a, d] // because 90 degrees, draws right angle box
+});
+</script>
+
+<script type="text/graphie" data-use-simple="true" data-range="[[-1, 4], [-4, 1]]" data-title="16. Complementary angles 2">
+var a = [0, 0],
+    b = polar(1, -40),
+    c = polar(1, -10),
+    d = polar(1, 5);
+
+drawRay({
+    points: [a, b]
+});
+
+drawRay({
+    points: [a, c]
+});
+
+drawRay({
+    points: [a, d]
+});
+
+drawAngleLabel({
+    points: [b, a, c],
+    label: "x",
+    distance: 8,    // distance from vertex to label
+    color: PINK,
+    arcs: 2
+});
+
+drawAngleLabel({
+    points: [c, a, d],
+    label: "$deg0", // $deg is replaced by actual angle measure
+    distance: 2,    // the 0 means 0 decimal places are shown
+    color: PURPLE
+});
+
+drawAngleLabel({
+    points: [b, a, d],
+    label: "$deg0",
+    distance: 18,
+    color: BLUE,
+    arcs: 3
+});
+</script>
+
+<script type="text/graphie" data-use-simple="true" data-range="[[-2, 10], [-2, 6]]" data-title="17. Polygon">
+drawPolygon({
+    // This polygon has 4 points, but you can have much more!
+    points: [
+        [0, 0],
+        [3, 4],
+        [8, 4],
+        [5, 0]    
+    ],
+    // All of the properties below can be either an array
+    // (in which case each element applies to one angle/side/
+    // vertex) or a single element (in which case it applies to
+    // each angle/side/vertex)
+    showPoints: true,
+    angleLabels: "$deg0",
+    sideLabels: "$len0",
+    vertexLabels: ["A", "B", "C", "D"],
+    arcs: [1, 2, 1, 2],
+    ticks: 1,
+    arrows: [1, 2, 1, 2]
+});
+</script>
+
+<script type="text/graphie" data-use-simple="true" data-range="[[-1, 11], [-4, 7]]" data-title="18. Simple Figure">
+drawPolygon({
+    points: [[0, 0], [0, 3], [7, 3], [7, 0]],
+    sideLabels: ["$len0"],
+    fill: GREEN,
+    fillOpacity: 0.2
+});
+
+drawPolygon({
+    points: [[0, 3], [2, 6], [7, 3]],
+    fill: GREEN,
+    fillOpacity: 0.2
+});
+
+drawPolygon({
+    points: [[0, 0], [7, 0], [10, -3]],
+    sideLabels: ["$len0"],
+    fill: GREEN,
+    fillOpacity: 0.2
+});
+
+drawSegment({
+   points: [[7, 0], [10, 0]],
+   dashed: true
+});
+
+drawSegment({
+   points: [[10, 0], [10, -3]],
+   sideLabel: "$len0",
+   dashed: true
+});
+
+drawAngleLabel({
+    points: [[7, 0], [10, 0], [10, -3]]
+});
+
+drawSegment({
+    points: [[2, 3], [2, 6]],
+    dashed: true,
+    sideLabel: "$len0"
+});
+
+drawAngleLabel({
+    points: [[7, 3], [2, 3], [2, 6]]
+});
+</script>
+
+<script type="text/graphie" data-use-simple="true" data-range="[[-5, 5], [-5, 5]]" data-title="19. Complex Figure">
+var inner = 1.5;
+inner /= 2;
+
+var outer = 4;
+outer -= inner;
+
+var a = [-inner, -inner],
+    b = [-inner,  inner],
+    c = [ inner,  inner],
+    d = [ inner, -inner];
+
+drawPolygon({
+    points: [
+        d,
+        a,
+        b,
+        [-outer, inner],
+        [-outer, -outer],
+        [inner, -outer]
+    ],
+    sideLabels: [,,,"$len0","$len0"],
+});
+
+drawPolygon({
+    points: [
+        b,
+        c,
+        d,
+        [outer, -inner],
+        [outer, outer],
+        [-inner, outer]
+    ],
+    sideLabels: [,,,"$len0","$len0"]
+});
+
+var radius = outer - inner;
+
+drawArc({
+    center: b,
+    radius: radius,
+    start: 90,
+    end: 180
+});
+
+drawArc({
+    center: d,
+    radius: radius,
+    start: 270,
+    end: 0
+});
+
+
+drawSegment({
+    points: [
+        b,
+        addPoints(b, polar(radius, 135))
+    ],
+    sideLabel: "$len1",
+    dashed: true
+});
+
+var middle = outer - (outer - inner) / 2;
+
+drawSegment({
+    points: [
+        [middle, inner],
+        [middle, -inner],
+    ],
+    sideLabel: "$len1",
+    dashed: true
+});
+
+drawSegment({
+    points: [
+        [-inner, -middle],
+        [inner, -middle]
+    ],
+    sideLabel: "$len1",
+    dashed: true
+});
+</script>
 </div>
 
 <div id="controls">
@@ -712,6 +1172,8 @@ _.each(CHART, function(row, n) {
 <div id="output">
 <div class="graphie">
 </div>
+<span class="size">
+</span>
 </div>
 
 {% endblock content %}
@@ -730,11 +1192,17 @@ _.each(CHART, function(row, n) {
     var $sampleSelect = $("<select>").appendTo("#controls");
     var gridSetupPre = $("#grid-setup-pre").html();
     var gridSetupPost = $("#grid-setup-post").html();
+    var simpleSetupPre = $("#simple-setup-pre").html();
+    var simpleSetupPost = $("#simple-setup-post").html();
     var samples = _.map($samples, function(el, i) {
         var $el = $(el);
         var code = $el.html();
         if ($el.data("use-grid")) {
             code = gridSetupPre + code + gridSetupPost;
+        }
+        if ($el.data("use-simple")) {
+            var range = $el.attr("data-range") || "[[-10, 10], [-10, 10]]";
+            code = simpleSetupPre.replace("RANGE", range) + code + simpleSetupPost;
         }
         var sample = {
             title: $el.data("title"),
@@ -801,10 +1269,15 @@ _.each(CHART, function(row, n) {
             $("#output > div")
                     .removeClass("error")
                     .text(editor.getValue()).graphie();
+            $("#output > .size")
+                    .empty()
+                    .text($(".graphie").width() + " x " + $(".graphie").height());
+
         } catch (e) {
             $("#output > div")
                     .addClass("error")
                     .text(e.name + ": " + e.message);
+            $("#output > .size").empty();
         }
     }
 })();
