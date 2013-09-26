@@ -146,7 +146,6 @@ function setup() {
 </script>
 
 <div id="samples">
-
 <script type="text/graphie" data-use-grid="true" data-title="1. Simple plot">
 style({
     stroke: BLUE,
@@ -1058,7 +1057,26 @@ drawPolygon({
 });
 </script>
 
-<script type="text/graphie" data-use-simple="true" data-range="[[-1, 11], [-4, 7]]" data-title="18. Simple Figure">
+<script type="text/graphie" data-use-simple="true" data-title="18. Regular Polygon">
+var n = 5; // number of sides
+
+var angle = 2 * Math.PI / n;
+var offset = (1 / n - 1 / 2) * Math.PI;
+var radius = 12 / SQRT2;
+
+var points = _.times(n, function(i) {
+    return polar(radius, toDegrees(i * angle + offset)) ;
+});
+
+drawPolygon({
+    points: points,
+    arcs: 1,
+    ticks: 1,
+    stroke: PINK
+});
+</script>
+
+<script type="text/graphie" data-use-simple="true" data-range="[[-1, 11], [-4, 7]]" data-title="19. Simple Figure">
 drawPolygon({
     points: [[0, 0], [0, 3], [7, 3], [7, 0]],
     sideLabels: ["$len0"],
@@ -1105,7 +1123,7 @@ drawAngleLabel({
 });
 </script>
 
-<script type="text/graphie" data-use-simple="true" data-range="[[-5, 5], [-5, 5]]" data-title="19. Complex Figure">
+<script type="text/graphie" data-use-simple="true" data-range="[[-5, 5], [-5, 5]]" data-title="20. Complex Figure">
 var inner = 1.5;
 inner /= 2;
 
@@ -1186,6 +1204,67 @@ drawSegment({
     sideLabel: "$len1",
     dashed: true
 });
+</script>
+
+<script type="text/graphie" data-use-simple="true" data-range="[[-2, 2], [-2, 2]]" data-title="21. 3D Example">
+var color1 = "#D7ED3A";
+var color2 = "#38C77F";
+var color3 = "#78D0EF";
+var color4 = "#F0B63A";
+var height = 4;
+var base = height * 2;
+var side = "" + height + "\\sqrt{2}";
+var depth = 3;
+var xangle = PI / 15;
+var yangle = -PI / 8;
+var scale = 5;
+var vertices = [
+    [-1, 0.5, 1],
+    [1, 0.5, 1],
+    [0, -0.5, 1],
+    [-1, 0.5, -1],
+    [1, 0.5, -1],
+    [0, -0.5, -1]
+];
+var faces = [
+    {
+        verts: [0, 2, 1],
+        color: color3,
+        lines: [[[0, -0.5, 1], [0, 0.5, 1]]],
+        labels: [[[0, 0, 1], height]]
+    }, {
+        verts: [3, 4, 5],
+        color: color3,
+        lines: [[[-0.03, -0.47, -1], [0.95, 0.5, -1]]],
+        labels: [[[0.2, -0.08, -1], side]]
+    }, {
+        verts: [0, 1, 4, 3],
+        color: color4,
+        lines: [[[1, 0.5, 0], [-1, 0.5, 0]]],
+        labels: [[[0, 0.5, 0], base]]
+    }, {
+        verts: [1, 2, 5, 4],
+        color: color1,
+        lines: [[[0.5, 0, 1], [0.5, 0, -1]]],
+        labels: [[[0.5, 0, 0], depth]]
+    }, {
+        verts: [0, 3, 5, 2],
+        color: color2,
+        lines: [[[-1, 0.5, 0], [0, -0.5, 0]]],
+        labels: [[[-0.5, 0, 0], side]]
+    }
+];
+
+var obj = make3dObject(vertices, {scale: scale});
+
+_.each(faces, function(face) {
+    obj.addFace(face);
+});
+
+obj.setPos([0, 0, 5]);
+obj.rotate(1, 0, 0, yangle);
+obj.rotate(0, 1, 0, xangle);
+obj.doDraw();
 </script>
 </div>
 
