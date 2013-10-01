@@ -1832,6 +1832,83 @@ drawSimpleTriangle({
     rotate: 0
 });
 </script>
+
+
+<script type="text/graphie" data-title="27. Box Plot">
+// For an interactive example, see:
+// khan-exercises/exercises/creating_box_and_whisker_plots.html
+
+/* The scale of the output */
+var scale = [30, 30];
+
+/* Number line parameters */
+var numberLineMin = 0;
+var numberLineMax = 15;
+var numberLineTickSize = 1;
+
+/* Data distribution parameters */
+var q0 = 2.5;
+var q1 = 4;
+var median = 5.5;
+var q3 = 8;
+var q4 = 11;
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Normalize points to the size of the canvas, and set up  */
+/* the canvas                                              */
+var numberLineSpread = numberLineMax - numberLineMin;
+var numberLineTickCount = numberLineSpread/numberLineTickSize;
+
+init({
+    range: [[ -0.5, numberLineTickCount + 0.5 ], [ -6, 2 ]],
+    scale: scale
+});
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+var normalize = function(number) {
+    return ((number - numberLineMin) / numberLineSpread) *
+        numberLineTickCount;
+};
+var denormalize = function(position) {
+    return position * numberLineSpread / numberLineTickCount +
+        numberLineMin;
+};
+
+/* Draw the number line */
+line([ 0, -2 ], [ numberLineTickCount, -2 ]);
+for (tick = 0; tick <= numberLineTickCount; tick+=1) {
+    var tickValue = denormalize(tick);
+    line([ tick, -1.75 ], [ tick, -2.25 ]);
+    label([ tick, -2 ], roundTo(1, tickValue), "below");
+}
+
+var nq0 = normalize(q0);
+var nq1 = normalize(q1);
+var nmedian = normalize(median);
+var nq3 = normalize(q3);
+var nq4 = normalize(q4);
+
+// draw Q0
+drawPoint({point: [nq0, 0]});
+
+// draw Q1
+drawSegment({points: [[nq1, -1], [nq1, 1]]});
+
+// draw median
+drawSegment({points: [[nmedian, 1], [nmedian, -1]]});
+
+// draw Q3
+drawSegment({points: [[nq3, -1], [nq3, 1]]});
+
+// draw Q4
+drawPoint({point: [nq4, 0]});
+
+// draw connecting lines
+drawSegment({points: [[nq0, 0], [nq1, 0]]});
+drawSegment({points: [[nq1, 1], [nq3, 1]]});
+drawSegment({points: [[nq1, -1], [nq3, -1]]});
+drawSegment({points: [[nq3, 0], [nq4, 0]]});
+</script>
 </div>
 
 
