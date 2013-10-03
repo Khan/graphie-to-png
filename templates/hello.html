@@ -1838,9 +1838,6 @@ drawSimpleTriangle({
 // For an interactive example, see:
 // khan-exercises/exercises/creating_box_and_whisker_plots.html
 
-/* The scale of the output */
-var scale = [30, 30];
-
 /* Number line parameters */
 var numberLineMin = 0;
 var numberLineMax = 15;
@@ -1858,10 +1855,11 @@ var q4 = 11;
 /* the canvas                                              */
 var numberLineSpread = numberLineMax - numberLineMin;
 var numberLineTickCount = numberLineSpread/numberLineTickSize;
+var xrange = [ -0.5, numberLineTickCount + 0.5 ];
 
 init({
-    range: [[ -0.5, numberLineTickCount + 0.5 ], [ -6, 2 ]],
-    scale: scale
+    range: [xrange, [ -3.5, 1.5 ]],
+    scale: _.min([30, Perseus.Util.scaleFromExtent(xrange, 480)])
 });
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -1879,7 +1877,7 @@ line([ 0, -2 ], [ numberLineTickCount, -2 ]);
 for (tick = 0; tick <= numberLineTickCount; tick+=1) {
     var tickValue = denormalize(tick);
     line([ tick, -1.75 ], [ tick, -2.25 ]);
-    label([ tick, -2 ], roundTo(1, tickValue), "below");
+    label([ tick, -2.25 ], roundTo(1, tickValue), "below");
 }
 
 var nq0 = normalize(q0);
