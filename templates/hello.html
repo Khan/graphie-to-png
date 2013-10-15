@@ -2003,8 +2003,11 @@ var labelCount = Math.floor(spread / labelInterval);
 var inRange = function(x) { return x >= min && x <= max; };
 data = _.pick(data, _.filter(_.keys(data), inRange));
 
-var xRange = [-0.5, tickCount * xSpacing + 0.5];
-var yRange = [-2.5, _.max(data) * ySpacing];
+var xOffset = tickCount >= 48 ? 1 : 0.5;
+var yOffset = tickCount > 60 ? 3.5 : (tickCount > 40 ? 3 : 2.5);
+
+var xRange = [-xOffset, tickCount * xSpacing + xOffset];
+var yRange = [-yOffset, _.max(data) * ySpacing];
 
 /* Prevent width from exceeding 480 pixels */
 init({
