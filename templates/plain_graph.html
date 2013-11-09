@@ -48,7 +48,10 @@
 <script src="static/js/khan-exercises/utils/math-format.js"></script>
 <script src="static/js/khan-exercises/utils/graphie.js"></script>
 <script src="static/js/khan-exercises/utils/angles.js"></script>
-<script src="static/js/khan-exercises/utils/matrix.js"></script>
+<script src="static/js/khan-exercises/utils/expressions.js"></script>
+<script src="static/js/khan-exercises/utils/kmatrix.js"></script>
+<script src="static/js/khan-exercises/utils/kvector.js"></script>
+<script src="static/js/khan-exercises/utils/kline.js"></script>
 <script src="static/js/khan-exercises/utils/graphie-geometry.js"></script>
 <script src="static/js/khan-exercises/utils/graphie-helpers.js"></script>
 <script src="static/js/khan-exercises/utils/graphie-helpers-arithmetic.js"></script>
@@ -57,9 +60,12 @@
 <script src="static/js/khan-exercises/utils/graphie-drawing.js"></script>
 <script src="static/js/khan-exercises/utils/graphie-3d.js"></script>
 
-<script src="static/js/perseus/util.js"></script>
+<script src="/static/js/perseus/util.js"></script>
 
 <script>
+// For backward compatibility with figures created before things were better namespaced
+KhanUtil.lineMidpoint = kline.midpoint;
+
 window.webkit2png = window.webkit2png || {start: $.noop, stop: $.noop};
 
 webkit2png.stop();
