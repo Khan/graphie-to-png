@@ -2176,6 +2176,7 @@ _.each(data, function(y, x) {
     function updateGraphie() {
         try {
             $("#output > div")
+                    .data("graphie", null)
                     .removeClass("error")
                     .text(editor.getValue()).graphie();
             $("#output > .size")
