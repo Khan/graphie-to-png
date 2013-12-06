@@ -292,8 +292,8 @@ label([half * br + half, 0.9], BOT_RIGHT_LABEL, "below");
 
 <script type="text/graphie" data-title="6. Area model">
 var CHART = [
-        // Number, fill color, stroke color
-        [[2, 3], [BLUE, null], [null, GRAY]],
+        // Number, fill color, stroke color, shaded
+        [[2, 3], [BLUE, null], [null, GRAY], [true, false]],
         [[4, 6], [BLUE, GRAY]],
         [ ],
         [[1, 1, 1, 1, 1], [RED, ORANGE, GREEN, BLUE, PINK ]]
@@ -307,7 +307,7 @@ init({
 
 _.each(CHART.reverse(), function(row, n) {
     if (row.length) {
-        rectchart(row[0], row[1], n, row[2]);
+        rectchart(row[0], row[1], n, row[2], row[3]);
     }
 });
 </script>
@@ -742,6 +742,11 @@ var INNER_LABELS = [
     ["800 \\times b", "a \\times b", "5 \\times b"],
 ];
 
+var SHADED = [
+    [false, false, false],
+    [false, false, false]
+];
+
 var TOP_LABELS = ["800", "+", "a", "+", "4"];
 var LEFT_LABELS = ["40", "+", "b"];
 var RIGHT_LABELS = ["{}+16", "", ""];
@@ -818,6 +823,25 @@ function sum(arr, a, b) {
         return x + y;
     }, 0);
 }
+
+style({
+    stroke: "#000",
+    strokeWidth: 2,
+    strokeOpacity: 0.5,
+    fillOpacity: 0,
+    fill: null
+});
+
+_.each(SHADED, function(row, j) {
+    _.each(row, function(shaded, i) {
+        if (shaded) {
+            shadeRect(sum(WIDTHS, 0, i) + min(0, WIDTHS[i]),
+                    -sum(HEIGHTS, 0, j) + min(0, -HEIGHTS[j]),
+                    abs(WIDTHS[i]), abs(HEIGHTS[j]), 1);
+
+        }
+    });
+});
 </script>
 
 <script type="text/graphie" data-use-simple="true" data-title="13. Intro to the Drawing API">
