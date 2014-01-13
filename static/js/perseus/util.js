@@ -3,6 +3,13 @@
 var Util = Perseus.Util = {
     rWidgetParts: /^\[\[\u2603 (([a-z-]+) ([0-9]+))\]\]$/,
 
+    noScore: {
+        type: "points",
+        earned: 0,
+        total: 0,
+        message: null
+    },
+
     seededRNG: function(seed) {
         var randomSeed = seed;
 
@@ -16,7 +23,7 @@ var Util = Perseus.Util = {
             seed = ((seed + 0xfd7046c5) + (seed << 3)) & 0xffffffff;
             seed = ((seed ^ 0xb55a4f09) ^ (seed >>> 16)) & 0xffffffff;
             return (randomSeed = (seed & 0xfffffff)) / 0x10000000;
-        }
+        };
     },
 
     shuffle: function(array, seed) {
@@ -37,16 +44,16 @@ var Util = Perseus.Util = {
     },
 
     // In IE8, split doesn't work right. Implement it ourselves.
-    split: "x".split(/(.)/g).length
-        ? function(str, r) { return str.split(r); }
-        : function(str, r) {
+    split: "x".split(/(.)/g).length ?
+        function(str, r) { return str.split(r); } :
+        function(str, r) {
             // Based on Steven Levithan's MIT-licensed split, available at
             // http://blog.stevenlevithan.com/archives/cross-browser-split
             var output = [];
             var lastIndex = r.lastIndex = 0;
             var match;
 
-            while (match = r.exec(str)) {
+            while ((match = r.exec(str))) {
                 output.push(str.slice(lastIndex, match.index));
                 output.push.apply(output, match.slice(1));
                 lastIndex = match.index + match[0].length;
@@ -122,28 +129,6 @@ var Util = Perseus.Util = {
         return first;
     },
 
-    /**
-     * React mixin to copy any properties listed in 'defaultState' from 'props'
-     * to 'state' upon initialization so that they can easily be modified later
-     * by the component. Also calls this.props.onChange on any state change.
-     */
-    PropsToState: {
-        getInitialState: function() {
-            var props = _.pick(this.props, _.keys(this.defaultState));
-            return _.defaults(props, this.defaultState);
-        },
-
-        componentWillReceiveProps: function(nextProps) {
-            this.setState(_.pick(nextProps, _.keys(this.defaultState)));
-        },
-
-        componentDidUpdate: function(prevProps, prevState, rootNode) {
-            if (!_.isEqual(prevState, this.state) && this.props.onChange) {
-                this.props.onChange();
-            }
-        }
-    },
-
     stringArrayOfSize: function(size) {
         return _(size).times(function() {
             return "";
@@ -190,9 +175,6 @@ var Util = Perseus.Util = {
     scaleFromExtent: function(extent, dimensionConstraint) {
         var span = extent[1] - extent[0];
         var scale = dimensionConstraint / span;
-        if (scale > 5) {
-            scale = Math.floor(scale);
-        }
         return scale;
     },
 
@@ -205,17 +187,18 @@ var Util = Perseus.Util = {
     tickStepFromExtent: function(extent, dimensionConstraint) {
         var span = extent[1] - extent[0];
 
+        var tickFactor;
         // If single number digits
         if (15 < span && span <= 20) {
-            var tickFactor = 23;
+            tickFactor = 23;
 
         // triple digit or decimal
         } else if (span > 100 || span < 5) {
-            var tickFactor = 10;
+            tickFactor = 10;
 
         // double digit
         } else {
-            var tickFactor = 16;
+            tickFactor = 16;
         }
         var constraintFactor = dimensionConstraint / 500;
         var desiredNumTicks = tickFactor * constraintFactor;
@@ -266,12 +249,92 @@ var Util = Perseus.Util = {
         var err = numTicks / span * step;
 
         // Filter ticks to get closer to the desired count.
-        if (err <= .15) step *= 10;
-        else if (err <= .35) step *= 5;
-        else if (err <= .75) step *= 2;
+        if (err <= 0.15) {
+            step *= 10;
+        } else if (err <= 0.35) {
+            step *= 5;
+        } else if (err <= 0.75) {
+            step *= 2;
+        }
 
         // Round start and stop values to step interval.
         return step;
+    },
+
+    /**
+     * Transparently update deprecated props so that the code to deal
+     * with them only lives in one place: (Widget).deprecatedProps
+     * 
+     * For example, if a boolean `foo` was deprecated in favor of a
+     * number 'bar':
+     *      deprecatedProps: {
+     *          foo: function(props) {
+     *              return {bar: props.foo ? 1 : 0};
+     *          }
+     *      }
+     */
+    DeprecationMixin: {
+        // This lifecycle stage is only called before first render
+        componentWillMount: function() {
+            var newProps = {};
+
+            _.each(this.deprecatedProps, function(func, prop) {
+                if (_.has(this.props, prop)) {
+                    _.extend(newProps, func(this.props));
+                }
+            }, this);
+
+            if (!_.isEmpty(newProps)) {
+                // Set new props directly so that widget renders correctly
+                // when it first mounts, even though these will be overwritten
+                // almost immediately afterwards...
+                _.extend(this.props, newProps);
+
+                // ...when we propagate the new props upwards and they come
+                // back down again.
+                setTimeout(this.props.onChange, 0, newProps);    
+            }
+        },
+    },
+
+    /**
+     * Approximate equality on numbers and primitives.
+     */
+    eq: function(x, y) {
+        if (_.isNumber(x) && _.isNumber(y)) {
+            return Math.abs(x - y) < 1e-9;
+        } else {
+            return x === y;
+        }
+    }, 
+
+    /**
+     * Deep approximate equality on primitives, numbers, arrays, and objects.
+     */
+    deepEq: function(x, y) {
+        if (_.isArray(x) && _.isArray(y)) {
+            if (x.length !== y.length) {
+                return false;
+            }
+            for (var i = 0; i < x.length; i++) {
+                if (!Perseus.Util.deepEq(x[i], y[i])) {
+                    return false;
+                }
+            }
+            return true;
+        } else if (_.isArray(x) || _.isArray(y)) {
+            return false;
+        } else if (_.isObject(x) && _.isObject(y)) {
+            return _.all(x, function(value, key) {
+                return Perseus.Util.deepEq(y[key], value);
+            }) && _.all(y, function(value, key) {
+                return Perseus.Util.deepEq(x[key], value);
+            });
+        } else if (_.isObject(x) || _.isObject(y)) {
+            return false;
+        } else {
+            return Perseus.Util.eq(x, y);
+        }
     }
 };
 
