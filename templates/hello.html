@@ -2219,42 +2219,41 @@ fractionPie({
 
 
 function fractionPie(options) {
-    var position = options.startAngle;
+    var startAngle = options.startAngle;
     var r = options.radius;
     _.each(options.slices, function(slice) {
         var center = options.center.slice();
+        var midAngle = startAngle + slice[0] / 2;
+        var endAngle = startAngle + slice[0];
         if (slice[3]) {
-            position += slice[0];
+            startAngle += slice[0];
             return;
         }
 
         if (slice[4]) {
-            center[0] += 0.15 * r * cos((position +
-                    slice[0] / 2) * PI/180);
-            center[1] += 0.15 * r * sin((position +
-                    slice[0] / 2) * PI/180);
+            center[0] += 0.15 * r * cos((midAngle) * PI/180);
+            center[1] += 0.15 * r * sin((midAngle) * PI/180);
         }
-        if (options.polygon) {
-            path([
-                center,
-                [center[0] + r * cos((position) * PI/180),
-                center[1] + r * sin((position) * PI/180)],
-                [center[0] + r * cos((position + slice[0]) * PI/180),
-                center[1] + r * sin((position + slice[0]) * PI/180)],
-                true
-            ], {
-                stroke: "#fff",
-                fill: slice[1],
-                opacity: slice[2] ? 1 : 0.45
-            })
-        } else {
-            arc(center, r, position, position + slice[0], true, {
-                stroke: "#fff",
-                fill: slice[1],
-                opacity: slice[2] ? 1 : 0.45
-            });
-        }
-        position += slice[0];
+        style({
+            stroke: "#fff",
+            fill: slice[1],
+            opacity: slice[2] ? 1 : 0.45
+        }, function() {
+            if (options.polygon) {
+                path([
+                    center,
+                    [center[0] + r * cos(startAngle * PI/180),
+                    center[1] + r * sin(startAngle * PI/180)],
+                    [center[0] + r * cos(endAngle * PI/180),
+                    center[1] + r * sin(endAngle * PI/180)],
+                    true
+                ]);
+            } else {
+                arc(center, r, startAngle, endAngle, true);
+            }
+        })
+
+        startAngle += slice[0];
     });
 }
 </script>
