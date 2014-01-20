@@ -1,0 +1,170 @@
+{% extends 'plain_graph.html' %}
+
+{% block head %}
+{{super()}}
+{% endblock head %}
+
+{% block content %}
+<div id="left">
+<div id="editor"></div>
+
+{% include "setup_templates.html" %}
+
+<div id="samples">
+<script type="text/graphie" data-title="0. Blank page"></script>
+{% include "01_simple_plot.html" %}
+{% include "02_piecewise_function.html" %}
+{% include "03_parametric_plots.html" %}
+{% include "04_triangle_old.html" %}
+{% include "05_tape_diagram.html" %}
+{% include "06_area_model.html" %}
+{% include "07_number_line.html" %}
+{% include "08_place_value_blocks.html" %}
+{% include "09_trigonometric_function.html" %}
+{% include "10_arrow_table.html" %}
+{% include "11_pie_chart.html" %}
+{% include "12_area_model_2.html" %}
+{% include "13_intro_to_the_drawing_api.html" %}
+{% include "14_angle_between_lines.html" %}
+{% include "15_complementary_angles.html" %}
+{% include "16_complementary_angles_2.html" %}
+{% include "17_polygon.html" %}
+{% include "18_regular_polygon.html" %}
+{% include "19_simple_figure.html" %}
+{% include "20_complex_figure.html" %}
+{% include "21_3d_example.html" %}
+{% include "22_rectangular_prism_net.html" %}
+{% include "23_square_pyramid_net.html" %}
+{% include "24_triangular_prism_net.html" %}
+{% include "25_tetrahedron_net.html" %}
+{% include "26_octahedron_net.html" %}
+{% include "27_box_plot.html" %}
+{% include "28_dot_plot.html" %}
+{% include "29_polar_plot.html" %}
+{% include "30_fraction_pie.html" %}
+{% include "31_analog_clock.html" %}
+</div>
+
+
+<div id="controls">
+<input type="button" value="Regraph" class="btn-rerender">
+<form action="/png" target="_blank" method="POST" class="form-create-png">
+<input type="hidden" name="js">
+<input type="submit" value="Convert to Image">
+</form>
+</div>
+</div>
+
+<div id="output">
+<div class="graphie"></div>
+<span class="size"></span>
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+
+{{super()}}
+<script src="/static/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+(function() {
+    var editor = ace.edit("editor");
+    var session = editor.getSession();
+
+    var $samples = $("#samples").children();
+    var $sampleSelect = $("<select>").appendTo("#controls");
+    var gridSetupPre = $("#grid-setup-pre").html();
+    var gridSetupPost = $("#grid-setup-post").html();
+    var simpleSetupPre = $("#simple-setup-pre").html();
+    var simpleSetupPost = $("#simple-setup-post").html();
+    var samples = _.map($samples, function(el, i) {
+        var $el = $(el);
+        var code = $el.html();
+        if ($el.data("use-grid")) {
+            code = gridSetupPre + code + gridSetupPost;
+        }
+        if ($el.data("use-simple")) {
+            var range = $el.attr("data-range") || "[[-10, 10], [-10, 10]]";
+            code = simpleSetupPre.replace("RANGE", range) + code + simpleSetupPost;
+        }
+        var sample = {
+            title: $el.data("title"),
+            js: $.trim(code) + "\n"
+        };
+        $("<option>")
+                .val(i).text(sample.title)
+                .data("js", sample.js)
+                .appendTo($sampleSelect);
+        return sample;
+    });
+
+    var sampleJS = samples[0].js;
+    session.setValue(sampleJS);
+
+    // $(window).on("beforeunload", function() {
+    //     if (session.getValue() !== sampleJS) {
+    //         return "All modifications will be lost.";
+    //     }
+    // });
+
+    $sampleSelect.val(0).on("change", function() {
+        var i = +$(this).val();
+        sampleJS = samples[i].js;
+        editor.setValue(sampleJS, /* cursorPos: */ -1);
+        updateGraphie();
+    });
+
+    session.setMode("ace/mode/javascript");
+    session.setUseWrapMode(true);
+
+    var isMac = (/mac/i).test(navigator.platform);
+    $(document).on("keydown", function(e) {
+        if (e.keyCode === "R".charCodeAt(0) &&
+                (e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey) {
+            e.preventDefault();
+            updateGraphie();
+        } else if (e.keyCode === 8) { // Backspace
+            var message = "Are you sure you want to leave the page?";
+            var leave = window.confirm(message);
+            if (!leave) {
+                e.preventDefault();
+            }
+        }
+    });
+    $(".btn-rerender")
+            .val(function() {
+                if (isMac) {
+                    return "Regraph (\u2318R)";
+                } else {
+                    return "Regraph (Ctrl-R)";
+                }
+            })
+            .on("click", updateGraphie);
+    updateGraphie();
+
+    $(".form-create-png").on("submit", function() {
+        var $form = $(this);
+        $form.find("input[type=hidden]").val(editor.getValue());
+    });
+
+    function updateGraphie() {
+        try {
+            $("#output > div")
+                    .data("graphie", null)
+                    .removeClass("error")
+                    .text(editor.getValue()).graphie();
+            $("#output > .size")
+                    .empty()
+                    .text($(".graphie").width() + " x " + $(".graphie").height());
+
+        } catch (e) {
+            $("#output > div")
+                    .addClass("error")
+                    .text(e.name + ": " + e.message);
+            $("#output > .size").empty();
+        }
+    }
+})();
+</script>
+{% endblock scripts %}

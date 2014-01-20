@@ -1,0 +1,17 @@
+<script type="text/graphie" data-use-grid="true" data-title="2. Piecewise function">
+style({
+    stroke: BLUE,
+    fill: "none"
+});
+
+plot(function(x) {
+    return -0.5 * x * x + 2 * x + 3.0;
+}, [-10, 3]);
+
+plot(function(x) {
+    return x - 7.0;
+}, [3, 10]);
+
+ellipse([3, 4.5], [4 / xScale, 4 / yScale], {fill: BLUE});
+ellipse([3, -4], [4 / xScale, 4 / yScale], {fill: "white"});
+</script>

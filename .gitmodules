@@ -1,12 +1,12 @@
 [submodule "khan-exercises"]
 	path = khan-exercises
 	url = https://github.com/Khan/khan-exercises.git
-[submodule "webkit2png"]
-	path = webkit2png
+[submodule "third_party/webkit2png"]
+	path = third_party/webkit2png
 	url = https://github.com/spicyj/webkit2png
-[submodule "ace-builds"]
-	path = ace-builds
+[submodule "third_party/ace-builds"]
+	path = third_party/ace-builds
 	url = https://github.com/ajaxorg/ace-builds.git
-[submodule "boto-src"]
-	path = boto-src
+[submodule "third_party/boto-src"]
+	path = third_party/boto-src
 	url = git://github.com/boto/boto.git

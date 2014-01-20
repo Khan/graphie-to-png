@@ -1,0 +1,130 @@
+<script type="text/graphie" data-title="7. Number line">
+var RANGE = [-5, 10];
+var TICK_STEP = 1;
+var LABEL_TICKS = true;
+
+var LABELS = [
+    {
+        value:      0,
+        text:       "0",
+        position:   "below",
+        color:      BLUE
+    },
+    {
+        value:      5,
+        text:       "x",
+        position:   "above",
+        color:      BLACK
+    },
+];
+
+var HIGHLIGHTED_TICKS = [
+    [ 0, BLUE ],
+];
+
+var POINTS = [
+    [ 2, RED ],
+]
+
+var CIRCLES = [
+    [ -4, RED ],
+]
+
+var ARROWS = [
+    [ 2, 12, RED ],
+    [ -4, -7, RED ],
+]
+
+///////////////////////////////////////////////////////////////
+
+var SCALE = 400 / (RANGE[1] - RANGE[0]);
+
+init({
+    range: [[RANGE[0] - (30 / SCALE), RANGE[1] + (30 / SCALE)],
+            [-1, 1]],
+    scale: [SCALE, 40]
+});
+
+var minusIgnorer = function(a) {
+    return (a + "").replace(/-(\d)/g, "\\llap{-}$1");
+};
+
+line([RANGE[0] - (25 / SCALE), 0],
+     [RANGE[1] + (25 / SCALE), 0], {
+    arrows: "->"
+});
+
+line([RANGE[1] + (25 / SCALE), 0],
+     [RANGE[0] - (25 / SCALE), 0], {
+    arrows: "->"
+});
+
+for (var x = RANGE[0]; x <= RANGE[1];
+        x = roundTo(10, x + TICK_STEP)) {
+    line([x, -0.2], [x, 0.2]);
+    if (LABEL_TICKS && !_.findWhere(LABELS,
+            {value: x, position: "below"})) {
+        label([x, -0.53],  minusIgnorer(x), "center");
+    }
+}
+
+if (typeof(LABELS) !== "undefined") {
+    _.each(LABELS, function(lbl) {
+        if (lbl.position === "above") {
+            label([lbl.value, 0.53],  minusIgnorer(lbl.text),
+                    "center", {
+                color: lbl.color
+            });
+        } else {
+            label([lbl.value, -0.53],  minusIgnorer(lbl.text),
+                    "center", {
+                color: lbl.color
+            });
+        }
+    });
+}
+
+if (typeof(HIGHLIGHTED_TICKS) !== "undefined") {
+    _.each(HIGHLIGHTED_TICKS, function(tick) {
+        line([tick[0], -0.2], [tick[0], 0.2], {
+            stroke: tick[1],
+            strokeWidth: 3.5
+        });
+    });
+}
+
+if (typeof(ARROWS) !== "undefined") {
+    _.each(ARROWS, function(arrow) {
+        arrow[0] = min(arrow[0], RANGE[1] + (26 / SCALE));
+        arrow[0] = max(arrow[0], RANGE[0] - (26 / SCALE));
+        arrow[1] = min(arrow[1], RANGE[1] + (26 / SCALE));
+        arrow[1] = max(arrow[1], RANGE[0] - (26 / SCALE));
+        line([arrow[0], 0 ], [arrow[1], 0], {
+            arrows: "->",
+            stroke: arrow[2],
+            strokeWidth: 3.5
+        });
+    });
+}
+
+if (typeof(POINTS) !== "undefined") {
+    _.each(POINTS, function(point) {
+        ellipse([point[0], 0],
+                [5 / (400 / (RANGE[1] - RANGE[0])), 5 / 40], {
+            fill: point[1],
+            stroke: null
+        });
+    });
+}
+
+if (typeof(CIRCLES) !== "undefined") {
+    _.each(CIRCLES, function(point) {
+        ellipse([point[0], 0],
+                [5 / (400 / (RANGE[1] - RANGE[0])), 5 / 40], {
+            fill: BACKGROUND,
+            stroke: point[1],
+            strokeWidth: 3
+        });
+    });
+}
+</script>

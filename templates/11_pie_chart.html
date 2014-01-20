@@ -1,0 +1,44 @@
+<script type="text/graphie" data-title="11. Pie chart">
+// CHART is a list of piecharts. Each row has format:
+// [
+//      [list of pie pieces with...],
+//      [these associated colors],
+//      radius,
+//      translation,
+//      stroke color  // optional
+// ]
+var CHART = [
+    [[2, 3], [BLUE, GRAY], 60, [100, 0]],
+    [[4, 6], [BLUE, GRAY], 100, [-90, 0]],
+    [[1, 1, 1, 1, 1], [GREEN, GRAY, PURPLE, RED, BLUE], 40, [30, -100], BLACK]
+];
+
+
+///////////////////////////////////////////////
+
+var boundingBoxes = _.map(CHART, function (row) {
+    var coords = row[3];
+    var x = coords[0];
+    var y = coords[1];
+    var radius = row[2];
+    return [x - radius, x + radius, -y - radius, -y + radius];
+});
+
+var pad = 3;
+var minX = _.min(_.pluck(boundingBoxes, 0)) - pad;
+var maxX = _.max(_.pluck(boundingBoxes, 1)) + pad;
+var minY = _.min(_.pluck(boundingBoxes, 2)) - pad;
+var maxY = _.max(_.pluck(boundingBoxes, 3)) + pad;
+
+init({
+    range: [[minX, maxX], [minY, maxY]],
+    scale: 1
+});
+
+_.each(CHART, function(row, n) {
+    var tr = row[3];
+    var color = row[4];
+    piechart(row[0], row[1], row[2], color).translate(tr[0], tr[1]);
+});
+
+</script>

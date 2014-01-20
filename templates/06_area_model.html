@@ -1,0 +1,21 @@
+<script type="text/graphie" data-title="6. Area model">
+var CHART = [
+        // Number, fill color, stroke color, shaded
+        [[2, 3], [BLUE, null], [null, GRAY], [true, false]],
+        [[4, 6], [BLUE, GRAY]],
+        [ ],
+        [[1, 1, 1, 1, 1], [RED, ORANGE, GREEN, BLUE, PINK ]]
+    ];
+
+
+init({
+    range: [[0, 1], [0, CHART.length]],
+    scale: [400,30]
+});
+
+_.each(CHART.reverse(), function(row, n) {
+    if (row.length) {
+        rectchart(row[0], row[1], n, row[2], row[3]);
+    }
+});
+</script>

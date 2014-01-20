@@ -1,0 +1,114 @@
+<script type="text/graphie" data-use-simple="true" data-title="13. Intro to the Drawing API">
+drawLine({
+    points: [[-5, 8.5], [5, 8.5]],
+    showPoints: true, // whether to actually show points
+    vertexLabels: ["A", "B"],
+    color: BLUE // changes the color of both line and labels
+});
+
+drawSegment({
+    points: [[-5, 7], [5, 7]],
+    dashed: true,
+    sideLabel: "x",
+    stroke: GREEN // only changes the color of the line
+});
+
+drawRay({
+    points: [[-5, 6], [5, 6]],
+    dotted: true
+});
+
+drawRay({
+    point: [-5, 5], // you can also create a ray from one point
+    angle: 0,       // and an angle direction
+    dashed: true,
+    dotted: true
+});
+
+drawPoint({
+    point: [-7, 7],
+    label: "Y",
+    color: PINK // changes the color of both point and labels
+});
+
+drawPoint({
+    point: [7, 7],
+    label: "Z",
+    stroke: PURPLE, // only changes the color of the point
+    fill: PURPLE    // only changes the color of the point
+});
+
+// For much more about polygons, see template #17 (Polygon)
+drawPolygon({
+    points: [
+        [-7, 0],
+        [-7, 4],
+        [-4, 0]
+    ],
+    vertexLabels: ["A", "B", "C"],
+    arcs: 1,
+    sideLabels: "$len0",
+    showPoints: false
+});
+
+drawCircle({
+   center: [3, 0],
+   radius: 3,
+   color: ORANGE, // changes the color of both stroke and fill
+   fillOpacity: 0.2 // all styles can be overriden
+});
+
+drawArc({
+    center: [3, 0],
+    radius: 2.5, // circular arc
+    start: 225,
+    end: 315,
+    stroke: RED
+});
+
+drawEllipse({
+   center: [-3, -6],
+   radii: [5, 2],
+   fill: ORANGE, // only changes the color of the fill
+   fillOpacity: 0.2
+});
+
+drawArc({
+    center: [-3, -6],
+    radii: [4.5, 1.5], // elliptical arc
+    start: 225,
+    end: 315,
+    stroke: RED,
+    fill: GREEN,
+    fillOpacity: 0.5
+});
+
+drawSector({ // like drawArc above, except completely outlined
+    center: [6, -6],
+    radii: [4.5, 1.5], // elliptical arc
+    start: 225,
+    end: 315,
+    stroke: PINK,
+    fill: BLUE,
+    fillOpacity: 1
+});
+
+drawSegment({
+   points: [[3, 0], [6, 0]],
+   stroke: ORANGE
+});
+
+var offset = polar(3, 135); // polar coordinate (radius, angle)
+var onCircle = addPoints([3, 0], offset); // sum 2+ points
+
+drawSegment({
+   points: [[3, 0], onCircle],
+   stroke: ORANGE
+});
+
+drawAngleLabel({
+    points: [[6, 0], [3, 0], onCircle], // in clockwise order
+    label: "$deg2", // "$deg" is relaced by angle measure
+    arcs: 2         // the 2 means 2 decimal places are shown
+});
+</script>

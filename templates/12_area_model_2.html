@@ -1,0 +1,120 @@
+<script type="text/graphie" data-title="12. Area model 2">
+// The total width is the sum of these plus 70, so keep the sum of
+// these to no more than 410.
+var WIDTHS = [210, 130, 70];
+var HEIGHTS = [
+    130,
+    70
+];
+
+var COLORS = [
+    [PURPLE, BLUE, ORANGE],
+    [GREEN, RED, GRAY]
+];
+
+var INNER_LABELS = [
+    ["800 \\times 40", "a \\times 40", "5 \\times 40"],
+    ["800 \\times b", "a \\times b", "5 \\times b"],
+];
+
+var SHADED = [
+    [false, false, false],
+    [false, false, false]
+];
+
+var TOP_LABELS = ["800", "+", "a", "+", "4"];
+var LEFT_LABELS = ["40", "+", "b"];
+var RIGHT_LABELS = ["{}+16", "", ""];
+
+////////////////////////////////////////////////////////////////
+
+
+init({
+    range: [
+        [-30, sum(WIDTHS) + 40],
+        [-sum(HEIGHTS), 30]],
+    scale: [1, 1]
+});
+
+style({
+    fillOpacity: 0.5,
+    stroke: BACKGROUND
+})
+
+_.each(COLORS, function(row, j) {
+    _.each(row, function(color, i) {
+        if (!color) {
+            return;
+        }
+        style({ fill: color });
+        nrect(sum(WIDTHS, 0, i), -sum(HEIGHTS, 0, j), WIDTHS[i], -HEIGHTS[j]);
+    });
+});
+
+style({fillOpacity: 1.0});
+
+_.each(INNER_LABELS, function(row, j) {
+    _.each(row, function(text, i) {
+        if (!text) {
+            return;
+        }
+        label([sum(WIDTHS, 0, i + 1) - WIDTHS[i] / 2, -(sum(HEIGHTS, 0, j + 1) - HEIGHTS[j] / 2)], text);
+    });
+});
+
+_.each(TOP_LABELS, function(text, i) {
+    var ii = Math.floor((i + 1) / 2);
+    if (i % 2 === 0) {
+        label([sum(WIDTHS, 0, ii + 1) - WIDTHS[ii] / 2, 15], text);
+    } else {
+        label([sum(WIDTHS, 0, ii), 15], text);
+    }
+});
+
+_.each(LEFT_LABELS, function(text, i) {
+    var ii = Math.floor((i + 1) / 2);
+    if (i % 2 === 0) {
+        label([-15, -sum(HEIGHTS, 0, ii + 1) + HEIGHTS[ii] / 2], text);
+    } else {
+        label([-15, -sum(HEIGHTS, 0, ii)], text);
+    }
+});
+
+_.each(RIGHT_LABELS, function(text, i) {
+    var ii = Math.floor((i + 1) / 2);
+    if (i % 2 === 0) {
+        label([sum(WIDTHS) + 20, -sum(HEIGHTS, 0, ii + 1) + HEIGHTS[ii] / 2], text);
+    } else {
+        label([sum(WIDTHS) + 20, -sum(HEIGHTS, 0, ii)], text);
+    }
+});
+
+function nrect(x, y, w, h) {
+    rect(x + min(0, w), y + min(0, h), abs(w), abs(h));
+}
+
+function sum(arr, a, b) {
+    return _.reduce(arr.slice(a, b), function(x, y) {
+        return x + y;
+    }, 0);
+}
+
+style({
+    stroke: "#000",
+    strokeWidth: 2,
+    strokeOpacity: 0.5,
+    fillOpacity: 0,
+    fill: null
+});
+
+_.each(SHADED, function(row, j) {
+    _.each(row, function(shaded, i) {
+        if (shaded) {
+            shadeRect(sum(WIDTHS, 0, i) + min(0, WIDTHS[i]),
+                    -sum(HEIGHTS, 0, j) + min(0, -HEIGHTS[j]),
+                    abs(WIDTHS[i]), abs(HEIGHTS[j]), 1);
+
+        }
+    });
+});
+</script>

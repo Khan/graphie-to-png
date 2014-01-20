@@ -1,0 +1,41 @@
+<script type="text/graphie" data-use-simple="true" data-range="[[-1, 4], [-4, 1]]" data-title="16. Complementary angles 2">
+var a = [0, 0],
+    b = polar(1, -40),
+    c = polar(1, -10),
+    d = polar(1, 5);
+
+drawRay({
+    points: [a, b]
+});
+
+drawRay({
+    points: [a, c]
+});
+
+drawRay({
+    points: [a, d]
+});
+
+drawAngleLabel({
+    points: [b, a, c],
+    label: "x",
+    distance: 8,    // distance from vertex to label
+    color: PINK,
+    arcs: 2
+});
+
+drawAngleLabel({
+    points: [c, a, d],
+    label: "$deg0", // $deg is replaced by actual angle measure
+    distance: 2,    // the 0 means 0 decimal places are shown
+    color: PURPLE
+});
+
+drawAngleLabel({
+    points: [b, a, d],
+    label: "$deg0",
+    distance: 18,
+    color: BLUE,
+    arcs: 3
+});
+</script>

@@ -1,0 +1,59 @@
+<script type="text/graphie" data-title="30. Fraction Pie">
+init({ range: [ [-2.4, 2.4], [-2.4, 2.4] ], scale: 30 });
+
+fractionPie({
+        center: [0, 0],
+        radius: 2,
+        startAngle: 0,   // rotates entire figure (deg)
+        polygon: false,  // works best for equal-sized slices
+        slices: [
+           // deg, color, dark,  hidden, separated
+            [ 60,  BLUE,  true,  false,  true],
+            [ 60,  BLUE,  false, false,  false],
+            [ 60,  BLUE,  false, false,  false],
+            [ 90,  BLUE,  false, false,  false],
+            [ 60,  BLUE,  false, true,   false],
+            [ 30,  BLUE,  false, false,  false],
+        ]
+    });
+
+
+function fractionPie(options) {
+    var startAngle = options.startAngle;
+    var r = options.radius;
+    _.each(options.slices, function(slice) {
+        var center = options.center.slice();
+        var midAngle = startAngle + slice[0] / 2;
+        var endAngle = startAngle + slice[0];
+        if (slice[3]) {
+            startAngle += slice[0];
+            return;
+        }
+
+        if (slice[4]) {
+            center[0] += 0.15 * r * cos((midAngle) * PI/180);
+            center[1] += 0.15 * r * sin((midAngle) * PI/180);
+        }
+        style({
+            stroke: "#fff",
+            fill: slice[1],
+            opacity: slice[2] ? 1 : 0.45
+        }, function() {
+            if (options.polygon) {
+                path([
+                    center,
+                    [center[0] + r * cos(startAngle * PI/180),
+                    center[1] + r * sin(startAngle * PI/180)],
+                    [center[0] + r * cos(endAngle * PI/180),
+                    center[1] + r * sin(endAngle * PI/180)],
+                    true
+                ]);
+            } else {
+                arc(center, r, startAngle, endAngle, true);
+            }
+        })
+
+        startAngle += slice[0];
+    });
+}
+</script>

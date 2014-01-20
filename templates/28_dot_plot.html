@@ -1,0 +1,105 @@
+<script type="text/graphie" data-title="28. Dot Plot">
+/* Variables */
+var min = 0;            // number line start
+var max = 10;           // number line end
+
+var labelInterval = 1;  // interval at which line will be labeled
+var tickInterval = 1/4; // interval at which ticks will be drawn
+
+var color = BLUE;       // dot color
+
+/* Data */
+var data = {
+    // x: y
+    0.25: 1,
+    2.00: 3,
+    2.25: 2,
+    4.00: 3,
+    4.50: 6,
+    4.75: 2,
+    6.00: 2,
+    8.25: 1,
+    9.50: 2
+};
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* You almost certainly don't need to edit anything below. */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+var xSpacing = 0.5;     // distance between tick marks
+var ySpacing = 0.75;    // distance between dots
+
+var tickHeight = 0.5;   // tick mark height
+var linePosition = -1;  // number line y position
+
+var spread = max - min;
+var tickCount = Math.floor(spread / tickInterval);
+var labelCount = Math.floor(spread / labelInterval);
+
+/* Ignore data outside number line bounds */
+var inRange = function(x) { return x >= min && x <= max; };
+data = _.pick(data, _.filter(_.keys(data), inRange));
+
+var xOffset = tickCount >= 48 ? 1 : 0.5;
+var yOffset = tickCount > 60 ? 3.5 : (tickCount > 40 ? 3 : 2.5);
+
+var xRange = [-xOffset, tickCount * xSpacing + xOffset];
+var yRange = [-yOffset, _.max(data) * ySpacing];
+
+/* Prevent width from exceeding 480 pixels */
+init({
+    range: [xRange, yRange],
+    scale: _.min([30, Perseus.Util.scaleFromExtent(xRange, 480)])
+});
+
+var normalize = function(number) {
+    return ((number - min) / spread) * tickCount;
+};
+var denormalize = function(position) {
+    return position * spread / labelCount + min;
+};
+
+/* Draw the number line */
+line(
+    [0, linePosition],
+    [tickCount * xSpacing, linePosition]
+);
+
+/* Draw the ticks */
+_.times(tickCount + 1, function(i) {
+    line(
+        [i * xSpacing, linePosition + tickHeight / 2],
+        [i * xSpacing, linePosition - tickHeight / 2]
+    );
+});
+
+/* Draw the labels */
+_.times(labelCount + 1, function(i) {
+    var factor = labelInterval / tickInterval;
+
+    // If there are more than 2 ticks per label, emphasize one
+    // of the ticks to make it easier to distinguish visually
+    if (factor > 2) {
+        line(
+            [i * xSpacing * factor, linePosition + tickHeight],
+            [i * xSpacing * factor, linePosition - tickHeight]
+        );        
+    }
+
+    label(
+        [i * xSpacing * factor, linePosition - tickHeight],
+        denormalize(i),
+        "below"
+    );
+});
+
+/* Draw the data */
+_.each(data, function(y, x) {
+    _.times(y, function(j) {
+        drawPoint({
+            point: [normalize(x) * xSpacing, j * ySpacing],
+            color: color
+        }); 
+    });
+});
+</script>

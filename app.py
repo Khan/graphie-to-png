@@ -1,11 +1,14 @@
+#!/usr/bin/env python
+
 import hashlib
 import os
 import shutil
 import subprocess
 import tempfile
 
-import boto
-import boto.s3.connection
+import third_party.boto
+import third_party.boto.s3.connection
+import third_party.boto.s3.key
 import flask
 from flask import request
 import werkzeug.contrib.cache
@@ -18,8 +21,8 @@ cache = werkzeug.contrib.cache.SimpleCache()
 
 
 @app.route('/', methods=['GET'])
-def hello():
-    return flask.render_template('hello.html')
+def editor():
+    return flask.render_template('editor.html')
 
 
 @app.route('/png', methods=['POST'])
@@ -48,7 +51,7 @@ def _js_to_png(js):
 
     try:
         subprocess.check_call([
-                os.path.join(root, 'webkit2png', 'webkit2png'),
+                os.path.join(root, 'third_party', 'webkit2png', 'webkit2png'),
                 '--fullsize',
                 '--selector=.graphie',
                 '--width=20',
@@ -70,13 +73,13 @@ def _js_to_png(js):
 
 
 def _put_to_s3(key, data, mimetype):
-    conn = boto.s3.connection.S3Connection(
+    conn = third_party.boto.s3.connection.S3Connection(
             secrets.aws_access_key_id,
             secrets.aws_secret_access_key,
         )
     bucket = conn.get_bucket(secrets.aws_s3_bucket)
 
-    k = boto.s3.key.Key(bucket)
+    k = third_party.boto.s3.key.Key(bucket)
     k.key = key
     k.set_contents_from_string(
             data,

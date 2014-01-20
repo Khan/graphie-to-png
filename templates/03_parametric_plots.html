@@ -1,0 +1,21 @@
+<script type="text/graphie" data-use-grid="true" data-title="3. Parametric plots">
+style({
+    stroke: BLUE,
+    fill: "none"
+});
+
+plotParametric(function(t) {
+    // Write down the function you want to plot here as [x, y] in terms of t
+    return [4, t];
+}, Y_RANGE);
+
+style({
+    stroke: GREEN,
+    fill: "none"
+});
+
+plotParametric(function(t) {
+    // Write down the function you want to plot here as [x, y] in terms of t
+    return [t + 2 * cos(t), 2 * sin(t)];
+}, [-12, 12]);
+</script>

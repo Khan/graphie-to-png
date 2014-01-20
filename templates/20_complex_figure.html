@@ -1,0 +1,90 @@
+<script type="text/graphie" data-use-simple="true" data-range="[[-5, 5], [-5, 5]]" data-title="20. Complex Figure">
+var inner = 1.5;
+inner /= 2;
+
+var outer = 4;
+outer -= inner;
+
+var a = [-inner, -inner],
+    b = [-inner,  inner],
+    c = [ inner,  inner],
+    d = [ inner, -inner];
+
+drawPolygon({
+    points: [
+        d,
+        a,
+        b,
+        [-outer, inner],
+        [-outer, -outer],
+        [inner, -outer]
+    ],
+    sideLabels: [,,,"$len0","$len0"],
+    fill: GREEN,
+    fillOpacity: 0.2
+});
+
+drawPolygon({
+    points: [
+        b,
+        c,
+        d,
+        [outer, -inner],
+        [outer, outer],
+        [-inner, outer]
+    ],
+    sideLabels: [,,,"$len0","$len0"],
+    fill: GREEN,
+    fillOpacity: 0.2
+});
+
+var radius = outer - inner;
+
+drawArc({
+    center: b,
+    radius: radius,
+    start: 90,
+    end: 180,
+    fill: GREEN,
+    fillOpacity: 0.2
+});
+
+drawArc({
+    center: d,
+    radius: radius,
+    start: 270,
+    end: 0,
+    fill: GREEN,
+    fillOpacity: 0.2
+});
+
+
+drawSegment({
+    points: [
+        b,
+        addPoints(b, polar(radius, 135))
+    ],
+    sideLabel: "$len1",
+    dashed: true
+});
+
+var middle = outer - (outer - inner) / 2;
+
+drawSegment({
+    points: [
+        [middle, inner],
+        [middle, -inner],
+    ],
+    sideLabel: "$len1",
+    dashed: true
+});
+
+drawSegment({
+    points: [
+        [-inner, -middle],
+        [inner, -middle]
+    ],
+    sideLabel: "$len1",
+    dashed: true
+});
+</script>

@@ -1,0 +1,22 @@
+<script type="text/graphie" data-use-simple="true" data-range="[[-2, 10], [-2, 6]]" data-title="17. Polygon">
+drawPolygon({
+    // This polygon has 4 points, but you can have much more!
+    points: [
+        [0, 0],
+        [3, 4],
+        [8, 4],
+        [5, 0]    
+    ],
+    // All of the properties below can be either an array
+    // (in which case each element applies to one angle/side/
+    // vertex) or a single element (in which case it applies to
+    // each angle/side/vertex)
+    showPoints: true,     // whether to draw the actual vertices
+    angleLabels: "$deg0", // angle measure in degrees, no decimals
+    sideLabels: "$len0",  // side length in units, no decimals
+    vertexLabels: ["A", "B", "C", "D"],
+    arcs: [1, 2, 1, 2],     // number of angle arcs
+    ticks: 1,               // number of side ticks
+    arrows: [1, 2, 1, 2]    // number of side arrows
+});
+</script>

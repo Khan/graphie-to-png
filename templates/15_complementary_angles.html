@@ -1,0 +1,36 @@
+<script type="text/graphie" data-use-simple="true" data-range="[[-2, 8], [-1, 4]]" data-title="15. Complementary angles 1">
+var a = [0, 0],
+    b = [1, 0],
+    c = polar(1, 20),
+    d = [0, 1];
+
+drawLine({
+    points: [a, b]
+});
+
+drawRay({
+    points: [a, c]
+});
+
+drawRay({
+    points: [a, d]
+});
+
+drawAngleLabel({
+    points: [b, a, c],
+    label: "2x",
+    distance: 4,    // distance from vertex to label
+    color: PINK
+});
+
+drawAngleLabel({
+    points: [c, a, d],
+    label: "$deg1", // $deg is replaced by actual angle measure
+    distance: 4,    // the 1 means 1 decimal place is shown
+    color: PURPLE
+});
+
+drawAngleLabel({
+    points: [b, a, d] // because 90 degrees, draws right angle box
+});
+</script>

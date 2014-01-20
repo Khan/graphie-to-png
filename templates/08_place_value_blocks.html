@@ -1,0 +1,83 @@
+<script type="text/graphie" data-title="8. Place value blocks">
+var NUMBER = 123;
+var SHOW_LABELS = true;
+
+//////////////////////////////////////////////////////////////
+
+var thousands = floor(NUMBER / 1000)
+var hundreds = floor(NUMBER % 1000 / 100)
+var tens = floor(NUMBER % 100 / 10)
+var ones = NUMBER % 10
+
+var yMax = max(ones + 1.5,
+               tens > 0 ? 11.5 : 0,
+               hundreds > 0 ? 11.5 : 0,
+               thousands > 0 ? 16.5 : 0);
+
+init({
+    range: [[0, 3 + (tens * 2) + (hundreds * 11) +
+            (thousands * 16)],
+            [SHOW_LABELS ? -1 : 0, yMax]],
+    scale: [20, 20]
+});
+
+var drawCube = function(x, y) {
+    path([[x, y + 1],  [x, y], [x + 1, y], [x + 1.5, y + 0.5],
+        [x + 1.5, y + 1.5], [x + 0.5, y + 1.5], true]);
+    path([[x, y + 1], [x + 1, y + 1], [x + 1, y]]);
+    path([[x + 1, y + 1], [x + 1.5, y + 1.5]])
+};
+
+style({ fill: "#b2c7ed", stroke: BLUE })
+
+var xPos = 0.5;
+
+_.times(thousands, function(n) {
+    _.times(10, function(z) {
+        _.times(10, function(y) {
+            _.times(10, function(x) {
+                if (x === 9 || y === 9 || z === 9) {
+                    drawCube(5 + (z * -0.5) + x + xPos +
+                        (n * 15.5), 4.5 + (z * -0.5) + y + 0.5);
+                }
+            });
+        });
+    });
+    if (SHOW_LABELS) {
+        label([xPos + (n * 15.5) + 5, -0.2], "1000");
+    }
+});
+
+xPos += thousands * 15.5 + 0.5;
+
+_.times(hundreds, function(n) {
+    _.times(10, function(y) {
+        _.times(10, function(x) {
+            drawCube(x + xPos + (n * 11), y + 0.5);
+        });
+    });
+    if (SHOW_LABELS) {
+        label([xPos + (n * 11) + 5, -0.2], "100");
+    }
+});
+
+xPos += hundreds * 11;
+
+_.times(tens, function(n) {
+    _.times(10, function(y) {
+        drawCube(xPos + (n * 2), y + 0.5);
+    });
+    if (SHOW_LABELS) {
+        label([xPos + (n * 2) + 0.5, -0.2], "10");
+    }
+});
+
+xPos += tens * 2;
+
+_.times(ones, function(y) {
+    drawCube(xPos, y + 0.5);
+});
+if (SHOW_LABELS && ones > 0) {
+    label([xPos + 0.5, -0.2], ones);
+}
+</script>

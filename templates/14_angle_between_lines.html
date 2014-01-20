@@ -1,0 +1,31 @@
+<script type="text/graphie" data-use-simple="true" data-range="[[-10, 10], [-5, 5]]" data-title="14. Angle between lines">
+var a = [-1, 0],
+    b = [1, 0],
+    c = polar(-1, 25),
+    d = polar(1, 25),
+    e = [0, 0];
+
+drawLine({
+    points: [a, b]
+});
+
+drawLine({
+    points: [c, d],
+    color: BLUE
+});
+
+drawAngleLabel({
+    points: [a, e, c],
+    label: "5x",
+    distance: 4,    // distance from vertex to label
+    color: PINK
+});
+
+drawAngleLabel({
+    points: [b, e, d],
+    label: "$deg0", // $deg is replaced by actual angle measure
+    distance: 4,    // the 0 means 0 decimal places are shown
+    arcs: 2,
+    color: PURPLE
+});
+</script>

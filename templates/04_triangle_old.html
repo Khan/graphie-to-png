@@ -1,0 +1,22 @@
+<script type="text/graphie" data-title="4. Triangle (old)">
+var triangle = solveTriangle({
+    sides: [13, 14, 15],
+    angles: [null, null, null],
+    sideLabels: ["a", "b", "c"],
+    angleLabels: ["25^\\circ", null, null],
+    vertexLabels: ["A", "B", "C"],
+
+    xPos: 1,
+    yPos: 1,
+    width: 10,
+    height: 6,
+    rot: 0
+});
+
+triangle = addTriangle(triangle);
+init({
+    range: [[0, triangle.width + 2], [0, triangle.height + 2]]
+});
+
+triangle.draw();
+</script>

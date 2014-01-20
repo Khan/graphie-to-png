@@ -1,0 +1,18 @@
+<script type="text/graphie" data-use-simple="true" data-title="18. Regular Polygon">
+var n = 5; // number of sides
+
+var angle = 2 * Math.PI / n;
+var offset = (1 / n - 1 / 2) * Math.PI;
+var radius = 12 / SQRT2;
+
+var points = _.times(n, function(i) {
+    return polar(radius, toDegrees(i * angle + offset)) ;
+});
+
+drawPolygon({
+    points: points,
+    arcs: 1,
+    ticks: 1,
+    stroke: PINK
+});
+</script>
