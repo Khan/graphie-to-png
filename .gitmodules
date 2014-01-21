@@ -10,3 +10,6 @@
 [submodule "third_party/boto-src"]
 	path = third_party/boto-src
 	url = git://github.com/boto/boto.git
+[submodule "third_party/rappar"]
+	path = third_party/rappar
+	url = https://github.com/DmitryBaranovskiy/rappar.git

@@ -43,6 +43,8 @@
 {% include "29_polar_plot.html" %}
 {% include "30_fraction_pie.html" %}
 {% include "31_analog_clock.html" %}
+{% include "32_image_library.html" %}
+{% include "33_image.html" %}
 </div>
 
 
@@ -164,6 +166,13 @@
                     .text(e.name + ": " + e.message);
             $("#output > .size").empty();
         }
+    }
+
+    // Hack to allow appending #5 to url to auto-load template 5
+    if (!isNaN(+window.location.hash.substring(1))) {
+        sampleJS = samples[+window.location.hash.substring(1)].js;
+        editor.setValue(sampleJS, /* cursorPos: */ -1);
+        updateGraphie();
     }
 })();
 </script>

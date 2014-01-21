@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 17.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="100px" height="100px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+<path fill="#CCAA4F" d="M86.297,36.814l-3.365,0.558L12.96,49.057l0.109-0.1l-0.613,0.102v9.781
+	c0.359-0.144,0.747-0.226,1.155-0.226c1.791,0,3.244,1.519,3.244,3.39c0,1.867-1.453,3.386-3.244,3.386
+	c-0.408,0-0.797-0.082-1.155-0.226v10.61l73.656-12.427L86.297,36.814"/>
+<path fill="#F89C44" d="M27.39,36.359c0,0,0.049,3.906,0.049,6.166l5.858-5.86L27.39,36.359z"/>
+<path fill="#D78334" d="M79.804,47.465c0,1.793-1.452,3.245-3.245,3.245c-1.793,0-3.248-1.452-3.248-3.245
+	c0-1.796,1.454-3.248,3.248-3.248C78.353,44.217,79.804,45.669,79.804,47.465z"/>
+<path fill="#EEC65E" d="M48.31,19.529c-0.751,0-1.159,0.028-1.159,0.028L27.39,36.358c1.387,0.537,2.309,1.485,2.309,2.565
+	c0,1.677-2.21,3.037-4.94,3.037c-1.193,0-2.286-0.262-3.14-0.692l-9.164,7.791l0.613-0.102l1.447-1.329l69.16-13.08l2.2,2.331
+	l-2.944,0.492l3.365-0.558C71.403,20.635,53.05,19.529,48.31,19.529"/>
+<ellipse fill="#F89C44" cx="46.777" cy="32.573" rx="4.657" ry="3.317"/>
+<ellipse fill="#D78334" cx="33.368" cy="55.299" rx="5.364" ry="5.151"/>
+<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="-269.2035" y1="498.8881" x2="-268.9927" y2="498.8881" gradientTransform="matrix(-256.5626 -185.947 -185.947 256.5626 23787.8848 -177980.8594)">
+	<stop  offset="0" style="stop-color:#F89D6C"/>
+	<stop  offset="0.2883" style="stop-color:#FBB069"/>
+	<stop  offset="0.6573" style="stop-color:#FFCC5F"/>
+	<stop  offset="1" style="stop-color:#FFCC5F"/>
+</linearGradient>
+<path fill="url(#SVGID_1_)" d="M82.932,37.372L13.068,48.957L12.96,49.057L82.932,37.372 "/>
+<path fill="#EEC65E" d="M83.676,34.549L14.515,47.628L13.068,48.957L82.932,37.372L85.876,36.88L83.676,34.549 "/>
+<ellipse fill="#D78334" cx="57.716" cy="43.864" rx="5.011" ry="4.87"/>
+</svg>

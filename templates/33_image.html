@@ -1,0 +1,18 @@
+<script type="text/graphie" data-title="33. Image">
+//
+// See the "Image library" template to see all the possible
+// images.
+//
+var IMAGE = "mouse";
+var SIZE = 100;
+
+var PADDING = 4;
+
+/////////////////////////////////////////////////////////
+var pad = PADDING / SIZE;
+init({
+    range: [[-1/2 - pad, 1/2 + pad], [-1/2 - pad, 1/2 + pad]],
+    scale: SIZE
+});
+image(IMAGE, [0, 0], 1);
+</script>
