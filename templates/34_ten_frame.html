@@ -1,0 +1,47 @@
+<script type="text/graphie" data-title="34. Ten frame">
+
+//
+// Ten Frame
+// Fill in the colors for each spot or use `null` to
+// leave a spot empty:
+var TEN_FRAME = [[BLUE, BLUE, BLUE, BLUE, BLUE],
+                 [BLUE, BLUE, null, null, null]];
+
+// Set to true to orient the ten frame vertically:
+var VERTICAL = false;
+
+// Adjust the overall size
+var SCALE = 50;
+
+////////////////////////////////////////////////////////////
+
+style({
+    stroke: GRAY
+});
+if (VERTICAL) {
+    init({ range: [[-0.54, 1.54], [-0.54, 4.54]], scale: SCALE });
+    path([[-0.5, -0.5], [-0.5, 4.5], [1.5, 4.5], [1.5, -0.5], true]);
+    path([[0.5, -0.5], [0.5, 4.5]]);
+    _(4).times(function(n) {
+        path([[-0.5, n + 0.5], [1.5, n + 0.5]]);
+    });
+} else {
+    init({ range: [[-0.54, 4.54], [-0.54, 1.54]], scale: SCALE });
+    path([[-0.5, -0.5], [4.5, -0.5], [4.5, 1.5], [-0.5, 1.5], true]);
+    path([[-0.5, 0.5], [4.5, 0.5]]);
+    _(4).times(function(n) {
+        path([[n + 0.5, -0.5], [n + 0.5, 1.5]]);
+    });
+}
+
+_.each(TEN_FRAME, function(rowColors, row) {
+    _.each(rowColors, function(color, col) {
+        drawCircle({
+           center: VERTICAL ? [row, col] : [col, 1 - row],
+           radius: 0.3,
+           color: color,
+           fillOpacity: 1
+        });
+    });
+});
+</script>

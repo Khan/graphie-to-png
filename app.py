@@ -91,4 +91,4 @@ def _put_to_s3(key, data, mimetype):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
