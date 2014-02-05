@@ -77,7 +77,7 @@ def _put_to_s3(key, data, mimetype):
             secrets.aws_access_key_id,
             secrets.aws_secret_access_key,
         )
-    bucket = conn.get_bucket(secrets.aws_s3_bucket)
+    bucket = conn.get_bucket(secrets.aws_s3_bucket, validate=False)
 
     k = third_party.boto.s3.key.Key(bucket)
     k.key = key
