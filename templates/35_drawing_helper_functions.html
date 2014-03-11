@@ -1,0 +1,254 @@
+<script type="text/graphie" data-title="35. Drawing helper functions">
+/* The X and Y ranges of this canvas */
+var range = [[-1, 10], [-2, 8]];
+
+/* The output's largest side is limited to this many pixels */
+var size = 400;
+
+setup();
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+//*******************PUT YOUR CODE BELOW HERE****************//
+
+
+
+rect([1, 1], 5, 2, BLACK, 1, BLUE, 0.5);
+
+point([5, 5], "", GREEN, 1);
+
+
+//*******************PUT YOUR CODE ABOVE HERE****************//
+function point(point_xy, label, color, opacity) {
+    drawPoint({
+        point: [point_xy[0], point_xy[1]],
+        label: label,
+        color: color,
+        opacity: opacity
+    });
+}
+
+function line(points, color, opacity) {
+    drawLine({
+        points: points,
+        color: color,
+        opacity: opacity
+    });
+}
+
+function ray(points, color, opacity) {
+    drawRay({
+    points: points,
+        color: color,
+        opacity: opacity
+    });
+}
+
+function ray_angle(point, angle, color, opacity) {
+    drawRay({
+        point: point,
+        angle: angle,
+        color: color,
+        opacity: opacity
+    });
+}
+
+function segment(points, color, opacity) {
+    drawSegment({
+        points: points,
+        color: color,
+        opacity: opacity
+    });
+}
+
+function rect(lowleft_xy, length, height, stroke, strokeOpacity, fill, fillOpacity) {
+    drawPolygon({
+        points: [
+            [lowleft_xy[0], lowleft_xy[1]],
+            [lowleft_xy[0] + length,lowleft_xy[1]],
+            [lowleft_xy[0] + length,lowleft_xy[1] + height],
+            [lowleft_xy[0], lowleft_xy[1] + height]
+            ],
+        angleLabels: [],
+        stroke: stroke,
+        strokeOpacity: strokeOpacity,
+        fill: fill,
+        fillOpacity: fillOpacity
+    });
+}
+
+function rect_rot(lowleft_xy, length, height, angle, stroke, strokeOpacity, fill, fillOpacity) {
+    drawPolygon({
+        points: [
+            [lowleft_xy[0], lowleft_xy[1]],
+            addPoints([lowleft_xy[0], lowleft_xy[1]], polar(length, angle)),
+            addPoints([lowleft_xy[0], lowleft_xy[1]], polar(length, angle), polar(height, 90 + angle)),
+            addPoints([lowleft_xy[0], lowleft_xy[1]], polar(height, 90 + angle)),
+            ],
+        angleLabels: [],
+        stroke: stroke,
+        strokeOpacity: strokeOpacity,
+        fill: fill,
+        fillOpacity: fillOpacity
+    });
+}
+
+function etriangle(lowleft_xy, side, stroke, strokeOpacity, fill, fillOpacity) {
+    drawPolygon({
+        points: [
+            [lowleft_xy[0], lowleft_xy[1]],
+            addPoints([lowleft_xy[0], lowleft_xy[1]], polar(side, 60)),
+            [lowleft_xy[0] + side, lowleft_xy[1]]
+            ],
+        angleLabels: [],
+        stroke: stroke,
+        strokeOpacity: strokeOpacity,
+        fill: fill,
+        fillOpacity: fillOpacity
+    });
+}
+
+function etriangle_rot(lowleft_xy, side, angle, stroke, strokeOpacity, fill, fillOpacity) {
+    drawPolygon({
+        points: [
+            [lowleft_xy[0], lowleft_xy[1]],
+            addPoints([lowleft_xy[0], lowleft_xy[1]], polar(side, 60 + angle)),
+            addPoints([lowleft_xy[0], lowleft_xy[1]], polar(side, angle)),
+            ],
+        angleLabels: [],
+        stroke: stroke,
+        strokeOpacity: strokeOpacity,
+        fill: fill,
+        fillOpacity: fillOpacity
+    });
+}
+
+function reg_polygon(center, radius, sides, stroke, strokeOpacity, fill, fillOpacity) {
+    var int_angle = 2 * PI / sides;
+    var offset = (1 / sides - 0.5) * PI;
+
+    var points = _.times(sides, function(i) {
+        return addPoints(center, polar(radius, toDegrees(i * int_angle + offset)));
+    });
+
+    drawPolygon({
+        points: points,
+        stroke:stroke,
+        strokeOpacity:strokeOpacity,
+        fill:fill,
+        fillOpacity: fillOpacity,
+        angleLabels: []
+    });
+}
+
+function reg_polygon_rot(center, radius, sides, angle, stroke, strokeOpacity, fill, fillOpacity) {
+    var int_angle = 2 * PI / sides;
+    var offset = (1 / sides - 0.5 + angle / 180) * PI;
+
+    var points = _.times(sides, function(i) {
+        return addPoints(center,polar(radius, toDegrees(i * int_angle + offset)));
+    });
+
+    drawPolygon({
+        points: points,
+        stroke: stroke,
+        strokeOpacity: strokeOpacity,
+        fill: fill,
+        fillOpacity: fillOpacity,
+        angleLabels: []
+    });
+}
+
+function polygon(points, stroke, strokeOpacity, fill, fillOpacity) {
+    drawPolygon({
+        points: points,
+        stroke: stroke,
+        strokeOpacity: strokeOpacity,
+        fill: fill,
+        fillOpacity: fillOpacity,
+        angleLabels: []
+    });
+}
+
+function circ(center_xy, radius, stroke, strokeOpacity, fill, fillOpacity) {
+    drawCircle({
+        center: [center_xy[0],center_xy[1]],
+        radius: radius,
+        stroke: stroke,
+        strokeOpacity: strokeOpacity,
+        fill: fill,
+        fillOpacity: fillOpacity
+    });
+}
+
+
+function ellipse(center_xy, radius_x, radius_y, stroke, strokeOpacity, fill, fillOpacity) {
+    drawEllipse({
+        center: [center_xy[0], center_xy[1]],
+        radii: [radius_x, radius_y],
+        stroke: stroke,
+        strokeOpacity: strokeOpacity,
+        fill: fill,
+        fillOpacity: fillOpacity
+    });
+}
+
+function arc(center_xy, radius, degree_start, degree_end, stroke, strokeOpacity, fill, fillOpacity) {
+    drawArc({
+        center: center_xy,
+        radius: radius,
+        start: degree_start,
+        end: degree_end,
+        stroke: stroke,
+        strokeOpacity: strokeOpacity,
+        fill: fill,
+        fillOpacity: fillOpacity
+    });
+}
+
+function elliptical_arc(center_xy, radius_x, radius_y, degree_start, degree_end, stroke, strokeOpacity, fill, fillOpacity) {
+    drawArc({
+        center: center_xy,
+        radii: [radius_x, radius_y],
+        start: degree_start,
+        end: degree_end,
+        stroke: stroke,
+        strokeOpacity: strokeOpacity,
+        fill: fill,
+        fillOpacity: fillOpacity
+    });
+}
+
+function sector(center_xy, radius, degree_start, degree_end, stroke, strokeOpacity, fill, fillOpacity) {
+    drawSector({
+        center: center_xy,
+        radius: radius,
+        start: degree_start,
+        end: degree_end,
+        stroke: stroke,
+        strokeOpacity: strokeOpacity,
+        fill: fill,
+        fillOpacity: fillOpacity
+    });
+}
+
+function elliptical_sector(center_xy, radius_x, radius_y, degree_start, degree_end, stroke, strokeOpacity, fill, fillOpacity) {
+    drawSector({
+        center: center_xy,
+        radii: [radius_x, radius_y],
+        start: degree_start,
+        end: degree_end,
+        stroke: stroke,
+        strokeOpacity: strokeOpacity,
+        fill: fill,
+        fillOpacity: fillOpacity
+    });
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+function setup() {
+    var scales = _.map(range, function(extent) {
+        return Perseus.Util.scaleFromExtent(extent, size);
+    });
+    init({range: range, scale: _.min(scales)});
+}
+
+</script>
