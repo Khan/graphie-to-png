@@ -72,7 +72,7 @@
 <script src="/static/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
 
 <script>
-(function() {
+keUtilsLoaded.then(function() {
     var editor = ace.edit("editor");
     var session = editor.getSession();
 
@@ -176,6 +176,6 @@
         editor.setValue(sampleJS, /* cursorPos: */ -1);
         updateGraphie();
     }
-})();
+});
 </script>
 {% endblock scripts %}

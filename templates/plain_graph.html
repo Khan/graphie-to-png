@@ -34,44 +34,48 @@
 <script src="static/js/khan-exercises/local-only/i18n.js"></script>
 <script src="static/js/khan-exercises/local-only/localeplanet/icu.en.js"></script>
 <script src="static/js/khan-exercises/local-only/underscore.js"></script>
-<script src="static/js/khan-exercises/third_party/MathJax/2.1/MathJax.js?config=KAthJax-9e2776ffe7d2006f16f36d0d55d9464b"></script>
+<script src="static/js/khan-exercises/third_party/MathJax/2.1/MathJax.js?config=KAthJax-8f02f65cba7722b3e529bd9dfa6ac25d"></script>
 
 <script src="static/js/khan-exercises/local-only/katex/katex.js"></script>
 <script src="static/js/khan-exercises/exercises-stub.js"></script>
 <script>Exercises.useKatex = false;</script>
-<script src="static/js/khan-exercises/utils/tmpl.js"></script>
-<script src="static/js/khan-exercises/utils/tex.js"></script>
-<script src="static/js/khan-exercises/third_party/raphael.js"></script>
-<script src="static/js/khan-exercises/utils/knumber.js"></script>
-<script src="static/js/khan-exercises/utils/kvector.js"></script>
-<script src="static/js/khan-exercises/utils/kmatrix.js"></script>
-<script src="static/js/khan-exercises/utils/kpoint.js"></script>
-<script src="static/js/khan-exercises/utils/kline.js"></script>
-<script src="static/js/khan-exercises/utils/math.js"></script>
-<script src="static/js/khan-exercises/utils/math-format.js"></script>
-<script src="static/js/khan-exercises/utils/graphie.js"></script>
-<script src="static/js/khan-exercises/utils/angles.js"></script>
-<script src="static/js/khan-exercises/utils/expressions.js"></script>
-<script src="static/js/khan-exercises/utils/graphie-geometry.js"></script>
-<script src="static/js/khan-exercises/utils/graphie-helpers.js"></script>
-<script src="static/js/khan-exercises/utils/graphie-helpers-arithmetic.js"></script>
-<script src="static/js/khan-exercises/utils/word-problems.js"></script>
-<script src="static/js/khan-exercises/utils/interactive.js"></script>
-<script src="static/js/khan-exercises/utils/graphie-drawing.js"></script>
-<script src="static/js/khan-exercises/utils/graphie-3d.js"></script>
-<script src="static/js/khan-exercises/utils/time.js"></script>
+<script src="static/js/khan-exercises/local-only/require.js"></script>
 
 <script src="static/js/image-library.js"></script>
-
 <script src="static/js/perseus/util.js"></script>
 
 <script>
-// For backward compatibility with figures created before things were better namespaced
-KhanUtil.lineMidpoint = kline.midpoint;
-
 window.webkit2png = window.webkit2png || {start: $.noop, stop: $.noop};
+window.keUtilsLoaded = $.Deferred();
 
 webkit2png.stop();
+
+require([
+    "static/js/khan-exercises/utils/tmpl.js",
+    "static/js/khan-exercises/utils/tex.js",
+    "static/js/khan-exercises/utils/knumber.js",
+    "static/js/khan-exercises/utils/kvector.js",
+    "static/js/khan-exercises/utils/kmatrix.js",
+    "static/js/khan-exercises/utils/kpoint.js",
+    "static/js/khan-exercises/utils/kline.js",
+    "static/js/khan-exercises/utils/math.js",
+    "static/js/khan-exercises/utils/math-format.js",
+    "static/js/khan-exercises/utils/graphie.js",
+    "static/js/khan-exercises/utils/angles.js",
+    "static/js/khan-exercises/utils/expressions.js",
+    "static/js/khan-exercises/utils/graphie-geometry.js",
+    "static/js/khan-exercises/utils/graphie-helpers.js",
+    "static/js/khan-exercises/utils/graphie-helpers-arithmetic.js",
+    "static/js/khan-exercises/utils/word-problems.js",
+    "static/js/khan-exercises/utils/interactive.js",
+    "static/js/khan-exercises/utils/graphie-drawing.js",
+    "static/js/khan-exercises/utils/graphie-3d.js",
+    "static/js/khan-exercises/utils/time.js"
+], function() {
+
+// For backward compatibility with figures created before things were better namespaced
+KhanUtil.lineMidpoint = KhanUtil.kline.midpoint;
+
 try {
     $(".graphie").graphie();
     MathJax.Hub.Queue(function() {
@@ -81,6 +85,10 @@ try {
     $(".graphie").empty().append($("<div class='error'>").text(e.message));
     webkit2png.start();
 }
+
+keUtilsLoaded.resolve();
+
+});
 </script>
 {% endblock scripts %}
 
