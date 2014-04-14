@@ -27,6 +27,10 @@ function image(imageName, center, size) {
             el = raphael.ellipse(obj.cx, obj.cy, obj.r, obj.r);
         } else if (obj.type === "path") {
             el = raphael.path(obj.path);
+        } else if (obj.type === "rect") {
+            el = raphael.rect(obj.x, obj.y, obj.width, obj.height);
+        } else if (obj.type === "image") {
+            el = raphael.image(obj.src, 0, 0, obj.width, obj.height);
         } else {
             console.error("Don't know how to handle element: " + obj.type);
             console.log(obj);
