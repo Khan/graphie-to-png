@@ -1,0 +1,46 @@
+<script type="text/graphie" data-title="36. Five frame">
+
+//
+// Five Frame
+// Fill in the colors for each spot or use `null` to
+// leave a spot empty:
+var FIVE_FRAME = [[null, BLUE, null, BLUE, BLUE]];
+
+// Set to true to orient the ten frame vertically:
+var VERTICAL = false;
+
+// Adjust the overall size
+var SCALE = 50;
+
+////////////////////////////////////////////////////////////
+
+style({
+    stroke: GRAY
+});
+if (VERTICAL) {
+    init({ range: [[-0.54, 0.54], [-0.54, 4.54]], scale: SCALE });
+    path([[-0.5, -0.5], [-0.5, 4.5], [0.5, 4.5], [0.5, -0.5], true]);
+    path([[0.5, -0.5], [0.5, 4.5]]);
+    _(4).times(function(n) {
+        path([[-0.5, n + 0.5], [0.5, n + 0.5]]);
+    });
+} else {
+    init({ range: [[-0.54, 4.54], [-0.54, 0.54]], scale: SCALE });
+    path([[-0.5, -0.5], [4.5, -0.5], [4.5, 0.5], [-0.5, 0.5], true]);
+    path([[-0.5, 0.5], [4.5, 0.5]]);
+    _(4).times(function(n) {
+        path([[n + 0.5, -0.5], [n + 0.5, 0.5]]);
+    });
+}
+
+_.each(FIVE_FRAME, function(rowColors, row) {
+    _.each(rowColors, function(color, col) {
+        drawCircle({
+           center: VERTICAL ? [0, col] : [col, 0],
+           radius: 0.3,
+           color: color,
+           fillOpacity: 1
+        });
+    });
+});
+</script>
