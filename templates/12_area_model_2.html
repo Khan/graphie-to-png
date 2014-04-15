@@ -6,6 +6,7 @@ var HEIGHTS = [
     130,
     70
 ];
+var PAD = 1;
 
 var COLORS = [
     [PURPLE, BLUE, ORANGE],
@@ -38,7 +39,7 @@ init({
 
 style({
     fillOpacity: 0.5,
-    stroke: BACKGROUND
+    strokeOpacity: 0
 })
 
 _.each(COLORS, function(row, j) {
@@ -90,7 +91,7 @@ _.each(RIGHT_LABELS, function(text, i) {
 });
 
 function nrect(x, y, w, h) {
-    rect(x + min(0, w), y + min(0, h), abs(w), abs(h));
+    rect(x + min(0, w) + PAD, y + min(0, h) + PAD, abs(w) - PAD * 2, abs(h) - PAD * 2);
 }
 
 function sum(arr, a, b) {
