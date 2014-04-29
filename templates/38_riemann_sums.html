@@ -1,0 +1,48 @@
+<script type="text/graphie" data-use-grid="true" data-title="38. Riemann sums">
+riemann(
+    function(x) {
+        // function
+        return 0.03*(x+5)*(x+2)*(x-3)*(x-6);
+    },
+    [-5, 3],  // x-range to shade
+    8,        // number of divisions
+    "center",   // left, right, or center
+    BLUE      // color
+);
+
+style({
+    stroke: BLUE,
+    fill: "none"
+});
+
+plot(function(x) {
+    // Plot the entire function
+    return 0.03*(x+5)*(x+2)*(x-3)*(x-6);
+}, X_RANGE);
+
+
+//////////////////////////////////////////////////////////////
+function riemann(fn, domain, divisions, kind, color) {
+    var x = domain[0];
+    var step = (domain[1] - domain[0]) / divisions;
+    var offset = kind === "left" ? 0 : kind === "center" ? step / 2 : step;
+    while (x < domain[1]) {
+        style({
+            fill: color,
+            stroke: color,
+            opacity: 0.3
+        }, function() {
+            path([[x, 0], [x, fn(x + offset)], [x + step, fn(x + offset)], [x + step, 0], true]);
+        });
+        style({
+            fill: "none",
+            stroke: color,
+            strokeWidth: 1,
+            opacity: 1
+        }, function() {
+            path([[x, 0], [x, fn(x + offset)], [x + step, fn(x + offset)], [x + step, 0], true]);
+        });
+        x += step;
+    }
+}
+</script>

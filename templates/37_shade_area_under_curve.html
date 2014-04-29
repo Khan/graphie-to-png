@@ -1,0 +1,18 @@
+<script type="text/graphie" data-use-grid="true" data-title="37. Shade area under curve">
+style({
+    stroke: BLUE,
+    fill: "none"
+});
+
+plot(function(x) {
+    // Function to shade under
+    return 0.03 * (x+5)*(x+2)*(x-3)*(x-6);
+}, [-5, 3], // <-- x-range to shade
+    false, true, { stroke: BLUE, fill: BLUE, fillOpacity: 0.3 }
+);
+
+plot(function(x) {
+    // Plot the entire function
+    return 0.03 * (x+5)*(x+2)*(x-3)*(x-6);
+}, X_RANGE);
+</script>
