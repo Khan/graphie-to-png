@@ -1,0 +1,106 @@
+<script type="text/graphie" data-title="39. Bar Plot">
+/* Data to plot. Should be tuples of 'Category' and 'Number of items'. */
+var data = [
+    ['X', 5],
+    ['Y', 6],
+    ['Z', 9]
+];
+
+/* y-parameters */
+var yMin = 0;
+var yMax = 10;
+var yScale = 1;
+
+/* Graph styles */
+var xLabel = "X values";
+var yLabel = "Y values";
+// Bar plots typically use light colors
+var colors = [LIGHT_BLUE, LIGHT_RED, LIGHT_BLUE];
+var tickHeight = 6;
+var plotDimensions = [380, 300];
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Setup the canvas                                       */
+
+// Calculate x-parameters
+var numBins = _.size(data);
+var barPad = 0.15;
+var barWidth = 1 - 2 * barPad;
+var barHalfWidth = barWidth / 2;
+var dimX = numBins + 2 * barPad;
+
+// Calculuate additional y-parameters
+var dimY = Math.ceil((yMax - yMin) / yScale) * yScale;
+
+// Calculate scale and range
+var scale = _.map([dimX, dimY], function (dim, i) {
+    return plotDimensions[i] / dim;
+});
+var padX = 25 / scale[0];
+var padY = 25 / scale[1];
+var range = [[-3 * padX, dimX + padX], [-3 * padY, dimY + padY]];
+
+// Initialize graph
+init({
+    range: range,
+    scale: scale
+});
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
+/* Begin plotting. First, plot the axis ticks, then the bars, then the  */
+/* axes. This ensures proper layout on the z-axis.                      */
+for (var y = 0; y <= dimY; y += yScale) {
+    style({opacity: 1.0});
+    label(
+        [0, y],
+        roundToApprox(y, 2),
+        "left",
+        /* isTeX */ true /* for the \approx symbol */
+    );
+    style({stroke: "#000", strokeWidth: 1, opacity: 0.3});
+    line([0, y], [dimX, y]);
+}
+
+// Plot each bar with its label
+_.each(data, function(item, i) {
+    var category = item[0];
+    var count = item[1];
+    var x = 0.5 + i + barPad;
+
+    // Plot bar label (below axis)
+    var scaledTickHeight = tickHeight / scale[1];
+    style({stroke: "#000", strokeWidth: 2, opacity: 1.0});
+    line([x, -scaledTickHeight], [x, 0]);
+    label([x, 0], category, "below", false);
+
+    // Cycle through colors
+    var color = colors[i % colors.length];
+    style({stroke: "none", fill: color});
+
+    // Plot bar
+    path([
+            [x - barHalfWidth, 0],
+            [x - barHalfWidth, count],
+            [x + barHalfWidth, count],
+            [x + barHalfWidth, 0]
+        ]);
+});
+
+// Add axes (after drawing boxes)
+style({stroke: "#000", strokeWidth: 2, opacity: 1.0});
+line([0, 0], [dimX, 0]);
+line([0, 0], [0, dimY]);
+
+// Add axis labels
+label([dimX / 2, -35 / scale[1]],
+    xLabel,
+    "below", false)
+    .css("font-weight", "bold");
+
+label([-60 / scale[0], dimY / 2],
+    yLabel,
+    "center", false)
+    .css("font-weight", "bold")
+    .css("-webkit-transform", "rotate(-90deg)");
+</script>
