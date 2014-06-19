@@ -1,0 +1,110 @@
+<script type="text/graphie" data-title="29a. Polar Plot with tangent line">
+// radius of the graph
+var R_MAX = 12;
+
+// var STEP = [<r tick step>, <theta tick step>];
+var STEP = [1, PI/12];
+
+// whether (and how) to label things
+var LABEL_R = true;
+var LABEL_THETA = true;
+var LABEL_DEGREES = false;  // ignored if LABEL_THETA is false
+
+// Width of the graph in pixels
+var SIZE = 400;
+
+
+setup();
+//////////////////////////////////////////////////////////////
+
+
+plotPolar(function(theta) {
+    // Write down the function you want to plot here
+    return 3 + 8 * sin(theta);
+}, [0, 2*PI], {
+    stroke: BLUE
+});
+
+plot(function(x) {
+    // Function of the tangent line
+    return (7/2)+(11*sqrt(3)/5)*(x-7*sqrt(3)/2);
+}, [-10, 10], {
+    stroke: GREEN
+});
+
+// plot a point at (r=7, theta=30deg)
+drawPoint({
+    point: polar(7, 30),
+    color: BLUE
+});
+
+
+//////////////////////////////////////////////////////////////
+// Setup grid, ticks, and labels and initialize graph.
+function setup() {
+    var dimensions = [SIZE, SIZE];
+    var range = [[-R_MAX, R_MAX], [-R_MAX, R_MAX]];
+
+    var gridConfig = _.map(range, function(extent, i) {
+        return Perseus.Util.gridDimensionConfig(
+                STEP[0],
+                extent,
+                dimensions[i]);
+    });
+    var scale = _.pluck(gridConfig, "scale");
+
+    var paddedRange = range;
+    if (LABEL_THETA) {
+        paddedRange = _.map(range, function(extent, i) {
+            var padding = 35 / scale[i];
+            return [extent[0] - padding, extent[1] + padding];
+        });
+    }
+
+    init({
+        range: paddedRange,
+        scale: scale
+    });
+    for (var r = STEP[0]; r <= R_MAX; r += STEP[0]) {
+        circle([0, 0], r, {
+            stroke: BLACK,
+            opacity: 0.1
+        });
+        if (LABEL_R && r < R_MAX) {
+            label([r, 0], "\\small{" + r + "}", "below");
+        }
+    }
+    for (var theta = 0; theta < 2*PI-1e-9; theta += STEP[1]) {
+        line([0, 0], [cos(theta) * R_MAX,
+            sin(theta) * R_MAX], {
+                stroke: BLACK,
+                opacity: 0.1
+            });
+            if (LABEL_THETA) {
+                var lbl = piFraction(theta, true);
+                if (LABEL_DEGREES) {
+                    lbl = round(theta * 180/PI) + "^\\circ";
+                }
+                label([cos(theta) * (R_MAX + 20/scale[0]),
+                    sin(theta) * (R_MAX + 20/scale[1])],
+                    "\\small{" + lbl + "}", "center");
+            }
+    }
+    graphInit({
+        grid: false,
+        gridRange: range,
+        range: paddedRange,
+        scale: scale,
+        axisArrows: "<->",
+        labelFormat: function(s) {
+            return "\\small{" + s + "}";
+        },
+        tickStep: STEP[0]
+    });
+    style({
+        clipRect: [[-R_MAX, -R_MAX],
+                [2 * R_MAX, 2 * R_MAX]],
+        "plot-points": 10000
+    });
+}
+</script>

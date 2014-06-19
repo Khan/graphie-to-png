@@ -41,6 +41,7 @@
 {% include "27_box_plot.html" %}
 {% include "28_dot_plot.html" %}
 {% include "29_polar_plot.html" %}
+{% include "29a_polar_plot_with_tangent_line.html" %}
 {% include "30_fraction_pie.html" %}
 {% include "31_analog_clock.html" %}
 {% include "32_image_library.html" %}
@@ -176,8 +177,12 @@ keUtilsLoaded.then(function() {
     }
 
     // Hack to allow appending #5 to url to auto-load template 5
-    if (!isNaN(+window.location.hash.substring(1))) {
-        sampleJS = samples[+window.location.hash.substring(1)].js;
+    var hash = window.location.hash.substring(1);
+    var sample = _.find(samples, function(sample) {
+            return sample.title.slice(0, hash.length) === hash;
+        });
+    if (hash !== "" && sample) {
+        sampleJS = sample.js;
         editor.setValue(sampleJS, /* cursorPos: */ -1);
         updateGraphie();
     }
