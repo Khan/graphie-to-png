@@ -1,0 +1,52 @@
+<script type="text/graphie" data-use-grid="true" data-title="41. Slope field">
+var diffEq = function(x, y) {
+    // Define the differential equation here
+    return -x / y;
+};
+
+// Styling for slope field lines
+style({
+    stroke: BLUE,
+    fill: "none"
+});
+
+// How long should the lines of the slope field be?
+var slopeLength = 0.5;
+// What's the step size of the slope field?
+var xStep = 1;
+var yStep = 1;
+
+// Plot the slope field
+drawSlopeField(diffEq, X_RANGE, Y_RANGE, xStep, yStep, slopeLength);
+
+//////////////////////////////////////////////////////////////
+function drawSlopeField(fn, domain, range, xStep, yStep, slopeLength) {
+    for (var x = domain[0]; x <= domain[1]; x += xStep) {
+        for (var y = range[0]; y <= range[1]; y += yStep) {
+            var slope = fn(x, y);
+
+            // Convert slope into a normalized direction vector
+            var directionVector;
+            if (_.isFinite(slope)) {
+                directionVector = kvector.normalize([1, slope]);
+            } else if (slope === Number.POSITIVE_INFINITY) {
+                directionVector = [0, 1];
+            } else if (slope === Number.NEGATIVE_INFINITY) {
+                directionVector = [0, -1];
+            } else {
+                continue;
+            }
+
+            // Scale to slopeLength
+            var differenceVector = kvector.scale(directionVector, slopeLength / 2);
+
+            // Apply difference and plot
+            var middle = [x, y];
+            var start = kvector.subtract(middle, differenceVector);
+            var end = kvector.add(middle, differenceVector);
+            line(start, end);
+        }
+    }
+}
+
+</script>
