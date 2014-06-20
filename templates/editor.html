@@ -54,6 +54,7 @@
 {% include "39_bar_plot.html" %}
 {% include "40_shade_area_between_curves.html" %}
 {% include "41_slope_field.html" %}
+{% include "42_shade_area_bounded_by_polar_curve.html" %}
 </div>
 
 
@@ -89,6 +90,8 @@ keUtilsLoaded.then(function() {
     var gridSetupPost = $("#grid-setup-post").html();
     var simpleSetupPre = $("#simple-setup-pre").html();
     var simpleSetupPost = $("#simple-setup-post").html();
+    var polarSetupPre = $("#polar-setup-pre").html();
+    var polarSetupPost = $("#polar-setup-post").html();
     var samples = _.map($samples, function(el, i) {
         var $el = $(el);
         var code = $el.html();
@@ -98,6 +101,9 @@ keUtilsLoaded.then(function() {
         if ($el.data("use-simple")) {
             var range = $el.attr("data-range") || "[[-10, 10], [-10, 10]]";
             code = simpleSetupPre.replace("RANGE", range) + code + simpleSetupPost;
+        }
+        if ($el.data("use-polar")) {
+            code = polarSetupPre + code + polarSetupPost;
         }
         var sample = {
             title: $el.data("title"),

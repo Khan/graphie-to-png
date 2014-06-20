@@ -1,0 +1,109 @@
+<script type="text/graphie" data-use-polar="true" data-title="42. Shade area bounded by polar curve">
+// EXAMPLE 1: Shade part of a function
+
+// Define a function called fn1
+var fn1 = function(theta) {
+    return 2 + 4 * cos(theta);
+};
+
+// Shade the inside of fn1 except for the part inside the
+// inner loop by first shading the entire thing, then
+// excluding the area from 2pi/3 to 4pi/3 where the
+// curve passes through the origin.
+shadePolar([
+    ["include", fn1, [0, 2*PI]],
+    ["exclude", fn1, [2*PI/3, 4*PI/3]]
+], BLUE);
+
+// Plot the function itself
+plotPolar(fn1, [0, 2*PI], {
+    stroke: BLUE
+});
+
+
+// EXAMPLE 2: Shade between two functions
+
+// Define a function called fn2, the green circle
+var fn2 = function(theta) {
+    return -4 * cos(theta);
+};
+
+// Define a function called fn3, the red circle
+var fn3 = function(theta) {
+    return 2;
+};
+
+// Shade the area inside the green circle, except for
+// the area that's inside the red circle.
+shadePolar([
+    ["include", fn2, [0, 2*PI]],
+    ["exclude", fn3, [0, 2*PI]],
+], GREEN);
+
+// Plot the left circle
+plotPolar(fn2, [0, 2*PI], {
+    stroke: GREEN
+});
+
+// Plot the left half of the right circle
+plotPolar(fn3, [PI/2, 3*PI/2], {
+    stroke: RED
+});
+
+
+// END OF EXAMPLES
+// You probably don't want to modify anything below this line
+
+////////////////////////////////////////////////////////////////
+
+function shadePolar(functionList, color) {
+    // Raphael doesn't support masks since they aren't supported in VML,
+    // so this directly manipulates the SVG, breaking many abstractions in
+    // the process. :)
+    var svg = KhanUtil.currentGraph.raphael.canvas;
+
+    // Add a new SVG mask with a unique id
+    var maskId = (Math.random() * 1e20).toString(36);
+    var mask = document.createElementNS("http://www.w3.org/2000/svg", "mask");
+    $(mask).attr("id", maskId);
+    var defs = $(svg).find("defs");
+    defs.append(mask);
+
+    _.each(functionList, function(fn) {
+        // We're making an alpha key, so areas to be filled should be white
+        // and areas that shouldn't be filled should be black.
+        var style = {
+            fill: fn[0] === "include" ? "#fff" : "#000",
+            stroke: "none"
+        };
+
+        // Plot the function over the specified range
+        var fnPath = plotPolar(fn[1], fn[2], style);
+
+        // We don't want to close the shape by just connecting the starting
+        // point to the ending point. E.g., we could be shading a wedge of a
+        // circle. So we always want to end at (0, 0). This hackily appends it:
+        var pole = scalePoint([0, 0]);
+        var lastPath = $(fnPath.items[fnPath.items.length - 1].node);
+        lastPath.attr("d", lastPath.attr("d") + "L" + pole[0] + "," + pole[1]);
+
+        // Extract the SVG elements we just added from the SVG and stick them
+        // in the mask
+        _.each(fnPath.items, function(item) {
+            $(mask).append(item.node);
+        });
+    });
+
+    // Draw a giant rectangle covering the entire canvas
+    var rectangle = KhanUtil.currentGraph.raphael.rect(0, 0,
+            $(svg).attr("width"), $(svg).attr("height"));
+
+    // Set the color of the giant rectangle to the right thing and apply
+    // the alpha mask we just created above.
+    $(rectangle.node).attr({
+        fill: color,
+        "fill-opacity": 0.3,
+        mask: "url(#" + maskId + ")"
+    });
+}
+</script>
