@@ -76,10 +76,40 @@ require([
 // For backward compatibility with figures created before things were better namespaced
 KhanUtil.lineMidpoint = KhanUtil.kline.midpoint;
 
+// Stupid image hack to wait for images to load :(
+var waitForImages = function(callback) {
+    var $images = $('.graphie > svg > image');
+    var imagesLeft = $images.length;
+    var imageWasLoaded = function() {
+        imagesLeft--;
+        if (imagesLeft === 0) {
+            callback();
+        }
+    };
+
+    $.each($images, function() {
+        var href = $(this).attr("href");
+        if (!href.match(/amazonaws\.com/)) {
+            $(".graphie").empty().append($("<div class='error'>").text(
+                "only images uploaded with\nperseus may be hotlinked"
+            ));
+            imageWasLoaded();
+            return;
+        }
+        var tempImage = new Image();
+        tempImage.onload = imageWasLoaded;
+        tempImage.onerror = imageWasLoaded;
+        tempImage.src = href;
+    });
+};
+
 try {
     $(".graphie").graphie();
+
     MathJax.Hub.Queue(function() {
-        webkit2png.start();
+        waitForImages(function() {
+            webkit2png.start();
+        });
     });
 } catch(e) {
     $(".graphie").empty().append($("<div class='error'>").text(e.message));
@@ -87,6 +117,7 @@ try {
 }
 
 keUtilsLoaded.resolve();
+
 
 });
 </script>
