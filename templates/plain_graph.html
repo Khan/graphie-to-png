@@ -80,11 +80,14 @@ KhanUtil.lineMidpoint = KhanUtil.kline.midpoint;
 var waitForImages = function(callback) {
     var $images = $('.graphie > svg > image');
     var imagesLeft = $images.length;
-    var imageWasLoaded = function() {
-        imagesLeft--;
+    var checkForLoaded = function() {
         if (imagesLeft === 0) {
             callback();
         }
+    };
+    var imageWasLoaded = function() {
+        imagesLeft--;
+        checkForLoaded();
     };
 
     $.each($images, function() {
@@ -101,6 +104,8 @@ var waitForImages = function(callback) {
         tempImage.onerror = imageWasLoaded;
         tempImage.src = href;
     });
+
+    checkForLoaded();
 };
 
 try {
