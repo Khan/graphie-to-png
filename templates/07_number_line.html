@@ -121,7 +121,7 @@ if (typeof(CIRCLES) !== "undefined") {
     _.each(CIRCLES, function(point) {
         ellipse([point[0], 0],
                 [5 / (400 / (RANGE[1] - RANGE[0])), 5 / 40], {
-            fill: BACKGROUND,
+            fill: _BACKGROUND,
             stroke: point[1],
             strokeWidth: 3
         });
