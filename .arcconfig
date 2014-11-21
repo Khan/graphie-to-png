@@ -1,4 +1,4 @@
 {
     "project_id": "graphie-to-png",
-    "conduit_uri": "http://phabricator.khanacademy.org/"
+    "conduit_uri": "https://phabricator.khanacademy.org/"
 }
