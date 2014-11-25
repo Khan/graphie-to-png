@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import hashlib
+import json
 import os
-import shutil
 import subprocess
-import tempfile
+import re
 
 import third_party.boto
 import third_party.boto.s3.connection
@@ -13,6 +13,8 @@ import flask
 from flask import request
 import werkzeug.contrib.cache
 
+import cleanup_svg
+
 import secrets
 
 app = flask.Flask(__name__)
@@ -20,56 +22,53 @@ root = os.path.realpath(os.path.dirname(__file__))
 cache = werkzeug.contrib.cache.SimpleCache()
 
 
+URL_REGEX = re.compile(
+    r'https://([^/]+)/([a-f0-9]{40})\.svg')
+
+
 @app.route('/', methods=['GET'])
 def editor():
     return flask.render_template('editor.html')
 
 
-@app.route('/png', methods=['POST'])
-def png():
+@app.route('/svg', methods=['POST'])
+def svg():
     js = request.form['js']
-    png = _js_to_png(js)
 
-    # TODO(alpert): If graphie changes and gives a new png this just overwrites
+    svg, other_data = _js_to_svg(js)
+
     hash = hashlib.sha1(js).hexdigest()
     _put_to_s3('%s.js' % hash, js, 'application/javascript')
-    url = _put_to_s3('%s.png' % hash, png, 'image/png')
+    _put_to_s3('%s-data.json' % hash,
+               _jsonp_wrap(other_data, 'svgData%s' % hash), 'application/json')
+    svg_url = _put_to_s3('%s.svg' % hash, cleanup_svg.cleanup_svg(svg),
+                     'image/svg+xml')
 
-    if request.args.get("url_only"):
-        return url
-    else:
-        return flask.redirect(url)
+    match = URL_REGEX.match(svg_url)
+
+    return 'web+graphie://%s/%s' % match.groups()
 
 
-def _js_to_png(js):
-    key = os.urandom(8).encode('hex')
-    html_path = os.path.join(root, 'plain_graph_%s.html' % key)
-    with open(html_path, 'w') as f:
-        f.write(flask.render_template('plain_graph.html', js=js))
+@app.route('/svgize', methods=['POST'])
+def svgize():
+    js = request.form['js']
+    return flask.render_template('plain_graph.html', js=js)
 
-    png_dir = tempfile.mkdtemp()
 
-    try:
-        subprocess.check_call([
-                os.path.join(root, 'third_party', 'webkit2png', 'webkit2png'),
-                '--fullsize',
-                '--selector=.graphie',
-                '--width=20',
-                '--height=20',
-                '--clipwidth=20',
-                '--clipheight=20',
-                '--zoom=1.0',
-                '--transparent',
-                '--dir=%s' % png_dir,
-                '--filename=image',  # giving image-full.png
-                html_path,
-            ])
+def _js_to_svg(js):
+    json_data = subprocess.check_output([
+        os.path.join(root, 'node_modules', '.bin', 'phantomjs'),
+        os.path.join(root, 'phantom_svg.js'),
+        js
+    ])
 
-        with open(os.path.join(png_dir, 'image-full.png')) as f:
-            return f.read()
-    finally:
-        os.unlink(html_path)
-        shutil.rmtree(png_dir)
+    data = json.loads(json_data)
+
+    return data['svg'], data['other_data']
+
+
+def _jsonp_wrap(data, func_name):
+    return '%s(%s);' % (func_name, data)
 
 
 def _put_to_s3(key, data, mimetype):
@@ -91,4 +90,4 @@ def _put_to_s3(key, data, mimetype):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5001, host='::')

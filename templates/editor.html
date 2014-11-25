@@ -59,17 +59,23 @@
 
 
 <div id="controls">
-<input type="button" value="Regraph" class="btn-rerender">
-<form action="/png" target="_blank" method="POST" class="form-create-png">
-<input type="hidden" name="js">
-<input type="submit" value="Convert to Image">
-</form>
+  <input type="button" value="Regraph" class="btn-rerender">
+  <select class="example-selector"></select><br>
+  <input type="button" value="Convert to Image" class="btn-create-svg">
+  <input type="text" class="image-link" readonly="" /><span class="error-text"></span><span class="convert-throbber"><img src="/static/images/throbber.gif" /></span>
 </div>
+
+<div id="preview">
+  Load rendered image:
+  <input type="text" class="preview-input" name="url" />
+  <button class="preview-input-button">Load</button>
+</div>
+
 </div>
 
 <div id="output">
-<div class="graphie"></div>
-<span class="size"></span>
+  <div class="graphie"></div>
+  <span class="size"></span>
 </div>
 
 {% endblock content %}
@@ -85,7 +91,7 @@ keUtilsLoaded.then(function() {
     var session = editor.getSession();
 
     var $samples = $("#samples").children();
-    var $sampleSelect = $("<select>").appendTo("#controls");
+    var $sampleSelect = $(".example-selector");
     var gridSetupPre = $("#grid-setup-pre").html();
     var gridSetupPost = $("#grid-setup-post").html();
     var simpleSetupPre = $("#simple-setup-pre").html();
@@ -158,12 +164,77 @@ keUtilsLoaded.then(function() {
                 }
             })
             .on("click", updateGraphie);
-    updateGraphie();
 
-    $(".form-create-png").on("submit", function() {
-        var $form = $(this);
-        $form.find("input[type=hidden]").val(editor.getValue());
+    $("input[type='text']").on("keydown", function(e) {
+        // To counter our code that prevents us from leaving the page when
+        // pressing backspace, we don't propogate events that start in text
+        // boxes.
+        if (e.keyCode === 8) {
+            e.stopPropagation();
+        }
     });
+
+    var throbber = $(".convert-throbber");
+    throbber.hide();
+
+    $(".image-link").hide().click(function() {
+        $(this).select();
+    });
+
+    $(".btn-create-svg").on("click", function(e) {
+        throbber.show();
+        var js = editor.getValue();
+        $(".error-text").text("");
+        $(".image-link").hide().val("");
+        $.ajax({
+            url: "/svg",
+            type: "POST",
+            data: {
+                js: js
+            },
+            success: function(data) {
+                $(".image-link").show().val(data);
+            },
+            error: function(a, b, error) {
+                $(".error-text").text("Error: " + error);
+            },
+            complete: function() {
+                throbber.hide();
+            }
+        });
+    });
+
+    var urlStart = "://ka-perseus-graphie\\.s3\\.amazonaws\\.com/";
+    var hashMatch = "[a-f0-9]{40}";
+    var urlMatcher = new RegExp(
+        "web\\+graphie" + urlStart + "(" + hashMatch + ")|" +
+        "https" + urlStart + "(" + hashMatch + ").png");
+
+    $(".preview-input-button").on("click", function(e) {
+        var url = $(".preview-input").val();
+
+        var match = url.match(urlMatcher);
+        if (match) {
+            var hash = match[1] || match[2];
+            $.ajax({
+                url: "https://ka-perseus-graphie.s3.amazonaws.com/" + hash +
+                   ".js",
+                dataType: "text",
+                success: function(data) {
+                    editor.setValue(data, -1);
+                    updateGraphie();
+                },
+                error: function() {
+                    alert("It looks like that image doesn't exist..");
+                }
+            });
+        } else {
+            alert("Bad url!");
+        }
+    });
+
+    var storedValue = null;
+    var formSubmit = $(".btn-create-svg");
 
     function updateGraphie() {
         try {
@@ -171,17 +242,36 @@ keUtilsLoaded.then(function() {
                     .data("graphie", null)
                     .removeClass("error")
                     .text(editor.getValue()).graphie();
+
+            // This should throw an error if there is a problem with the labels
+            window.getData();
+
             $("#output > .size")
                     .empty()
                     .text($(".graphie").width() + " x " + $(".graphie").height());
 
+            formSubmit.attr("disabled", false);
+
+            storedValue = editor.getValue();
+
+            $(".error-text").text("");
+            $(".image-link").hide().val("");
         } catch (e) {
             $("#output > div")
                     .addClass("error")
                     .text(e.name + ": " + e.message);
             $("#output > .size").empty();
+
+            formSubmit.attr("disabled", true);
+
+            storedValue = null;
         }
     }
+    updateGraphie();
+
+    editor.addEventListener("change", function() {
+        formSubmit.attr("disabled", editor.getValue() !== storedValue);
+    });
 
     // Hack to allow appending #5 to url to auto-load template 5
     var hash = window.location.hash.substring(1);

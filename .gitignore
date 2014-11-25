@@ -1,2 +1,3 @@
 *.py[co]
 secrets.py
+node_modules

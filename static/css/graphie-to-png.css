@@ -36,6 +36,18 @@ body {
     display: block;
     margin-top: 3px;
 }
-form.form-create-png {
-    display: inline;
+
+#controls {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+#controls .image-link {
+    width: 300px;
+}
+
+#preview {
+    padding: 5px;
+}
+#preview > form {
+    display: inline-block;
 }

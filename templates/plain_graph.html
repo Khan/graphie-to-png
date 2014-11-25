@@ -46,6 +46,7 @@
 
 <script>
 window.webkit2png = window.webkit2png || {start: $.noop, stop: $.noop};
+window.callPhantom = window.callPhantom || $.noop;
 window.keUtilsLoaded = $.Deferred();
 
 webkit2png.stop();
@@ -108,21 +109,207 @@ var waitForImages = function(callback) {
     checkForLoaded();
 };
 
+/*
+ * Inject a function as `graphie.label` so that we can record all of the labels
+ * that are created in the graphie. Since the function isn't exposed normally,
+ * we have to manually add it each time `createGraphie` is called.
+ */
+var currLabels = [];
+var currRange = null;
+
+var oldCreateGraphie = KhanUtil.createGraphie;
+KhanUtil.createGraphie = function() {
+    // Call the normal `createGraphie`
+    var graphie = oldCreateGraphie.apply(this, arguments);
+
+    // Clear out the list of labels
+    currLabels.length = 0;
+
+    // Inject our new label function
+    var oldLabel = graphie.label;
+    graphie.label = function(coordinates, content, alignment, typesetAsMath) {
+        // Undefined `typesetAsMath` means true
+        typesetAsMath = typesetAsMath === undefined ? true : !!typesetAsMath;
+
+        var label = oldLabel.apply(this, arguments);
+
+        var data = {
+            content: content,
+            coordinates: coordinates,
+            alignment: alignment,
+            typesetAsMath: typesetAsMath,
+            label: label
+        };
+
+        var oldSetPosition = label.setPosition;
+        var oldProcessMath = label.processMath;
+
+        label.setPosition = function(coordinates) {
+            data.coordinates = coordinates;
+            oldSetPosition.apply(this, arguments);
+        };
+
+        label.processMath = function(math, force) {
+            data.typesetAsMath = true;
+            data.content = math;
+            oldProcessMath.apply(this, arguments);
+        };
+
+        // Store the information about the label
+        currLabels.push(data);
+
+        // Return the normal label
+        return label;
+    };
+
+    var oldInit = graphie.init;
+    graphie.init = function(options) {
+        currRange = options.range;
+
+        return oldInit.apply(this, arguments);
+    };
+
+    return graphie;
+};
+
+var ignoredStyles = [
+    "stroke-width",
+    "fill",
+    "opacity",
+    "stroke",
+    "position",
+    "padding-top",
+    "padding-right",
+    "padding-bottom",
+    "padding-left",
+    "top",
+    "left",
+    "margin-left",
+    "margin-top",
+    "padding-left-value",
+    "padding-left-rtl-source",
+    "padding-left-ltr-source",
+    "padding-right-value",
+    "padding-right-rtl-source",
+    "padding-right-ltr-source",
+    "margin-left-value",
+    "margin-left-rtl-source",
+    "margin-left-ltr-source",
+    "margin-right-value",
+    "margin-right-rtl-source",
+    "margin-right-ltr-source"
+];
+
+var allowedStyles = [
+    "color",
+    "font-weight",
+    "transform",
+    "fill-opacity"
+];
+
+// W3C says browser prefixes start with a dash or underscore, have the vendor
+// identifier in the middle, and end with a dash. They aren't very clear about
+// what a vendor identifier consists of, but all known prefixes are a single
+// word, so we match that. There are also some prefixes that don't start with a
+// dash or underscore (like `mso-` or `prince-`) but we probably won't encounter
+// browsers that use that.
+var browserPrefix = /^[-_][a-z]+-/i;
+
+function dePrefix(styleName) {
+    if (browserPrefix.test(styleName)) {
+        return styleName.replace(browserPrefix, "");
+    } else {
+        return styleName;
+    }
+}
+
+function filterLabelData(labelData) {
+    var label = labelData.label;
+
+    var labelStyle = label[0].style;
+
+    // Here, we go through all of the CSS styles that are applied to the label,
+    // and either pull them out into our list of styles, ignore them because
+    // they're added by graphie automatically, or throw an error because it's
+    // not an allowed style.
+    // (Note that a style has an array part that lists all of the styles names
+    // that are applied, as well as a map from the style names to their values.
+    // `_.toArray` pulls out the array part)
+    var newStyles = {};
+    _.each(_.toArray(labelStyle), function(styleName) {
+        // jQuery automatically prefixes appropriate CSS properties, so we
+        // de-prefix before we do checking
+        var realStyleName = dePrefix(styleName);
+
+        if (_.contains(ignoredStyles, realStyleName)) {
+            // Ignore styles added by graphie
+            return;
+        } else if (_.contains(allowedStyles, realStyleName)) {
+            // Keep certain allowed styles
+            newStyles[realStyleName] = labelStyle[styleName];
+        } else {
+            // Throw an error otherwise
+            throw new Error(
+                "Illegal CSS style: '" + realStyleName + "' on \n'"
+                + labelData.content + "' label.\nEmail Emily if you "
+                + "need this style.");
+        }
+    });
+
+    var finalData = _.pick(
+        labelData, ["content", "coordinates", "alignment",
+                    "typesetAsMath"]);
+
+    finalData.style = newStyles;
+
+    return finalData;
+}
+
+window.getData = function() {
+    var labels = _.map(currLabels, function(label) {
+        return filterLabelData(label);
+    });
+
+    return {
+        range: currRange,
+        labels: labels
+    };
+};
+
+var errorSVG = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300" height="100"><text x="10" y="20" fill="red" font-weight="bold">Error rendering</text></svg>'
+
+window.getSVG = function() {
+    var svgNode = $(".graphie > svg")[0];
+
+    // Set viewBox
+    var width = svgNode.getAttribute("width");
+    var height = svgNode.getAttribute("height");
+    svgNode.setAttribute("viewBox", "0 0 " + width + " " + height);
+    if (svgNode) {
+        var wrapper = document.createElement("div");
+        wrapper.appendChild(svgNode.cloneNode(true));
+        return wrapper.innerHTML;
+    } else {
+        return errorSVG;
+    }
+};
+
 try {
     $(".graphie").graphie();
 
     MathJax.Hub.Queue(function() {
         waitForImages(function() {
             webkit2png.start();
+            window.callPhantom({type: "rendered"});
         });
     });
 } catch(e) {
     $(".graphie").empty().append($("<div class='error'>").text(e.message));
     webkit2png.start();
+    window.callPhantom({type: "rendered"});
 }
 
 keUtilsLoaded.resolve();
-
 
 });
 </script>
