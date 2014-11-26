@@ -184,6 +184,11 @@ keUtilsLoaded.then(function() {
     $(".btn-create-svg").on("click", function(e) {
         throbber.show();
         var js = editor.getValue();
+
+        // To get identical hashes to the old graphie-to-png, we replace all
+        // newlines with "\r\n"
+        js = js.replace(/\r\n|\n|\r/g, "\r\n");
+
         $(".error-text").text("");
         $(".image-link").hide().val("");
         $.ajax({
