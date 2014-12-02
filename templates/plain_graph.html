@@ -127,7 +127,12 @@ KhanUtil.createGraphie = function() {
 
     // Inject our new label function
     var oldLabel = graphie.label;
-    graphie.label = function(coordinates, content, alignment, typesetAsMath) {
+    graphie.label = function(coordinates, content, alignment, origTypesetAsMath) {
+        var typesetAsMath = origTypesetAsMath;
+        if (arguments.length === 4 && typeof typesetAsMath === "object") {
+            typesetAsMath = undefined;
+        }
+
         // Undefined `typesetAsMath` means true
         typesetAsMath = typesetAsMath === undefined ? true : !!typesetAsMath;
 
