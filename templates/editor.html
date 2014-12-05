@@ -215,9 +215,7 @@ keUtilsLoaded.then(function() {
         "web\\+graphie" + urlStart + "(" + hashMatch + ")|" +
         "https" + urlStart + "(" + hashMatch + ").png");
 
-    $(".preview-input-button").on("click", function(e) {
-        var url = $(".preview-input").val();
-
+    function loadUrl(url) {
         var match = url.match(urlMatcher);
         if (match) {
             var hash = match[1] || match[2];
@@ -235,6 +233,20 @@ keUtilsLoaded.then(function() {
             });
         } else {
             alert("Bad url!");
+        }
+    }
+
+    $(".preview-input-button").on("click", function(e) {
+        var url = $(".preview-input").val();
+
+        loadUrl(url);
+    });
+
+    $(".preview-input").keyup(function(e) {
+        if (e.keyCode === 13) {
+            var url = $(".preview-input").val();
+
+            loadUrl(url);
         }
     });
 
