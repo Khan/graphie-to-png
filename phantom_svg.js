@@ -14,4 +14,4 @@ page.onCallback = function(data) {
 
 var postData = 'js=' + encodeURIComponent(system.args[1] || "");
 
-page.open('http://localhost:80/svgize', 'POST', postData, function() {});
+page.open('http://localhost:8081/svgize', 'POST', postData, function() {});

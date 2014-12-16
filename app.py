@@ -51,16 +51,19 @@ def svg():
 
 @app.route('/svgize', methods=['POST'])
 def svgize():
+    print "Got svgize"
     js = request.form['js']
     return flask.render_template('plain_graph.html', js=js)
 
 
 def _js_to_svg(js):
+    print "Before subprocess"
     json_data = subprocess.check_output([
         os.path.join(root, 'node_modules', '.bin', 'phantomjs'),
         os.path.join(root, 'phantom_svg.js'),
         js
     ])
+    print "After subprocess"
 
     data = json.loads(json_data)
 
