@@ -1,2 +1,2 @@
 #!/bin/bash
-gunicorn -w 2 -b [::]:80 app:app --log-level debug
+gunicorn -w 2 -b [::]:8765 app:app --log-level debug
