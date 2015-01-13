@@ -286,11 +286,15 @@ var errorSVG = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300
 window.getSVG = function() {
     var svgNode = $(".graphie > svg")[0];
 
-    // Set viewBox
-    var width = svgNode.getAttribute("width");
-    var height = svgNode.getAttribute("height");
-    svgNode.setAttribute("viewBox", "0 0 " + width + " " + height);
     if (svgNode) {
+        var width = svgNode.getAttribute("width");
+        var height = svgNode.getAttribute("height");
+        // We manually set a viewBox so that scaled images are rendered in the
+        // IEs correctly.
+        svgNode.setAttribute("viewBox", "0 0 " + width + " " + height);
+
+        // phantomjs provides no `.outerHTML` function for nodes, so we wrap the
+        // svg node in a div and use the wrapper's `.innerHTML` function.
         var wrapper = document.createElement("div");
         wrapper.appendChild(svgNode.cloneNode(true));
         return wrapper.innerHTML;
