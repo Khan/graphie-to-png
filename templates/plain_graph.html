@@ -127,16 +127,27 @@ KhanUtil.createGraphie = function() {
 
     // Inject our new label function
     var oldLabel = graphie.label;
-    graphie.label = function(coordinates, content, alignment, origTypesetAsMath) {
-        var typesetAsMath = origTypesetAsMath;
-        if (arguments.length === 4 && typeof typesetAsMath === "object") {
-            typesetAsMath = undefined;
+    graphie.label = function(/* coordinates, content,
+                                alignment, typesetAsMath */) {
+        // Call the original label function
+        var label = oldLabel.apply(this, arguments);
+
+        // If the last argument of a label is an object, then it is a style
+        // object, which we don't want in our real arguments, so we remove it
+        var argumentsCopy = Array.prototype.slice.call(arguments);
+        if (typeof argumentsCopy[argumentsCopy.length - 1] === "object") {
+            argumentsCopy[argumentsCopy.length - 1] = undefined;
         }
+
+        // Pull out the arguments manually since we might have changed their
+        // values above
+        var coordinates = argumentsCopy[0];
+        var content = argumentsCopy[1];
+        var alignment = argumentsCopy[2];
+        var typesetAsMath = argumentsCopy[3];
 
         // Undefined `typesetAsMath` means true
         typesetAsMath = typesetAsMath === undefined ? true : !!typesetAsMath;
-
-        var label = oldLabel.apply(this, arguments);
 
         var data = {
             content: content,
