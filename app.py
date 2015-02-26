@@ -106,7 +106,7 @@ def _js_to_svg(js):
         os.path.join(root, 'node_modules', '.bin', 'phantomjs'),
         os.path.join(root, 'phantom_svg.js'),
         js
-    ], 25)
+    ], 55)
 
     if json_data is None:
         raise RenderTimeout()
