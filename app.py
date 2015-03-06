@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import re
+import signal
 import subprocess
 import threading
 
@@ -83,7 +84,8 @@ def run_with_timeout(command, timeout):
 
     # The function to be run in a separate thread
     def thread_runner():
-        data['process'] = subprocess.Popen(command, stdout=subprocess.PIPE)
+        data['process'] = subprocess.Popen(command, stdout=subprocess.PIPE,
+                                           preexec_fn=os.setpgrp)
         data['stdout'] = data['process'].communicate()[0]
 
     thread = threading.Thread(target=thread_runner)
@@ -92,7 +94,8 @@ def run_with_timeout(command, timeout):
     thread.join(timeout)
     if thread.is_alive():
         # If the thread is still running, kill it and ignore the output
-        data['process'].kill()
+        # os.killpg taken from http://stackoverflow.com/a/4791612/57318
+        os.killpg(data['process'].pid, signal.SIGKILL)
         thread.join()
         return None
     else:
