@@ -282,9 +282,14 @@ function filterLabelData(labelData) {
 }
 
 window.getData = function() {
-    var labels = _.map(currLabels, function(label) {
-        return filterLabelData(label);
-    });
+    var labels = _.chain(currLabels)
+        .map(function(label) {
+            return filterLabelData(label);
+        })
+        .filter(function(label) {
+            return label.content.length > 0;
+        })
+        .value();
 
     return {
         range: currRange,
