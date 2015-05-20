@@ -278,6 +278,9 @@ function filterLabelData(labelData) {
 
     finalData.style = newStyles;
 
+    // Always stringify content
+    finalData.content = "" + finalData.content;
+
     return finalData;
 }
 
