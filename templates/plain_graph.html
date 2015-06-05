@@ -29,12 +29,18 @@
     var Perseus = {};
 </script>
 
+{# For cachebusting, we append the hash of the latest build of
+KAthJax to its URL. You'll need to manually update this every time
+the KAthJax hash changes: the hash is found at the end of the filename at
+khan-exercises/third_party/MathJax/2.1/config/KAthJax-{hash}.js #}
+{% set KATHJAX_HASH = "eaf1d9cafdc2fc68897cf72d30d67d5a" %}
+
 <script src="static/js/khan-exercises/local-only/jquery.js"></script>
 <script src="static/js/khan-exercises/local-only/jed.js"></script>
 <script src="static/js/khan-exercises/local-only/i18n.js"></script>
 <script src="static/js/khan-exercises/local-only/localeplanet/icu.en.js"></script>
 <script src="static/js/khan-exercises/local-only/underscore.js"></script>
-<script src="static/js/khan-exercises/third_party/MathJax/2.1/MathJax.js?config=KAthJax-8f02f65cba7722b3e529bd9dfa6ac25d"></script>
+<script src="static/js/khan-exercises/third_party/MathJax/2.1/MathJax.js?config=KAthJax-{{ KATHJAX_HASH }}"></script>
 
 <script src="static/js/khan-exercises/local-only/katex/katex.js"></script>
 <script src="static/js/khan-exercises/exercises-stub.js"></script>
