@@ -282,6 +282,10 @@ keUtilsLoaded.then(function() {
             formSubmit.attr("disabled", true);
 
             storedValue = null;
+
+            if (typeof console !== "undefined") {
+                console.log(e.stack);
+            }
         }
     }
     updateGraphie();
