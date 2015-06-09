@@ -191,12 +191,6 @@ KhanUtil.createGraphie = function() {
         return oldInit.apply(this, arguments);
     };
 
-    // We do this because various drawX functions including drawPoint need
-    // this to be called, otherwise they raise an exception. Instead of asking
-    // content creators to figure out when this needs to be added, we just add
-    // it to everything ourselves with this.
-    graphie.addMouseLayer({allowScratchpad: true});
-
     return graphie;
 };
 

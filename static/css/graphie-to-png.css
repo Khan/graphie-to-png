@@ -30,9 +30,6 @@ body {
 #output .graphie {
     outline: 1px dashed #df0030;
 }
-#output .graphie svg {
-    position: absolute;
-}
 #output .size {
     font-size: 12px;
     color: #df0030;
