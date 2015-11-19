@@ -87,6 +87,14 @@
 <script src="/static/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
 
 <script>
+if (navigator.registerProtocolHandler) {
+    navigator.registerProtocolHandler(
+        "web+graphie",
+        "http://graphie-to-png.kasandbox.org/?preload=%s",
+        "Graphie-to-png handler"
+    );
+}
+
 keUtilsLoaded.then(function() {
     var editor = ace.edit("editor");
     var session = editor.getSession();
@@ -304,6 +312,13 @@ keUtilsLoaded.then(function() {
         sampleJS = sample.js;
         editor.setValue(sampleJS, /* cursorPos: */ -1);
         updateGraphie();
+    }
+
+    var preloadRegexp = /[&?]preload=([^&=]+)(?:[&=]|$)/;
+    var preload = window.location.search.match(preloadRegexp);
+    if (preload) {
+        var preloadUrl = decodeURIComponent(preload[1]);
+        loadUrl(preloadUrl);
     }
 });
 </script>
