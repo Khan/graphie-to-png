@@ -13,11 +13,12 @@ var fn1 = function(theta) {
 shadePolar([
     ["include", fn1, [0, 2*PI]],
     ["exclude", fn1, [2*PI/3, 4*PI/3]]
-], BLUE);
+], BLUE_D);
 
 // Plot the function itself
 plotPolar(fn1, [0, 2*PI], {
-    stroke: BLUE
+    stroke: BLUE_D,
+    strokeWidth: 3
 });
 
 
@@ -38,16 +39,18 @@ var fn3 = function(theta) {
 shadePolar([
     ["include", fn2, [0, 2*PI]],
     ["exclude", fn3, [0, 2*PI]],
-], GREEN);
+], GREEN_D);
 
 // Plot the left circle
 plotPolar(fn2, [0, 2*PI], {
-    stroke: GREEN
+    stroke: GREEN_D,
+    strokeWidth: 3
 });
 
 // Plot the left half of the right circle
 plotPolar(fn3, [PI/2, 3*PI/2], {
-    stroke: RED
+    stroke: RED_D,
+    strokeWidth: 3
 });
 
 

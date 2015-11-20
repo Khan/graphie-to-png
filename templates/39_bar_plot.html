@@ -1,9 +1,10 @@
 <script type="text/graphie" data-title="39. Bar Plot">
-/* Data to plot. Should be tuples of 'Category' and 'Number of items'. */
+/* Data to plot. Should be numbers indicating the height of each bucket. */
 var data = [
-    ['X', 5],
-    ['Y', 6],
-    ['Z', 9]
+    5,
+    3,
+    9,
+    6
 ];
 
 /* y-parameters */
@@ -11,11 +12,18 @@ var yMin = 0;
 var yMax = 10;
 var yScale = 1;
 
+/* bucket parameters */
+var minBucket = 2;
+var maxBucket = 10;
+
 /* Graph styles */
 var xLabel = "X values";
 var yLabel = "Y values";
+var title = "Graph title";
+
 // Bar plots typically use light colors
-var colors = [LIGHT_BLUE, LIGHT_RED, LIGHT_BLUE];
+var color = GREEN_B;
+var outline = GREEN_E;
 var tickHeight = 6;
 var plotDimensions = [380, 300];
 
@@ -24,8 +32,9 @@ var plotDimensions = [380, 300];
 
 // Calculate x-parameters
 var numBins = _.size(data);
+var bucketSize = (maxBucket - minBucket) / numBins;
 var barPad = 0.15;
-var barWidth = 1 - 2 * barPad;
+var barWidth = 1;
 var barHalfWidth = barWidth / 2;
 var dimX = numBins + 2 * barPad;
 
@@ -38,7 +47,8 @@ var scale = _.map([dimX, dimY], function (dim, i) {
 });
 var padX = 25 / scale[0];
 var padY = 25 / scale[1];
-var range = [[-3 * padX, dimX + padX], [-3 * padY, dimY + padY]];
+var padYTop = title ? padY * 3 : padY;
+var range = [[-3 * padX, dimX + padX], [-3 * padY, dimY + padYTop]];
 
 // Initialize graph
 init({
@@ -64,19 +74,11 @@ for (var y = 0; y <= dimY; y += yScale) {
 
 // Plot each bar with its label
 _.each(data, function(item, i) {
-    var category = item[0];
-    var count = item[1];
+    var count = item;
     var x = 0.5 + i + barPad;
 
-    // Plot bar label (below axis)
-    var scaledTickHeight = tickHeight / scale[1];
-    style({stroke: "#000", strokeWidth: 2, opacity: 1.0});
-    line([x, -scaledTickHeight], [x, 0]);
-    label([x, 0], category, "below", false);
-
     // Cycle through colors
-    var color = colors[i % colors.length];
-    style({stroke: "none", fill: color});
+    style({opacity: 1, strokeWidth: 2, stroke: outline, fill: color});
 
     // Plot bar
     path([
@@ -87,10 +89,32 @@ _.each(data, function(item, i) {
         ]);
 });
 
+// Plot each bar with its label
+_.times(numBins + 1, function(i) {
+    var x = i + barPad;
+    var l = (i * bucketSize) + minBucket;
+
+    // Plot the label tick mark
+    style({stroke: "#000", strokeWidth: 2, opacity: 1.0});
+    var scaledTickHeight = tickHeight / scale[1];
+    line([x, -scaledTickHeight], [x, 0]);
+
+    // Draw the label
+    label([x, -0.1], l, "below", true);
+});
+
 // Add axes (after drawing boxes)
 style({stroke: "#000", strokeWidth: 2, opacity: 1.0});
 line([0, 0], [dimX, 0]);
 line([0, 0], [0, dimY]);
+
+// Add title label
+if (title) {
+    label([dimX / 2, dimY + padYTop * 0.9],
+        title,
+        "below", false,
+        {"font-weight": "bold", "font-size": "16px"});
+}
 
 // Add axis labels
 label([dimX / 2, -35 / scale[1]],

@@ -3,13 +3,14 @@ plotPolar(function(theta) {
     // Write down the function you want to plot here
     return 5 * cos(10 * cos(theta));
 }, [0, 2*PI], {
-    stroke: BLUE
+    stroke: BLUE_D,
+    strokeWidth: 3
 });
 
 
 // plot a point at (r=3, theta=15deg)
 drawPoint({
     point: polar(3, 15),
-    color: BLUE
+    color: BLUE_D
 });
 </script>

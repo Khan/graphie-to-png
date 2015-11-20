@@ -7,12 +7,13 @@ riemann(
     [-5, 3],  // x-range to shade
     8,        // number of divisions
     "center",   // left, right, or center
-    BLUE      // color
+    BLUE_D      // color
 );
 
 style({
-    stroke: BLUE,
-    fill: "none"
+    stroke: BLUE_D,
+    fill: "none",
+    strokeWidth: 3
 });
 
 plot(function(x) {

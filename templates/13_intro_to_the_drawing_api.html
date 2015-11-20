@@ -1,16 +1,25 @@
 <script type="text/graphie" data-use-simple="true" data-title="13. Intro to the Drawing API">
+/* The X and Y ranges of this canvas */
+var range = [[-10, 10], [-10, 10]];
+
+/* The output's largest side is limited to this many pixels */
+var size = 400;
+
+setup();
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 drawLine({
     points: [[-5, 8.5], [5, 8.5]],
     showPoints: true, // whether to actually show points
     vertexLabels: ["A", "B"],
-    color: BLUE // changes the color of both line and labels
+    color: BLUE_D // changes the color of both line and labels
 });
 
 drawSegment({
     points: [[-5, 7], [5, 7]],
     dashed: true,
     sideLabel: "x",
-    stroke: GREEN // only changes the color of the line
+    stroke: GREEN_D // only changes the color of the line
 });
 
 drawRay({
@@ -28,14 +37,14 @@ drawRay({
 drawPoint({
     point: [-7, 7],
     label: "Y",
-    color: PINK // changes the color of both point and labels
+    color: MAROON_D // changes the color of both point and labels
 });
 
 drawPoint({
     point: [7, 7],
     label: "Z",
-    stroke: PURPLE, // only changes the color of the point
-    fill: PURPLE    // only changes the color of the point
+    stroke: PURPLE_C, // only changes the color of the point
+    fill: PURPLE_C    // only changes the color of the point
 });
 
 // For much more about polygons, see template #17 (Polygon)
@@ -54,7 +63,7 @@ drawPolygon({
 drawCircle({
    center: [3, 0],
    radius: 3,
-   color: ORANGE, // changes the color of both stroke and fill
+   color: GOLD_D, // changes the color of both stroke and fill
    fillOpacity: 0.2 // all styles can be overriden
 });
 
@@ -63,13 +72,13 @@ drawArc({
     radius: 2.5, // circular arc
     start: 225,
     end: 315,
-    stroke: RED
+    stroke: RED_D
 });
 
 drawEllipse({
    center: [-3, -6],
    radii: [5, 2],
-   fill: ORANGE, // only changes the color of the fill
+   fill: GOLD_D, // only changes the color of the fill
    fillOpacity: 0.2
 });
 
@@ -78,8 +87,8 @@ drawArc({
     radii: [4.5, 1.5], // elliptical arc
     start: 225,
     end: 315,
-    stroke: RED,
-    fill: GREEN,
+    stroke: RED_D,
+    fill: GREEN_D,
     fillOpacity: 0.5
 });
 
@@ -88,14 +97,14 @@ drawSector({ // like drawArc above, except completely outlined
     radii: [4.5, 1.5], // elliptical arc
     start: 225,
     end: 315,
-    stroke: PINK,
-    fill: BLUE,
+    stroke: MAROON_D,
+    fill: BLUE_B,
     fillOpacity: 1
 });
 
 drawSegment({
    points: [[3, 0], [6, 0]],
-   stroke: ORANGE
+   stroke: GOLD_D
 });
 
 var offset = polar(3, 135); // polar coordinate (radius, angle)
@@ -103,7 +112,7 @@ var onCircle = addPoints([3, 0], offset); // sum 2+ points
 
 drawSegment({
    points: [[3, 0], onCircle],
-   stroke: ORANGE
+   stroke: GOLD_D
 });
 
 drawAngleLabel({
@@ -111,4 +120,13 @@ drawAngleLabel({
     label: "$deg2", // "$deg" is relaced by angle measure
     arcs: 2         // the 2 means 2 decimal places are shown
 });
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+function setup() {
+    var scales = _.map(range, function(extent) {
+        return Perseus.Util.scaleFromExtent(extent, size);
+    });
+    init({range: range, scale: _.min(scales)});
+}
+
 </script>

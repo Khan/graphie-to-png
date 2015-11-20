@@ -1,0 +1,59 @@
+<script type="text/graphie" data-title="46. Venn diagram">
+init({
+    range: [[-5.1, 5.1], [-5.1, 6.4]], // coordinate system
+    scale: [30, 30] // pixes per unit
+    });
+
+// Background rectangle
+drawPolygon({
+    points: [
+        [-5,-5],
+        [-5,6.3],
+        [5,6.3],
+        [5,-5]
+        ],
+    strokeWith: 2,
+    stroke: BLACK,
+    angleLabels: []
+});
+
+// Circles
+drawCircle({
+    center: polar(2, 210),
+    radius: 2.8,
+    color: PURPLE_D,
+    fillOpacity: 0.4
+});
+drawCircle({
+    center: polar(2, 90),
+    radius: 2.8,
+    color: GREEN_D,
+    fillOpacity: 0.4
+});
+drawCircle({
+    center: polar(2, 330),
+    radius: 2.8,
+    color: BLUE_D,
+    fillOpacity: 0.4
+});
+
+// label the groups
+label(polar(5.5, 90), "Group A", "center", false, {color: GREEN_E, "font-weight": "bold"});
+line(polar(5.1, 90), polar(4.2, 90), {stroke: GREEN_E});
+
+label(polar(5.5, 230), "Group B", "center", false, {color: PURPLE_E, "font-weight": "bold"});
+line(polar(5.1, 230), polar(4.2, 230), {stroke: PURPLE_E});
+
+label(polar(5.5, 306), "Group C", "center", false, {color: BLUE_E, "font-weight": "bold"});
+line(polar(5.1, 310), polar(4.2, 310), {stroke: BLUE_E});
+
+// label the amounts
+label(polar(2.4, 330), "27");
+label(polar(2.4, 210), "30");
+label(polar(2.4, 90), "19");
+label(polar(0, 0), "5");
+label(polar(1.7, 30), "10");
+label(polar(1.7, 150), "11");
+label(polar(1.7, 270), "7");
+label(polar(4.3, 30), "7");
+</script>

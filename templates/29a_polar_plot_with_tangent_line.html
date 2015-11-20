@@ -3,19 +3,21 @@ plotPolar(function(theta) {
     // Write down the function you want to plot here
     return 3/2 + 4 * sin(theta);
 }, [0, 2*PI], {
-    stroke: BLUE
+    stroke: BLUE_D,
+    strokeWidth: 3
 });
 
 plot(function(x) {
     // Function of the tangent line
     return (7/4)+(11*sqrt(3)/5)*(x-7*sqrt(3)/4);
 }, [-10, 10], {
-    stroke: GREEN
+    stroke: GREEN_D,
+    strokeWidth: 3
 });
 
 // plot a point at (r=7/2, theta=30deg)
 drawPoint({
     point: polar(7/2, 30),
-    color: BLUE
+    color: BLUE_D
 });
 </script>

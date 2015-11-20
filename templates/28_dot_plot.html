@@ -1,4 +1,6 @@
 <script type="text/graphie" data-title="28. Dot Plot">
+var axisLabel = "Axis label";
+
 /* Variables */
 var min = 0;            // number line start
 var max = 10;           // number line end
@@ -6,7 +8,7 @@ var max = 10;           // number line end
 var labelInterval = 1;  // interval at which line will be labeled
 var tickInterval = 1/4; // interval at which ticks will be drawn
 
-var color = BLUE;       // dot color
+var color = BLUE_D;       // dot color
 
 /* Data */
 var data = {
@@ -27,7 +29,7 @@ var data = {
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 var xSpacing = 0.5;     // distance between tick marks
-var ySpacing = 0.75;    // distance between dots
+var ySpacing = 0.6;    // distance between dots
 
 var tickHeight = 0.5;   // tick mark height
 var linePosition = -1;  // number line y position
@@ -44,7 +46,8 @@ var xOffset = tickCount >= 48 ? 1 : 0.5;
 var yOffset = tickCount > 60 ? 3.5 : (tickCount > 40 ? 3 : 2.5);
 
 var xRange = [-xOffset, tickCount * xSpacing + xOffset];
-var yRange = [-yOffset, _.max(data) * ySpacing];
+var yMin = axisLabel ? -yOffset*1.7 : -yOffset;
+var yRange = [yMin, _.max(data) * ySpacing];
 
 /* Prevent width from exceeding 480 pixels */
 init({
@@ -102,4 +105,9 @@ _.each(data, function(y, x) {
         }); 
     });
 });
+
+/* Label the axis */
+if (axisLabel){
+    label([normalize((min+max)/2) * xSpacing, -yOffset*1.15], axisLabel, "below", false, {"font-weight": "bold"});
+}
 </script>

@@ -1,14 +1,15 @@
 <script type="text/graphie" data-use-grid="true" data-title="37. Shade area under curve">
 style({
-    stroke: BLUE,
-    fill: "none"
+    stroke: BLUE_D,
+    fill: "none",
+    strokeWidth: 3
 });
 
 plot(function(x) {
     // Function to shade under
     return 0.03 * (x+5)*(x+2)*(x-3)*(x-6);
 }, [-4, 2], // <-- x-range to shade
-    false, true, { stroke: "none", fill: BLUE, fillOpacity: 0.3 }
+    false, true, { stroke: "none", fill: BLUE_D, fillOpacity: 0.3 }
 );
 
 plot(function(x) {

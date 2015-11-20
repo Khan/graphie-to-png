@@ -2,45 +2,53 @@
 drawPolygon({
     points: [[0, 0], [0, 3], [7, 3], [7, 0]],
     sideLabels: ["$len0"],
-    fill: GREEN,
-    fillOpacity: 0.2
+    fill: GREEN_D,
+    fillOpacity: 0.2,
+    stroke: GREEN_E
 });
 
 drawPolygon({
     points: [[0, 3], [2, 6], [7, 3]],
-    fill: GREEN,
-    fillOpacity: 0.2
+    fill: GREEN_D,
+    fillOpacity: 0.2,
+    stroke: GREEN_E
 });
 
 drawPolygon({
     points: [[0, 0], [7, 0], [10, -3]],
     sideLabels: ["$len0"],
-    fill: GREEN,
-    fillOpacity: 0.2
+    fill: GREEN_D,
+    fillOpacity: 0.2,
+    stroke: GREEN_E
 });
 
 drawSegment({
    points: [[7, 0], [10, 0]],
-   dashed: true
+   dashed: true,
+    stroke: GREEN_E
 });
 
 drawSegment({
    points: [[10, 0], [10, -3]],
    sideLabel: "$len0",
-   dashed: true
+   dashed: true,
+    stroke: GREEN_E
 });
 
 drawAngleLabel({
-    points: [[7, 0], [10, 0], [10, -3]]
+    points: [[7, 0], [10, 0], [10, -3]],
+    stroke: GREEN_E
 });
 
 drawSegment({
     points: [[2, 3], [2, 6]],
     dashed: true,
-    sideLabel: "$len0"
+    sideLabel: "$len0",
+    stroke: GREEN_E
 });
 
 drawAngleLabel({
-    points: [[7, 3], [2, 3], [2, 6]]
+    points: [[7, 3], [2, 3], [2, 6]],
+    stroke: GREEN_E
 });
 </script>

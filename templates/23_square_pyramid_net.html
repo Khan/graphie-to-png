@@ -1,4 +1,13 @@
 <script type="text/graphie" data-use-simple="true" data-range="[[0, 11], [0, 11]]" data-title="23. Square Pyramid Net">
+/* The X and Y ranges of this canvas */
+var range = [[0, 11], [0, 11]];
+
+/* The output's largest side is limited to this many pixels */
+var size = 400;
+
+setup();
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 /* Helper functions for drawing simple polygons            */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 var triangleHeight = sqrt(3)/2;
@@ -33,18 +42,21 @@ var drawSimpleTriangle = function(description) {
         angleLabels: [],
         sideLabels: [null, null, showLabels ? "$len0" : null],
         ticks: description.ticks,
-        fill: GREEN,
-        fillOpacity: 0.2
+        fill: GREEN_D,
+        fillOpacity: 0.2,
+        stroke: GREEN_E
     });
     if (showLabels) {
         baseMidpoint = lineMidpoint([points[0], points[2]]);
         drawSegment({
             points: [points[1], baseMidpoint],
             dashed: true,
-            sideLabel: "$len0"
+            sideLabel: "$len0",
+            stroke: GREEN_E
         });
         drawAngleLabel({
-            points: [points[1], baseMidpoint, points[0]]
+            points: [points[1], baseMidpoint, points[0]],
+            stroke: GREEN_E
         });
     }
 };
@@ -74,8 +86,9 @@ var drawSimpleRectangle = function(description) {
             showLabels ? "$len0" : null
             ],
         ticks: description.ticks,
-        fill: GREEN,
-        fillOpacity: 0.2
+        fill: GREEN_D,
+        fillOpacity: 0.2,
+        stroke: GREEN_E
     });
 };
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -130,4 +143,13 @@ drawSimpleTriangle({
     ticks: [2, 2, 1],
     centerOffset: 0
 });
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+function setup() {
+    var scales = _.map(range, function(extent) {
+        return Perseus.Util.scaleFromExtent(extent, size);
+    });
+    init({range: range, scale: _.min(scales)});
+}
+
 </script>

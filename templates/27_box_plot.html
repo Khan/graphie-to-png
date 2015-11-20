@@ -2,6 +2,9 @@
 // For an interactive example, see:
 // khan-exercises/exercises/creating_box_and_whisker_plots.html
 
+var axisLabel = "Axis label";
+var color = BLUE_D;
+
 /* Number line parameters */
 var numberLineMin = 0;
 var numberLineMax = 15;
@@ -14,15 +17,19 @@ var median = 5.5;
 var q3 = 8;
 var q4 = 11;
 
+/* Outliers */
+var outliers = [0.7, 13.4, 14.3];
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Normalize points to the size of the canvas, and set up  */
 /* the canvas                                              */
 var numberLineSpread = numberLineMax - numberLineMin;
 var numberLineTickCount = numberLineSpread/numberLineTickSize;
 var xrange = [ -0.5, numberLineTickCount + 0.5 ];
+var yMin = axisLabel ? -4.5 : -3.5;
 
 init({
-    range: [xrange, [ -3.5, 1.5 ]],
+    range: [xrange, [ yMin, 1.5 ]],
     scale: _.min([30, Perseus.Util.scaleFromExtent(xrange, 480)])
 });
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -50,24 +57,40 @@ var nmedian = normalize(median);
 var nq3 = normalize(q3);
 var nq4 = normalize(q4);
 
-// draw Q0
-drawPoint({point: [nq0, 0]});
+style({
+    strokeWidth: 3,
+    stroke: BLUE_D
+});
 
-// draw Q1
-drawSegment({points: [[nq1, -1], [nq1, 1]]});
+// draw Q0
+line([nq0, -0.2], [nq0, 0.2]);
+line([nq0, 0], [nq1, 0]);
 
 // draw median
-drawSegment({points: [[nmedian, 1], [nmedian, -1]]});
-
-// draw Q3
-drawSegment({points: [[nq3, -1], [nq3, 1]]});
+line([nmedian, 1], [nmedian, -1]);
+drawPolygon({
+    points: [
+        [nq1, -1],
+        [nq1, 1],
+        [nq3, 1],
+        [nq3, -1]
+        ],
+    stroke: color,
+    strokeWidth: 3,
+    angleLabels: []
+});
 
 // draw Q4
-drawPoint({point: [nq4, 0]});
+line([nq4, -0.2], [nq4, 0.2]);
+line([nq3, 0], [nq4, 0]);
 
-// draw connecting lines
-drawSegment({points: [[nq0, 0], [nq1, 0]]});
-drawSegment({points: [[nq1, 1], [nq3, 1]]});
-drawSegment({points: [[nq1, -1], [nq3, -1]]});
-drawSegment({points: [[nq3, 0], [nq4, 0]]});
+// draw outliers
+for (var i=0; i < outliers.length; i++) {
+    drawPoint({point: [outliers[i],0], color: BLUE_D});
+}
+
+// axis label
+if (axisLabel) {
+    label([numberLineTickCount/2, -3.5], axisLabel, "below", false, {"font-weight": "bold"});
+}
 </script>

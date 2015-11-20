@@ -1,7 +1,6 @@
 <script type="text/graphie" data-title="5. Tape diagram">
-
 // Top label for the entire tape
-var TOP_LABEL = "\\text{Original Price}";
+var TOP_LABEL = "Original Price";
 
 // Labels for each division. Add as many divisions as you like
 var LABELS = [
@@ -13,7 +12,7 @@ var LABELS = [
     ];
 
 // Label for the left partition
-var BOT_LEFT_LABEL = "\\text{Sale Price}";
+var BOT_LEFT_LABEL = "Sale Price";
 
 // Number of divisions in the left partition
 var BREAK = 4;
@@ -29,7 +28,7 @@ init({
     scale: scale
 });
 
-style({ stroke: BLUE });
+style({ stroke: BLUE_D, strokeWidth: 2 });
 
 var fullWidth = 10;
 var half = fullWidth / 2;
@@ -59,7 +58,8 @@ _.each([top, bottomLeft, bottomRight], function (brace) {
     brace.attr({ stroke: GRAY, "stroke-width": 1.5 });
 });
 
-label([half, 3.1], TOP_LABEL, "above");
-label([half * br, 0.9], BOT_LEFT_LABEL, "below");
+label([half, 3.1], TOP_LABEL, "above", false);
+label([half * br, 0.9], BOT_LEFT_LABEL, "below", false);
 label([half * br + half, 0.9], BOT_RIGHT_LABEL, "below");
+
 </script>

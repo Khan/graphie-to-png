@@ -20,8 +20,9 @@ drawPolygon({
         [inner, -outer]
     ],
     sideLabels: [,,,"$len0","$len0"],
-    fill: GREEN,
-    fillOpacity: 0.2
+    fill: GREEN_D,
+    fillOpacity: 0.2,
+    stroke: GREEN_E
 });
 
 drawPolygon({
@@ -34,8 +35,9 @@ drawPolygon({
         [-inner, outer]
     ],
     sideLabels: [,,,"$len0","$len0"],
-    fill: GREEN,
-    fillOpacity: 0.2
+    fill: GREEN_D,
+    fillOpacity: 0.2,
+    stroke: GREEN_E
 });
 
 var radius = outer - inner;
@@ -45,8 +47,9 @@ drawArc({
     radius: radius,
     start: 90,
     end: 180,
-    fill: GREEN,
-    fillOpacity: 0.2
+    fill: GREEN_D,
+    fillOpacity: 0.2,
+    stroke: GREEN_E
 });
 
 drawArc({
@@ -54,8 +57,9 @@ drawArc({
     radius: radius,
     start: 270,
     end: 0,
-    fill: GREEN,
-    fillOpacity: 0.2
+    fill: GREEN_D,
+    fillOpacity: 0.2,
+    stroke: GREEN_E
 });
 
 
@@ -65,7 +69,8 @@ drawSegment({
         addPoints(b, polar(radius, 135))
     ],
     sideLabel: "$len1",
-    dashed: true
+    dashed: true,
+    stroke: GREEN_E
 });
 
 var middle = outer - (outer - inner) / 2;
@@ -76,7 +81,8 @@ drawSegment({
         [middle, -inner],
     ],
     sideLabel: "$len1",
-    dashed: true
+    dashed: true,
+    stroke: GREEN_E
 });
 
 drawSegment({
@@ -85,6 +91,7 @@ drawSegment({
         [inner, -middle]
     ],
     sideLabel: "$len1",
-    dashed: true
+    dashed: true,
+    stroke: GREEN_E
 });
 </script>

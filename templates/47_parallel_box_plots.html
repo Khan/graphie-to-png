@@ -1,0 +1,128 @@
+<script type="text/graphie" data-title="47. Parallel box plots">
+// For an interactive example, see:
+// khan-exercises/exercises/creating_box_and_whisker_plots.html
+
+var axisLabel = "Axis label";
+var color = BLUE_D;
+
+/* Number line parameters */
+var numberLineMin = 0;
+var numberLineMax = 15;
+var numberLineTickSize = 1;
+
+var boxHeight = 0.8;
+
+/* Data distribution parameters */
+var dataSets = [
+    {
+        name: "Data Set A",
+        color: BLUE_D,
+        q0: 1.5,
+        median: 5.5,
+        q1: 3,
+        q3: 9,
+        q4: 12,
+        outliers: [12.5, 13.7, 14.3]
+    }, {
+        name: "Data Set B",
+        color: PURPLE_D,
+        q0: 4.7,
+        q1: 6,
+        median: 6.5,
+        q3: 9,
+        q4: 10,
+        outliers: [0.7, 1.4, 11.3]
+    }, {
+        name: "Data Set C",
+        color: RED_D,
+        q0: 2.5,
+        q1: 4,
+        median: 6,
+        q3: 8,
+        q4: 11,
+        outliers: [13.4]
+    } 
+];
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+/* Normalize points to the size of the canvas, and set up  */
+/* the canvas                                              */
+var numberLineSpread = numberLineMax - numberLineMin;
+var numberLineTickCount = numberLineSpread/numberLineTickSize;
+var xrange = [ -0.5, numberLineTickCount + 0.5 ];
+var yMin = axisLabel ? -4.5 : -3.5;
+
+init({
+    range: [xrange, [ yMin, dataSets.length * 2.8 * boxHeight - boxHeight - 0.5]],
+    scale: _.min([30, Perseus.Util.scaleFromExtent(xrange, 480)])
+});
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+var normalize = function(number) {
+    return ((number - numberLineMin) / numberLineSpread) *
+        numberLineTickCount;
+};
+var denormalize = function(position) {
+    return position * numberLineSpread / numberLineTickCount +
+        numberLineMin;
+};
+
+/* Draw the number line */
+line([ 0, -2 ], [ numberLineTickCount, -2 ]);
+for (tick = 0; tick <= numberLineTickCount; tick+=1) {
+    var tickValue = denormalize(tick);
+    line([ tick, -1.75 ], [ tick, -2.25 ]);
+    label([ tick, -2.25 ], roundTo(1, tickValue), "below");
+}
+
+for (var i = 0; i < dataSets.length; i++) {
+    var nq0 = normalize(dataSets[i].q0);
+    var nq1 = normalize(dataSets[i].q1);
+    var nmedian = normalize(dataSets[i].median);
+    var nq3 = normalize(dataSets[i].q3);
+    var nq4 = normalize(dataSets[i].q4);
+    
+    style({
+        strokeWidth: 2,
+        stroke: dataSets[i].color
+    });
+    
+    var y = boxHeight * 2.8 * i;
+    
+    // draw Q0
+    line([nq0, -0.2 + y], [nq0, 0.2 + y]);
+    line([nq0, 0 + y], [nq1, 0 + y]);
+    
+    // draw median
+    line([nmedian, boxHeight/2 + y], [nmedian, -boxHeight/2 + y]);
+    drawPolygon({
+        points: [
+            [nq1, -boxHeight/2 + y],
+            [nq1, boxHeight/2 + y],
+            [nq3, boxHeight/2 + y],
+            [nq3, -boxHeight/2 + y]
+            ],
+        stroke: dataSets[i].color,
+        strokeWidth: 2,
+        angleLabels: []
+    });
+    
+    // draw Q4
+    line([nq4, -0.2 + y], [nq4, 0.2 + y]);
+    line([nq3, 0 + y], [nq4, 0 + y]);
+    
+    // draw label
+    label([nmedian, y - boxHeight/2], dataSets[i].name, "below", false, {color: dataSets[i].color, "font-weight": "bold"})
+    
+    // draw outliers
+    var outliers = dataSets[i].outliers;
+    for (var j=0; j < outliers.length; j++) {
+        drawPoint({point: [outliers[j],0+y], color: dataSets[i].color});
+    }
+}
+
+// axis label
+if (axisLabel) {
+    label([numberLineTickCount/2, -3.4], axisLabel, "below", false, {"font-weight": "bold", "font-size": "16px"});
+}
+</script>
