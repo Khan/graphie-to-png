@@ -90,7 +90,7 @@
 if (navigator.registerProtocolHandler) {
     navigator.registerProtocolHandler(
         "web+graphie",
-        "http://graphie-to-png.kasandbox.org/?preload=%s",
+        "http://" + location.host + "/?preload=%s",
         "Graphie-to-png handler"
     );
 }
