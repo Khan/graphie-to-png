@@ -1,4 +1,5 @@
 {
     "project_id": "graphie-to-png",
-    "conduit_uri": "https://phabricator.khanacademy.org/"
+    "conduit_uri": "https://phabricator.khanacademy.org/",
+    "lint.engine": "ArcanistConfigurationDrivenLintEngine"
 }
