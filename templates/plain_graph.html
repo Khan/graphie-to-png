@@ -192,6 +192,7 @@ KhanUtil.createGraphie = function() {
 
         var oldSetPosition = label.setPosition;
         var oldProcessMath = label.processMath;
+        var oldRemove = label.remove;
 
         label.setPosition = function(coordinates) {
             data.coordinates = coordinates;
@@ -202,6 +203,11 @@ KhanUtil.createGraphie = function() {
             data.typesetAsMath = true;
             data.content = math;
             oldProcessMath.apply(this, arguments);
+        };
+
+        label.remove = function() {
+            currLabels.splice(currLabels.indexOf(data), 1);
+            oldRemove.apply(this, arguments);
         };
 
         // Store the information about the label
