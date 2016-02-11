@@ -67,7 +67,6 @@ khan-exercises/third_party/MathJax/2.1/config/KAthJax-{hash}.js #}
 <script src="static/js/khan-exercises/local-only/i18n.js"></script>
 <script src="static/js/khan-exercises/local-only/localeplanet/icu.en.js"></script>
 <script src="static/js/khan-exercises/local-only/underscore.js"></script>
-<script src="static/js/khan-exercises/third_party/MathJax/2.1/MathJax.js?config=KAthJax-{{ KATHJAX_HASH }}"></script>
 
 <script src="static/js/khan-exercises/local-only/katex/katex.js"></script>
 <script src="static/js/khan-exercises/exercises-stub.js"></script>
@@ -391,12 +390,8 @@ window.getSVG = function() {
 try {
     $(".graphie").graphie();
 
-    MathJax.Hub.Queue(function() {
-        waitForImages(function() {
-            webkit2png.start();
-            window.callPhantom({type: "rendered"});
-        });
-    });
+    webkit2png.start();
+    window.callPhantom({type: "rendered"});
 } catch(e) {
     $(".graphie").empty().append($("<div class='error'>").text(e.message));
     webkit2png.start();
