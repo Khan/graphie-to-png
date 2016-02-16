@@ -28,33 +28,6 @@
     };
     var Perseus = {};
 </script>
-<script>
-    // copied from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-    if (typeof Object.assign != 'function') {
-        (function() {
-            Object.assign = function(target) {
-                'use strict';
-                if (target === undefined || target === null) {
-                    throw new TypeError(
-                            'Cannot convert undefined or null to object');
-                }
-
-                var output = Object(target);
-                for (var index = 1; index < arguments.length; index++) {
-                    var source = arguments[index];
-                    if (source !== undefined && source !== null) {
-                        for (var nextKey in source) {
-                            if (source.hasOwnProperty(nextKey)) {
-                                output[nextKey] = source[nextKey];
-                            }
-                        }
-                    }
-                }
-                return output;
-            };
-        })();
-    }
-</script>
 
 {# For cachebusting, we append the hash of the latest build of
 KAthJax to its URL. You'll need to manually update this every time
@@ -219,32 +192,6 @@ KhanUtil.createGraphie = function() {
     };
 
     return graphie;
-};
-
-// copied from khan-exercises.js
-var randomSeed = new Date().getTime() & 0xffffffff;
-
-// copied from khan-exercises.js
-KhanUtil.random = function() {
-    // Robert Jenkins' 32 bit integer hash function.
-    var seed = randomSeed;
-    seed = ((seed + 0x7ed55d16) + (seed << 12)) & 0xffffffff;
-    seed = ((seed ^ 0xc761c23c) ^ (seed >>> 19)) & 0xffffffff;
-    seed = ((seed + 0x165667b1) + (seed << 5)) & 0xffffffff;
-    seed = ((seed + 0xd3a2646c) ^ (seed << 9)) & 0xffffffff;
-    seed = ((seed + 0xfd7046c5) + (seed << 3)) & 0xffffffff;
-    seed = ((seed ^ 0xb55a4f09) ^ (seed >>> 16)) & 0xffffffff;
-    return (randomSeed = (seed & 0xfffffff)) / 0x10000000;
-};
-
-// copied from khan-exercises.js
-KhanUtil.localeToFixed = function(num, places) {
-    var localeDecimalSeperator = icu.getDecimalFormatSymbols().decimal_separator;
-    var localeFixed = num.toFixed(places).replace(".", localeDecimalSeperator);
-    if (localeFixed === "-0") {
-        localeFixed = "0";
-    }
-    return localeFixed;
 };
 
 var ignoredStyles = [
