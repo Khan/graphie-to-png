@@ -4,4 +4,4 @@ boto==2.9.8
 Werkzeug==0.8.3
 gunicorn==0.17.4
 lxml==3.4.0
-svg.path==2.0b1
+svg.path==2.1.1
