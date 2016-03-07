@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Adapted from elements of https://github.com/petercollingridge/SVG-Optimiser
+import traceback
 
 import lxml.etree
 import svg.path
@@ -36,8 +37,8 @@ def _cleanup_paths(tree):
         tag = get_tag(element)
 
         if tag == "path":
-            path = svg.path.parse_path(element.get("d"))
             try:
+                path = svg.path.parse_path(element.get("d"))
                 # TODO(emily): Figure out a way to specify the number of
                 # decimal places we want here.
                 element.set("d", path.d())
@@ -179,11 +180,16 @@ def cleanup_svg(svgdata):
 
     Read in an SVG file as a string, decode it using lxml, run all of the
     cleanup functions on it, and re-encode it"""
-    tree = lxml.etree.fromstring(svgdata)
+    try:
+        tree = lxml.etree.fromstring(svgdata)
 
-    _remove_desc(tree)
-    _cleanup_paths(tree)
-    _cleanup_styles(tree)
-    _cleanup_clip_paths(tree)
+        _remove_desc(tree)
+        _cleanup_paths(tree)
+        _cleanup_styles(tree)
+        _cleanup_clip_paths(tree)
 
-    return lxml.etree.tostring(tree)
+        return lxml.etree.tostring(tree)
+    except Exception, e:
+        print e
+        traceback.print_exc()
+
