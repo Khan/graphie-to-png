@@ -105,6 +105,7 @@ def run_with_timeout(command, timeout):
 def _js_to_svg(js):
     # Run phantomjs with a 55 second timeout. Gunicorn kills its child threads
     # after 60 seconds, so we need to kill the phantomjs thread before then.
+    # TODO(csilvers): just use /usr/bin/timeout instead.
     json_data = run_with_timeout([
         os.path.join(root, 'node_modules', '.bin', 'phantomjs'),
         os.path.join(root, 'phantom_svg.js'),

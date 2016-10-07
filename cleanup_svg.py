@@ -1,12 +1,17 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+
 # Adapted from elements of https://github.com/petercollingridge/SVG-Optimiser
-import traceback
+
+import logging
+import os
+import re
+import subprocess
 
 import lxml.etree
 import svg.path
-import collections
-import re
+
+
+_ROOT = os.path.realpath(os.path.dirname(__file__))
 
 
 def get_tag(element):
@@ -25,128 +30,62 @@ def remove_element(element):
     element.getparent().remove(element)
 
 
-def _cleanup_paths(tree):
-    """Cleans up badly formatted paths in an SVG
-
-    Many of the paths in the produced SVGs have large numbers of decimal
-    places, which makes them large. Using the svg.path library, we parse the
-    whole path and then spit the paths back out. The svg.path library rounds
-    the points to an appropriate number of decimal places for us.
-    """
-    for element in tree.iter():
-        tag = get_tag(element)
-
-        if tag == "path":
-            try:
-                path = svg.path.parse_path(element.get("d"))
-                # TODO(emily): Figure out a way to specify the number of
-                # decimal places we want here.
-                element.set("d", path.d())
-            except:
-                # Sometimes, svg.path fails to re-generate the path if it's
-                # strange. We ignore this and leave the original path.
-                continue
-
-
-def _remove_desc(tree):
-    """Remove the 'Created with Raphaël' description in the generated SVGs"""
-    for element in tree.iter():
-        tag = get_tag(element)
-
-        if tag == "desc":
-            remove_element(element)
-
-
-STYLES_TO_REMOVE = frozenset(["-webkit-tap-highlight-color"])
-
-
-def _cleanup_styles(tree):
-    """Remove some of the styles that graphie automatically adds to the SVG
-
-    Almost all of the elements in the produced SVG have a
-
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
-
-    in their inline styles. Here, we parse out the styles from the elements and
-    remove that specific one.
-    """
-    for element in tree.iter():
-        if "style" in element.keys():
-            # Parse the original styles
-            styles = [
-                tuple(style.strip().split(':'))
-                for style in element.attrib["style"].split(';')
-                if len(style.strip()) > 0]
-
-            # Remove ones we don't like
-            cleaned_styles = [
-                s for s in styles
-                if s[0].strip() not in STYLES_TO_REMOVE]
-
-            if len(cleaned_styles) == 0:
-                # Remove the style attribute entirely if there are no more
-                # styles
-                del element.attrib["style"]
-            else:
-                # Otherwise re-generate the style string
-                style_string = ';'.join(':'.join(s) for s in cleaned_styles)
-                element.attrib["style"] = style_string
-
-
 # Regex for matching clip-path urls
 clip_path_url_regex = re.compile(r'url\(\#([^\)]+)\)')
 
 
+def _run_svgo(svg):
+    """Given the contents of an svg, return the svgo-ized contents."""
+    p = subprocess.Popen([os.path.join(_ROOT, "node_modules", ".bin", "svgo"),
+                          '-i', '-', '-o', '-'],
+                         stdin=subprocess.PIPE,
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    (stdout, stderr) = p.communicate(input=svg)
+    rc = p.wait()
+    if stderr or rc != 0:
+        raise RuntimeError('svgo call failed (rc %s): %s' % (rc, stderr))
+    return stdout
+
+
 def _cleanup_clip_paths(tree):
-    """Remove duplicate clip paths, and shorten names
+    """Remove duplicate clip paths.
 
-    Every time an element with a clip path is added in Raphaël, a new clipPath
-    element is created with a unique ID to go along with it. This creates two
-    problems: there are a lot of duplicate clip paths, and the unique ids that
-    are generated are very long (like 'r-13302e1165e04ceea0c6420803f630ab'),
-    both increasing the size of the SVG.
+    Every time an element with a clip path is added in Raphael, a new
+    clipPath element is created with a unique ID to go along with
+    it. This creates a lot of duplicate clip paths.
 
-    To fix this, we first remove duplicate clip paths, and then we shorten the
-    remaining names to 'clip-%d` for some unique number.
+    To fix this, we remove duplicate clip paths, and fix all references
+    to clip-paths to use the fixed-up name.
     """
-    clip_paths = collections.defaultdict(list)
+    clip_paths = {}
     to_remove = []
-    clip_number = 1
 
     for element in tree.iter():
         tag = get_tag(element)
 
         # We only handle clipPaths with a single 'rect' child for now
         if tag == "clipPath" and len(element.getchildren()) == 1:
+            element_id = element.get('id')
             child = element.getchildren()[0]
 
             if get_tag(child) == "rect":
-                element_id = element.get('id')
-                # TODO(emily): We don't do any rounding here, and just compare
-                # string-to-string. Maybe do rounding of some sort?
                 clip_def = (child.get('x'),
                             child.get('y'),
                             child.get('height'),
                             child.get('width'),
                             child.get('transform'))
+            else:
+                continue
 
-                if clip_def in clip_paths:
-                    # If we've already seen the same clip path, remove the
-                    # element. We can't actually remove the elements here or
-                    # the iterator gets messed up, so we add it to a list to
-                    # remove later
-                    to_remove.append(element)
-                else:
-                    # If we haven't seen the clip path, we generate a new
-                    # unique name, and set the current clip path's id to it
-                    new_element_id = "clip-%d" % clip_number
-                    clip_number += 1
-                    element.attrib["id"] = new_element_id
-                    # We put the new id at the beginning of the list
-                    clip_paths[clip_def].append(new_element_id)
+            if clip_def in clip_paths:
+                # If we've already seen the same clip path, remove the
+                # element. We can't actually remove the elements here or
+                # the iterator gets messed up, so we add it to a list to
+                # remove later
+                to_remove.append(element)
 
-                # Store a list of the ids associated with the same clip path
-                clip_paths[clip_def].append(element_id)
+            # The first element-id is the one we keep, the rest we delete
+            clip_paths.setdefault(clip_def, []).append(element_id)
 
     for element in to_remove:
         remove_element(element)
@@ -157,7 +96,6 @@ def _cleanup_clip_paths(tree):
     for urls in clip_paths.itervalues():
         # The new url is the first thing in the list
         new_url = urls[0]
-
         for url in urls[1:]:
             clip_urls[url] = new_url
 
@@ -165,31 +103,75 @@ def _cleanup_clip_paths(tree):
     for element in tree.iter():
         if "clip-path" in element.keys():
             path = element.get("clip-path")
-
             match = clip_path_url_regex.match(path)
             if match:
                 url = match.group(1)
-
                 if url in clip_urls:
                     element.attrib["clip-path"] = (
                         "url(#" + clip_urls[url] + ")")
+
+
+def _clip_paths(tree):
+    """Clip outrageous values out of paths that rafael creates.
+
+    If you give raphael a function to graph like 2**2**x, it can
+    produce an svg path like:
+        M104.00000000000148,-172488677.42386922L104.50000000000148,...
+    -172,000,000 is not going to fit inside our viewport.  In fact,
+    for firefox we have an overflow error and some ugly looking
+    lines in random parts of the graph.  For that reason, if a
+    path consists entirely of 'M' and 'L' directives, I remove
+    all directives at the front and the back of the path that
+    have either an X or a Y coordinate that is "way too large".
+    """
+    MAX = 1000000     # in my tests, firefox does fine with values up to 1M
+
+    for element in tree.iter():
+        tag = get_tag(element)
+        if tag == "path":
+            try:
+                # NOTE: This rounds to 1 decimal point, which I guess
+                # is fine though svgo would do that for us too.
+                path = svg.path.parse_path(element.get("d"))
+
+                # path is now a list of Line's, each Line is a complex
+                # number ('real' is x coord and 'complex' is y coord).
+                # I use abs() to get the euclidian distance for pruning.
+                while (path and
+                       max(abs(path[0].start), abs(path[0].end)) > MAX):
+                    del path[0]
+                while (path and
+                       max(abs(path[-1].start), abs(path[-1].end)) > MAX):
+                    del path[-1]
+
+                element.set("d", path.d())
+            except:
+                # Sometimes, svg.path fails to re-generate the path if it's
+                # strange. We ignore this and leave the original path.
+                continue
 
 
 def cleanup_svg(svgdata):
     """Run all of the cleanup functions on an svg file
 
     Read in an SVG file as a string, decode it using lxml, run all of the
-    cleanup functions on it, and re-encode it"""
+    cleanup functions on it, and re-encode it.
+    """
     try:
+        # We do our passes first, then the svgo pass, since it's easier
+        # to modify the unoptimized svg than the optimized.
+
         tree = lxml.etree.fromstring(svgdata)
-
-        _remove_desc(tree)
-        _cleanup_paths(tree)
-        _cleanup_styles(tree)
         _cleanup_clip_paths(tree)
+        _clip_paths(tree)
+        new_svgdata = lxml.etree.tostring(tree)
 
-        return lxml.etree.tostring(tree)
-    except Exception, e:
-        print e
-        traceback.print_exc()
+        return _run_svgo(new_svgdata)
 
+    except Exception:
+        logging.exception("Cleanup svg failed")
+
+
+if __name__ == '__main__':
+    import sys
+    print cleanup_svg(sys.stdin.read())
