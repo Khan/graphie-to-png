@@ -222,11 +222,17 @@ keUtilsLoaded.then(function() {
         });
     });
 
-    var urlStart = "://ka-perseus-graphie\\.s3\\.amazonaws\\.com/";
+
+    var urlStart =
+        "(?:" +
+        "ka-perseus-graphie\\.s3\\.amazonaws\\.com/" +
+        "|" +
+        "fastly.kastatic.org/ka-perseus-graphie/" +
+        ")";
     var hashMatch = "[a-f0-9]{40}";
     var urlMatcher = new RegExp(
-        "web\\+graphie" + urlStart + "(" + hashMatch + ")|" +
-        "https" + urlStart + "(" + hashMatch + ").png");
+        "web\\+graphie://" + urlStart + "(" + hashMatch + ")|" +
+        "https://" + urlStart + "(" + hashMatch + ").png");
 
     function loadUrl(url) {
         var match = url.match(urlMatcher);
