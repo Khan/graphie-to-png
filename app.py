@@ -54,7 +54,7 @@ def svg():
 
     svg, other_data = _js_to_svg(js)
 
-    hash = hashlib.sha1(js).hexdigest()
+    hash = hashlib.sha1(js.encode('utf-8')).hexdigest()
     _put_to_s3('%s.js' % hash, js, 'application/javascript')
     _put_to_s3('%s-data.json' % hash,
                _jsonp_wrap(other_data, 'svgData%s' % hash), 'application/json')
@@ -105,6 +105,15 @@ def run_with_timeout(command, timeout):
 
 
 def _js_to_svg(js):
+    # subprocess.Popen() can't handle unicode, and phantomjs will produce
+    # mangled results if we use js.encode('utf-8'). Note that JS allows
+    # \u escapes in identifiers as well as in strings, so this approach
+    # should work no matter where the non-ASCII characters are located.
+    if isinstance(js, unicode):
+        js = "".join([
+            "\\u{0:04X}".format(ord(c)) if ord(c) > 127 else str(c)
+            for c in js
+        ])
     # Run phantomjs with a 55 second timeout. Gunicorn kills its child threads
     # after 60 seconds, so we need to kill the phantomjs thread before then.
     # TODO(csilvers): just use /usr/bin/timeout instead.
