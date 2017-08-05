@@ -8,8 +8,7 @@ var Y_RANGE = [-10, 10];
 var STEP = "auto";
 
 // Width of the graph in pixels
-// Let's use 400 for "normal" graphs and 170 for "small" graphs
-var SIZE = 400;
+var SIZE = 288;
 
 var xScale;
 var yScale;
@@ -41,13 +40,9 @@ function setup() {
     var scale = _.pluck(gridConfig, "scale");
     xScale = scale[0];
     yScale = scale[1];
-    var paddedRange = _.map(range, function(extent, i) {
-        var padding = 25 / scale[i];
-        return [extent[0], extent[1] + padding];
-    });
     graphInit({
         gridRange: range,
-        range: paddedRange,
+        range: range,
         scale: scale,
         axisArrows: "<->",
         labelFormat: function(s) {
@@ -64,8 +59,8 @@ function setup() {
                 Y_RANGE[1] - Y_RANGE[0]]]
     });
 
-    label([0, Y_RANGE[1]], "y", "above");
-    label([X_RANGE[1], 0], "x", "right");
+    label([10/xScale, Y_RANGE[1]], "y", "below");
+    label([X_RANGE[1]-10/yScale, 0], "x", "above");
 }
 
 </script>
@@ -75,7 +70,7 @@ function setup() {
 var range = RANGE;
 
 /* The output's largest side is limited to this many pixels */
-var size = 400;
+var size = 288;
 
 setup();
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -105,7 +100,7 @@ var LABEL_THETA = true;
 var LABEL_DEGREES = false;  // ignored if LABEL_THETA is false
 
 // Width of the graph in pixels
-var SIZE = 400;
+var SIZE = 288;
 
 setup();
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -115,6 +110,10 @@ setup();
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 // Setup grid, ticks, and labels and initialize graph.
 function setup() {
+    var PADDING = 35;
+    if (LABEL_THETA) {
+        SIZE -= PADDING * 2;
+    }
     var dimensions = [SIZE, SIZE];
     var range = [[-R_MAX, R_MAX], [-R_MAX, R_MAX]];
 
@@ -129,7 +128,7 @@ function setup() {
     var paddedRange = range;
     if (LABEL_THETA) {
         paddedRange = _.map(range, function(extent, i) {
-            var padding = 35 / scale[i];
+            var padding = PADDING / scale[i];
             return [extent[0] - padding, extent[1] + padding];
         });
     }
