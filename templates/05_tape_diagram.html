@@ -1,7 +1,6 @@
 <script type="text/graphie" data-title="5. Tape diagram">
 // Top label for the entire tape
 var TOP_LABEL = "Original Price";
-
 // Labels for each division. Add as many divisions as you like
 var LABELS = [
         "20\\%",
@@ -10,41 +9,31 @@ var LABELS = [
         "20\\%",
         "20\\%",
     ];
-
 // Label for the left partition
 var BOT_LEFT_LABEL = "Sale Price";
-
 // Number of divisions in the left partition
 var BREAK = 4;
-
 // Label for the right partition
 var BOT_RIGHT_LABEL = "$5";
-
 ///////////////////////////////////////////////////////////
-
-var scale = 40;
+var scale = 32;
 init({
     range: [[-0.1, 10.1], [0, 4]],
     scale: scale
 });
-
 style({ stroke: BLUE_D, strokeWidth: 2 });
-
 var fullWidth = 10;
 var half = fullWidth / 2;
-
 var boxWidth = fullWidth / LABELS.length;
 _.each(LABELS, function(lbl, n) {
     path([[boxWidth * n, 1.5], [boxWidth * (n + 1), 1.5],
           [boxWidth * (n + 1), 2.5], [boxWidth * n, 2.5], true]);
     label([boxWidth * (n + 0.5), 2], lbl);
 });
-
 var br = BREAK / LABELS.length;
 var pad = 2 / scale;
 var topY = 2.8;
-var top = curlyBrace([pad, topY], [fullWidth - pad, topY]);
-
+var topCurly = curlyBrace([pad, topY], [fullWidth - pad, topY]);
 var bottomY = 0.9;
 var bottomLeft = curlyBrace([br * fullWidth - pad, bottomY], [pad, bottomY]);
 var bottomRightPts = [
@@ -52,14 +41,10 @@ var bottomRightPts = [
     [br * fullWidth + pad, bottomY]
 ];
 var bottomRight = curlyBrace(bottomRightPts[0], bottomRightPts[1]);
-
-
-_.each([top, bottomLeft, bottomRight], function (brace) {
+_.each([topCurly, bottomLeft, bottomRight], function (brace) {
     brace.attr({ stroke: GRAY, "stroke-width": 1.5 });
 });
-
 label([half, 3.1], TOP_LABEL, "above", false);
 label([half * br, 0.9], BOT_LEFT_LABEL, "below", false);
 label([half * br + half, 0.9], BOT_RIGHT_LABEL, "below");
-
 </script>
