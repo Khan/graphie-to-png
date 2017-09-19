@@ -1,10 +1,10 @@
 <script type="text/graphie" data-title="12. Area model 2">
 // The total width is the sum of these plus 70, so keep the sum of
-// these to no more than 410.
-var WIDTHS = [210, 130, 70];
+// these to no more than 250.
+var WIDTHS = [110, 80, 60];
 var HEIGHTS = [
-    130,
-    70
+    80,
+    60
 ];
 var PAD = 1;
 
@@ -40,7 +40,7 @@ init({
 style({
     fillOpacity: 0.5,
     strokeOpacity: 0
-})
+});
 
 _.each(COLORS, function(row, j) {
     _.each(row, function(color, i) {
