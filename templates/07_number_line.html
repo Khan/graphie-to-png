@@ -1,7 +1,9 @@
 <script type="text/graphie" data-title="7. Number line">
 var RANGE = [-5, 10];
-var TICK_STEP = 1;
+var TICK_STEP = 1; //"auto" or a number
+var LABEL_STEP = "auto"; //"auto" or a multiple of TICK_STEP
 var LABEL_TICKS = true;
+var ARROW_DIRECTION = "<->"; // "-", "->" or "<->"
 
 var LABELS = [
     {
@@ -24,20 +26,29 @@ var HIGHLIGHTED_TICKS = [
 
 var POINTS = [
     [ 2, RED_D ],
-]
+];
 
 var CIRCLES = [
     [ -4, RED_D ],
-]
+];
 
 var ARROWS = [
     [ 2, 12, RED_D ],
     [ -4, -7, RED_D ],
-]
+];
 
 ///////////////////////////////////////////////////////////////
 
-var SCALE = 400 / (RANGE[1] - RANGE[0]);
+var SCALE = 320 / (RANGE[1] - RANGE[0]);
+
+if(LABEL_STEP ==="auto"){
+    LABEL_STEP=Perseus.Util.tickStepFromExtent(
+                    RANGE, 320);
+}
+if(TICK_STEP==="auto"){
+    TICK_STEP= Perseus.Util.gridStepFromTickStep(LABEL_STEP, SCALE);
+}
+LABEL_STEP=floor(LABEL_STEP/TICK_STEP)*TICK_STEP;
 
 init({
     range: [[RANGE[0] - (30 / SCALE), RANGE[1] + (30 / SCALE)],
@@ -49,23 +60,60 @@ var minusIgnorer = function(a) {
     return (a + "").replace(/-(\d)/g, "\\llap{-}$1");
 };
 
-line([RANGE[0] - (25 / SCALE), 0],
-     [RANGE[1] + (25 / SCALE), 0], {
-    arrows: "->"
-});
+switch(ARROW_DIRECTION){
+    case "-":
+        line([RANGE[0] - (25 / SCALE), 0],
+             [RANGE[1] + (25 / SCALE), 0]);        
+        break;
+    case "<->":
+        line([RANGE[0] - (25 / SCALE), 0],
+             [RANGE[1] + (25 / SCALE), 0], {
+            arrows: "->"
+        });
+        
+        line([RANGE[1] + (25 / SCALE), 0],
+             [RANGE[0] - (25 / SCALE), 0], {
+            arrows: "->"
+        });        
+        break;
+    case "<-": //Not sure why you'd want this, but here it is
+        line([RANGE[1] + (25 / SCALE), 0],
+             [RANGE[0] - (25 / SCALE), 0], {
+            arrows: "->"
+        });        
+        break;    
+    default:
+        line([RANGE[0] - (25 / SCALE), 0],
+             [RANGE[1] + (25 / SCALE), 0], {
+            arrows: "->"
+        });        
+        break;
+}
 
-line([RANGE[1] + (25 / SCALE), 0],
-     [RANGE[0] - (25 / SCALE), 0], {
-    arrows: "->"
-});
-
-for (var x = RANGE[0]; x <= RANGE[1];
+for (var x = parseInt(RANGE[0]/TICK_STEP,10)*TICK_STEP; x <= RANGE[1];
         x = roundTo(10, x + TICK_STEP)) {
     line([x, -0.2], [x, 0.2]);
-    if (LABEL_TICKS && !_.findWhere(LABELS,
+    if (LABEL_TICKS && (x%LABEL_STEP)===0 && !_.findWhere(LABELS,
             {value: x, position: "below"})) {
         label([x, -0.53],  minusIgnorer(x), "center");
     }
+}
+
+//Don't throw errors if user deleted an array they didn't need
+if(!LABELS){
+    var LABELS=[];
+}
+if(!HIGHLIGHTED_TICKS){
+    var HIGHLIGHTED_TICKS=[];
+}
+if(!POINTS){
+    var POINTS=[];
+}
+if(!CIRCLES){
+    var CIRCLES=[];
+}
+if(!ARROWS){
+    var ARROWS=[];
 }
 
 if (typeof(LABELS) !== "undefined") {
@@ -110,7 +158,7 @@ if (typeof(ARROWS) !== "undefined") {
 if (typeof(POINTS) !== "undefined") {
     _.each(POINTS, function(point) {
         ellipse([point[0], 0],
-                [5 / (400 / (RANGE[1] - RANGE[0])), 5 / 40], {
+                [5 / (320 / (RANGE[1] - RANGE[0])), 5 / 40], {
             fill: point[1],
             stroke: null
         });
@@ -120,7 +168,7 @@ if (typeof(POINTS) !== "undefined") {
 if (typeof(CIRCLES) !== "undefined") {
     _.each(CIRCLES, function(point) {
         ellipse([point[0], 0],
-                [5 / (400 / (RANGE[1] - RANGE[0])), 5 / 40], {
+                [5 / (320 / (RANGE[1] - RANGE[0])), 5 / 40], {
             fill: _BACKGROUND,
             stroke: point[1],
             strokeWidth: 3
