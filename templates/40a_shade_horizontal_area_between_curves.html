@@ -1,0 +1,40 @@
+<script type="text/graphie" data-use-grid="true" data-title="40a. Shade horizontal area between curves">
+var fn1 = function(t) {
+    // Define first function here
+    return [- 0.5 * t * t + 3.0 * t - 2.0,t];
+};
+
+var fn2 = function(t) {
+    // Define second function here
+    return [t * t * t - 2.5 * t * t + 4 * t - 1.0,t];
+};
+
+// Styling for first function
+style({
+    stroke: BLUE_D,
+    fill: "none",
+    strokeWidth: 3
+});
+
+plotParametric(fn1, Y_RANGE);
+
+// Styling for second function
+style({
+    stroke: RED_D,
+    fill: "none"
+});
+
+plotParametric(fn2, Y_RANGE);
+
+plotParametric(fn1,
+    [-2, 4], // <-- y-range to shade
+    true, //Do shade between functions
+    fn2,
+    // Styling for shaded region between functions
+    {
+        stroke: "none",
+        fill: BLUE_D,
+        fillOpacity: 0.3
+    }
+);
+</script>
