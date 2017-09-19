@@ -21,7 +21,6 @@ plot(function(x) {
     return 0.03*(x+5)*(x+2)*(x-3)*(x-6);
 }, X_RANGE);
 
-
 //////////////////////////////////////////////////////////////
 function riemann(fn, domain, divisions, kind, color) {
     var x = domain[0];
@@ -32,17 +31,16 @@ function riemann(fn, domain, divisions, kind, color) {
             fill: color,
             stroke: color,
             opacity: 0.3
-        }, function() {
-            path([[x, 0], [x, fn(x + offset)], [x + step, fn(x + offset)], [x + step, 0], true]);
         });
+        path([[x, 0], [x, fn(x + offset)], [x + step, fn(x + offset)], [x + step, 0], true]);
+        
         style({
             fill: "none",
             stroke: color,
             strokeWidth: 1,
             opacity: 1
-        }, function() {
-            path([[x, 0], [x, fn(x + offset)], [x + step, fn(x + offset)], [x + step, 0], true]);
         });
+        path([[x, 0], [x, fn(x + offset)], [x + step, fn(x + offset)], [x + step, 0], true]);
         x += step;
     }
 }
