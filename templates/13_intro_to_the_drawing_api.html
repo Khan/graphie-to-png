@@ -3,45 +3,45 @@
 var range = [[-10, 10], [-10, 10]];
 
 /* The output's largest side is limited to this many pixels */
-var size = 400;
+var size = 320;
 
 setup();
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 drawLine({
-    points: [[-5, 8.5], [5, 8.5]],
+    points: [[-5, 8], [5, 8]],
     showPoints: true, // whether to actually show points
     vertexLabels: ["A", "B"],
     color: BLUE_D // changes the color of both line and labels
 });
 
 drawSegment({
-    points: [[-5, 7], [5, 7]],
+    points: [[-5, 6], [5, 6]],
     dashed: true,
     sideLabel: "x",
     stroke: GREEN_D // only changes the color of the line
 });
 
 drawRay({
-    points: [[-5, 6], [5, 6]],
+    points: [[-5, 5], [5, 5]],
     dotted: true
 });
 
 drawRay({
-    point: [-5, 5], // you can also create a ray from one point
+    point: [-5, 4], // you can also create a ray from one point
     angle: 0,       // and an angle direction
     dashed: true,
     dotted: true
 });
 
 drawPoint({
-    point: [-7, 7],
+    point: [-7, 6],
     label: "Y",
     color: MAROON_D // changes the color of both point and labels
 });
 
 drawPoint({
-    point: [7, 7],
+    point: [7, 6],
     label: "Z",
     stroke: PURPLE_C, // only changes the color of the point
     fill: PURPLE_C    // only changes the color of the point
@@ -50,9 +50,9 @@ drawPoint({
 // For much more about polygons, see template #17 (Polygon)
 drawPolygon({
     points: [
-        [-7, 0],
-        [-7, 4],
-        [-4, 0]
+        [-7, -1],
+        [-7, 3],
+        [-4, -1]
     ],
     vertexLabels: ["A", "B", "C"],
     arcs: 1,
@@ -117,7 +117,7 @@ drawSegment({
 
 drawAngleLabel({
     points: [[6, 0], [3, 0], onCircle], // in clockwise order
-    label: "$deg2", // "$deg" is relaced by angle measure
+    label: "$deg1", // "$deg" is relaced by angle measure
     arcs: 2         // the 2 means 2 decimal places are shown
 });
 
