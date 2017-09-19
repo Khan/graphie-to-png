@@ -1,57 +1,7 @@
 <script type="text/graphie" data-use-simple="true" data-range="[[0, 6], [0, 5]]" data-title="25. Tetrahedron Net">
-/* Helper functions for drawing simple polygons            */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 var triangleHeight = sqrt(3)/2;
 var triangleOffset = triangleHeight/3;
 var triangleBuffer = 1/2 - triangleOffset;
-
-var rotatePoints = function(center, angle, points) {
-    return _.map(points, function(pt) {
-        return rotatePoint(pt, angle, center);
-    });
-};
-
-var drawSimpleTriangle = function(description) {
-    var x      = description.x || 0;
-    var y      = description.y || 0;
-    var rotate = description.rotate || 0;
-    var base   = description.base || 1;
-    var height = description.height || triangleHeight * base;
-    var showLabels = description.showLabels || false;
-    var centerOffset = description.centerOffset === undefined ?
-            height/3 :
-            description.centerOffset;
-
-    var points = rotatePoints([x, y], rotate, [
-        [x - base/2, y - centerOffset],
-        [x, y + height - centerOffset],
-        [x + base/2, y - centerOffset]
-    ]);
-
-    drawPolygon({
-        points: points,
-        angleLabels: [],
-        sideLabels: [null, null, showLabels ? "$len0" : null],
-        ticks: description.ticks,
-        fill: GREEN_D,
-        fillOpacity: 0.2,
-        stroke: GREEN_E
-    });
-    if (showLabels) {
-        baseMidpoint = lineMidpoint([points[0], points[2]]);
-        drawSegment({
-            points: [points[1], baseMidpoint],
-            dashed: true,
-            sideLabel: "$len0",
-            stroke: GREEN_E
-        });
-        drawAngleLabel({
-            points: [points[1], baseMidpoint, points[0]],
-            stroke: GREEN_E
-        });
-    }
-};
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
 /* since our triangles have side length 2 */
@@ -87,4 +37,88 @@ drawSimpleTriangle({
     rotate: 180,
     ticks: [1, 1, 1]
 });
+
+/* Helper functions for drawing simple polygons            */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+function rotatePoints(center, angle, points) {
+    return _.map(points, function(pt) {
+        return rotatePoint(pt, angle, center);
+    });
+}
+
+function drawSimpleTriangle(description) {
+    var x      = description.x || 0;
+    var y      = description.y || 0;
+    var rotate = description.rotate || 0;
+    var base   = description.base || 1;
+    var height = description.height || triangleHeight * base;
+    var showLabels = description.showLabels || false;
+    var centerOffset = description.centerOffset === undefined ?
+            height/3 :
+            description.centerOffset;
+
+    var points = rotatePoints([x, y], rotate, [
+        [x - base/2, y - centerOffset],
+        [x, y + height - centerOffset],
+        [x + base/2, y - centerOffset]
+    ]);
+
+    drawPolygon({
+        points: points,
+        angleLabels: [],
+        sideLabels: [null, null, showLabels ? "$len0" : null],
+        ticks: description.ticks,
+        fill: GREEN_D,
+        fillOpacity: 0.2,
+        stroke: GREEN_E
+    });
+    if (showLabels) {
+        baseMidpoint = lineMidpoint([points[0], points[2]]);
+        drawSegment({
+            points: [points[1], baseMidpoint],
+            dashed: true,
+            stroke: GREEN_E
+        });
+        var midpoint=[(points[1][0]+baseMidpoint[0])/2,(points[1][1]+baseMidpoint[1])/2];
+        var dist=round(sqrt(pow(points[1][0]-baseMidpoint[0],2)+pow(points[1][1]-baseMidpoint[1],2))*100)/100;
+        var labelDirections=["left","above left","above","above right","right"];
+        var direction=atan((points[1][1]-baseMidpoint[1])/(points[1][0]-baseMidpoint[0]))/Math.PI*180;
+        label(midpoint,dist,labelDirections[floor((112.5-direction)/45)]);
+        drawAngleLabel({
+            points: [points[1], baseMidpoint, points[0]],
+            stroke: GREEN_E
+        });
+    }
+}
+
+function drawSimpleRectangle(description) {
+    var x = description.x || 0;
+    var y = description.y || 0;
+    var rotate = description.rotate || 0;
+    var width  = description.width || 1;
+    var height = description.height || 1;
+    var showLabels = description.showLabels || false;
+
+    var points = rotatePoints([x, y], rotate, [
+            [x - width/2, y - height/2],
+            [x - width/2, y + height/2],
+            [x + width/2, y + height/2],
+            [x + width/2, y - height/2]
+    ]);
+
+    drawPolygon({
+        points: points,
+        angleLabels: [],
+        sideLabels: [
+            null,
+            null,
+            showLabels ? "$len0" : null,
+            showLabels ? "$len0" : null
+            ],
+        ticks: description.ticks,
+        fill: GREEN_D,
+        fillOpacity: 0.2,
+        stroke: GREEN_E
+    });
+}
 </script>
