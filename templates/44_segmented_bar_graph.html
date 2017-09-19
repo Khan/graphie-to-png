@@ -3,9 +3,9 @@
 label and a list of values.  List of values
 should add to 100, or whatever yMax happens to be*/
 var data = [
-    ['X Category 1', [20, 30, 10, 40]],
-    ['X Category 2', [30, 60, 0, 10]],
-    ['X Category 3', [40, 20, 20, 20]],
+    ['X group<br>1', [20, 30, 10, 40]], //<br> splits the label over 2 lines
+    ['X group<br>2', [30, 60, 0, 10]],
+    ['X group<br>3', [40, 20, 20, 20]],
 ];
 
 /* y-parameters */
@@ -19,11 +19,10 @@ var xLabel = "X Label";
 var yLabel = "Y Label";
 var title = "Name of graph";
 var tickHeight = 6;
-var plotDimensions = [380, 300];
+var plotDimensions = [240,180];
 
 /* Second category type information */
-// Bar plots typically use light colors
-// Length both these lists should match length of 
+// Length of both these lists should match length of 
 // values in second coordinate of each data point
 var colors = [
     BLUE_E, 
@@ -32,10 +31,10 @@ var colors = [
     BLUE_B
 ];
 var YCategoryNames = [
-    "Y Category 1",
-    "Y Category 2",
-    "Y Category 3",
-    "Y Category 4"   
+    "Y group 1",
+    "Y group 2",
+    "Y group 3",
+    "Y group 4"   
 ];
 var yCategoryLabelSpacing = 10;
 var squareWidth = 15;
@@ -43,6 +42,11 @@ var squareWidth = 15;
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Setup the canvas                                       */
+
+_.each(data,function(item){
+    item[1].reverse();
+    });
+YCategoryNames.reverse();
 
 // Calculate x-parameters
 var numBins = _.size(data);
@@ -58,13 +62,13 @@ var dimY = Math.ceil((yMax - yMin) / yScale) * yScale;
 var scale = _.map([dimX, dimY], function (dim, i) {
     return plotDimensions[i] / dim;
 });
-var padX = 25 / scale[0];
-var padY = 25 / scale[1];
+var padX = 20 / scale[0];
+var padY = 20 / scale[1];
 var padYTop = title ? padY * 3 : padY;
-var legandSpace = 120 / scale[1];
+var legendSpace = 120 / scale[1];
 var range = [
-    [-3 * padX, dimX + padX], 
-    [-3 * padY - legandSpace, dimY + padYTop],
+    [-3 * padX, dimX], 
+    [-3 * padY - legendSpace, dimY + padYTop],
 ];
 
 // Initialize graph
@@ -104,7 +108,7 @@ _.each(data, function(item, i) {
     var scaledTickHeight = tickHeight / scale[1];
     style({stroke: "#000", strokeWidth: 2, opacity: 1.0});
     line([x, -scaledTickHeight], [x, 0]);
-    label([x, 0], category, "below", false);
+    label([x, 0], "<center>"+category+"</center>", "below", false);
 
     // Plot bar
     var lastY = 0;
@@ -135,23 +139,23 @@ if (title) {
 }
 
 // Add axis labels
-label([dimX / 2, -35 / scale[1]],
+label([dimX / 2, -45 / scale[1]],
     xLabel,
     "below", false)
     .css("font-weight", "bold");
 
-label([-60 / scale[0], dimY / 2],
+label([-55 / scale[0], dimY / 2],
     yLabel,
     "center", false)
     .css("font-weight", "bold")
     .css("transform", "rotate(-90deg)");
     
     
-/* Add Legand */
+/* Add Legend */
 var xStart = 0; // modify to shift legend right/left
 var yStart = 0; // modify to shift legend up/down
 _.each(YCategoryNames, function(name, i){
-    var y = -legandSpace - (padY * 2) + yCategoryLabelSpacing * i;
+    var y = -legendSpace - (padY * 2) + yCategoryLabelSpacing * i;
     var color = colors[i % colors.length];
     drawPolygon({points:[
             [xStart + 0, yStart + y + squareWidth / scale[1] / 2],
