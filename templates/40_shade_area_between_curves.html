@@ -1,5 +1,4 @@
 <script type="text/graphie" data-use-grid="true" data-title="40. Shade area between curves">
-
 var fn1 = function(x) {
     // Define first function here
     return - 0.5 * x * x + 3.0 * x - 2.0;
@@ -29,13 +28,14 @@ plot(fn2, X_RANGE);
 
 plot(fn1,
     [-2, 4], // <-- x-range to shade
-    false, true, fn2,
-    // Styling for shaded region function
+    false, // Don't swap axes, because it doesn't work with shading between functions
+    true, //Do shade between functions
+    fn2,
+    // Styling for shaded region between functions
     {
         stroke: "none",
         fill: BLUE_D,
         fillOpacity: 0.3
     }
 );
-
 </script>
