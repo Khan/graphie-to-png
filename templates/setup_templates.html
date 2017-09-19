@@ -8,8 +8,9 @@ var Y_RANGE = [-10, 10];
 var STEP = "auto";
 
 // Width of the graph in pixels
-// Let's use 400 for "normal" graphs and 170 for "small" graphs
-var SIZE = 400;
+// Let's use 320 for "normal" graphs and 170 for "small" graphs.
+// If this is for the background of a widget (transformer, interactive graph, etc), use 400.
+var SIZE = 320;
 
 var xScale;
 var yScale;
@@ -75,7 +76,9 @@ function setup() {
 var range = RANGE;
 
 /* The output's largest side is limited to this many pixels */
-var size = 400;
+// Let's use 320 for "normal" graphs and 170 for "small" graphs.
+// If this is for the background of a widget (transformer, interactive graph, etc), use 400.
+var SIZE = 320;
 
 setup();
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -105,7 +108,7 @@ var LABEL_THETA = true;
 var LABEL_DEGREES = false;  // ignored if LABEL_THETA is false
 
 // Width of the graph in pixels
-var SIZE = 400;
+var SIZE = 320;
 
 setup();
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -180,4 +183,199 @@ function setup() {
         "plot-points": 10000
     });
 }
+</script>
+
+<script id="sat-grid-setup-pre" type="text/graphie">
+// X and Y ranges of the graph
+var X_RANGE = [-10,10];
+var Y_RANGE = [-10, 10];
+
+// var STEP = [<x tick step>, <y tick step>];
+// var STEP = [10, 25];
+var STEP = "auto";
+
+// Largest dimension of the graph (excluding padding) in pixels
+// Let's use 320 for "normal" graphs and 170 for "small" graphs.
+// If this is for the background of a widget (transformer, interactive graph, etc), use 400.
+var SIZE = 320;
+
+// Make the graph twice as wide as tall. Only use for graphs for SAT prep. Axis arrows will only point in positive direction, and the there is an "O" label at the origin.
+var SATGraph=true; 
+
+// Keep the graph square, even if x and y have different ranges. This overrides the sizing of SATGraph, but not its other features.
+var squareGraph=false;
+
+var xScale;
+var yScale;
+setup();
+//////////////////////////////////////////////////////////////
+
+</script>
+
+<script id="sat-grid-setup-post" type="text/graphie">
+
+//////////////////////////////////////////////////////////////
+// Setup grid, ticks, and labels and initialize graph.
+function setup() {
+    var dimensions;
+    if(squareGraph){
+        dimensions = [SIZE, SIZE];
+    } else if(SATGraph){
+        dimensions = [SIZE, SIZE/2];
+    } else {
+        if((X_RANGE[1]-X_RANGE[0])>(Y_RANGE[1]-Y_RANGE[0])) {
+            dimensions = [SIZE, SIZE/(X_RANGE[1]-X_RANGE[0])*(Y_RANGE[1]-Y_RANGE[0])];
+        } else {
+            dimensions = [SIZE*(X_RANGE[1]-X_RANGE[0])/(Y_RANGE[1]-Y_RANGE[0]),SIZE];
+        }
+    }
+    var range = [X_RANGE, Y_RANGE];
+    var step = STEP;
+    if (step === "auto") {
+        step = _.map(range, function(extent, i) {
+            return Perseus.Util.tickStepFromExtent(
+                    extent, dimensions[i]);
+        });
+    }
+    if(SATGraph && !squareGraph){
+        step[1]*=2;
+    }
+    var gridConfig = _.map(range, function(extent, i) {
+        return Perseus.Util.gridDimensionConfig(
+                step[i],
+                extent,
+                dimensions[i]);
+    });
+    var scale = _.pluck(gridConfig, "scale");
+    xScale = scale[0];
+    yScale = scale[1];
+    var paddedRange = _.map(range, function(extent, i) {
+        var padding = 25 / scale[i];
+        return [extent[0], extent[1] + padding];
+    });
+    graphInit({
+        gridRange: range,
+        range: paddedRange,
+        scale: scale,
+        axes: SATGraph?false:true,
+        //Change this line for different axis labels
+        axisLabels: ["x","y"],
+        axisArrows: "<->",
+        labelFormat: function(s) {
+            return "\\small{" + s + "}";
+        },
+        gridStep: _.pluck(gridConfig, "gridStep"),
+        tickStep: _.pluck(gridConfig, "tickStep"),
+        labelStep: 1,
+        unityLabels: _.pluck(gridConfig, "unityLabel")
+    });
+    style({
+        clipRect: [[X_RANGE[0], Y_RANGE[0]],
+                [X_RANGE[1] - X_RANGE[0],
+                Y_RANGE[1] - Y_RANGE[0]]]
+    });
+    
+    label([0, Y_RANGE[1]], "y", "above");
+    label([X_RANGE[1], 0], "x", "right");
+    
+    if(SATGraph){
+        drawSATAxes();
+    }
+    function drawSATAxes(){
+        var axisCenter = [
+                Math.min(Math.max(X_RANGE[0], 0), X_RANGE[1]),
+                Math.min(Math.max(Y_RANGE[0], 0), Y_RANGE[1])
+            ];
+        path([[axisCenter[0],Y_RANGE[0]],[axisCenter[0],Y_RANGE[1]]],{arrows: true, stroke: BLACK, strokeOpacity: 1});
+        path([[X_RANGE[0],axisCenter[1]],[X_RANGE[1],axisCenter[1]]],{arrows: true, stroke: BLACK, strokeOpacity: 1});
+        if(axisCenter[0]===0 && axisCenter[1]===0) {
+            label([0,0],"O","below left");
+        }
+    }
+}
+
+</script>
+
+<script id="nonsquare-grid-setup-pre" type="text/graphie">
+// X and Y ranges of the graph
+var X_RANGE = [-10,10];
+var Y_RANGE = [-10, 10];
+
+// var STEP = [<x tick step>, <y tick step>];
+// var STEP = [10, 25];
+var STEP = "auto";
+
+// Largest dimension of the graph (excluding padding) in pixels
+// Let's use 320 for "normal" graphs and 170 for "small" graphs.
+// If this is for the background of a widget (transformer, interactive graph, etc), use 400.
+var SIZE = 320;
+
+// Keep the graph square, even if x and y have different ranges. Slope fields work best when this is false.
+var squareGraph=false;
+
+var xScale;
+var yScale;
+setup();
+//////////////////////////////////////////////////////////////
+
+</script>
+
+<script id="nonsquare-grid-setup-post" type="text/graphie">
+//////////////////////////////////////////////////////////////
+// Setup grid, ticks, and labels and initialize graph.
+function setup() {
+    var dimensions;
+    if(squareGraph){
+        dimensions = [SIZE, SIZE];
+    } else {
+        if((X_RANGE[1]-X_RANGE[0])>(Y_RANGE[1]-Y_RANGE[0])) {
+            dimensions = [SIZE, SIZE/(X_RANGE[1]-X_RANGE[0])*(Y_RANGE[1]-Y_RANGE[0])];
+        } else {
+            dimensions = [SIZE*(X_RANGE[1]-X_RANGE[0])/(Y_RANGE[1]-Y_RANGE[0]),SIZE];
+        }
+    }
+    var range = [X_RANGE, Y_RANGE];
+    var step = STEP;
+    if (step === "auto") {
+        step = _.map(range, function(extent, i) {
+            return Perseus.Util.tickStepFromExtent(
+                    extent, dimensions[i]);
+        });
+    }
+    var gridConfig = _.map(range, function(extent, i) {
+        return Perseus.Util.gridDimensionConfig(
+                step[i],
+                extent,
+                dimensions[i]);
+    });
+    var scale = _.pluck(gridConfig, "scale");
+    xScale = scale[0];
+    yScale = scale[1];
+    var paddedRange = _.map(range, function(extent, i) {
+        var padding = 25 / scale[i];
+        return [extent[0], extent[1] + padding];
+    });
+    graphInit({
+        gridRange: range,
+        range: paddedRange,
+        scale: scale,
+        axes: true,
+        //Change this line for different axis labels
+        axisLabels: ["x","y"],
+        axisArrows: "<->",
+        labelFormat: function(s) {
+            return "\\small{" + s + "}";
+        },
+        gridStep: _.pluck(gridConfig, "gridStep"),
+        tickStep: _.pluck(gridConfig, "tickStep"),
+        labelStep: 1,
+        unityLabels: _.pluck(gridConfig, "unityLabel")
+    });
+    style({
+        clipRect: [[X_RANGE[0], Y_RANGE[0]],
+                [X_RANGE[1] - X_RANGE[0],
+                Y_RANGE[1] - Y_RANGE[0]]]
+    });
+}
+
 </script>
