@@ -1,5 +1,5 @@
 <script type="text/graphie" data-title="39. Bar Plot">
-/* Data to plot. Should be numbers indicating the height of each bucket. */
+/* Data to plot. Should be numbers indicating the height of each category. */
 var data = [
     ["Group<br>A", 5], //<br> splits the label over 2 lines
     ["Group<br>B", 3],
@@ -11,10 +11,6 @@ var data = [
 var yMin = 0;
 var yMax = 10;
 var yScale = 1;
-
-/* bucket parameters */
-var minBucket = 2;
-var maxBucket = 10;
 
 /* Graph styles */
 var xLabel = "X categories";
@@ -32,7 +28,6 @@ var plotDimensions = [240, 180];
 
 // Calculate x-parameters
 var numBins = _.size(data);
-var bucketSize = (maxBucket - minBucket) / numBins;
 var barPad = 0.15;
 var barWidth = 1 - 2 * barPad;
 var barHalfWidth = barWidth / 2;
