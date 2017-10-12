@@ -3,9 +3,9 @@
 label and a list of values.  List of values
 should add to 100, or whatever yMax happens to be*/
 var data = [
-    ['X Category 1', [20, 30, 10, 40]],
-    ['X Category 2', [30, 60, 0, 10]],
-    ['X Category 3', [40, 20, 20, 20]],
+    ['X class<br>1', [20, 30, 10, 40]], //<br> splits the label over 2 lines
+    ['X class<br>2', [30, 60, 0, 10]],
+    ['X class<br>3', [40, 20, 20, 20]],
 ];
 
 /* y-parameters */
@@ -19,7 +19,7 @@ var xLabel = "X Label";
 var yLabel = "Y Label";
 var title = "Name of graph";
 var tickHeight = 6;
-var plotDimensions = [380, 300];
+var plotDimensions = [240,180];
 
 /* Second category type information */
 // Bar plots typically use light colors
@@ -58,13 +58,13 @@ var dimY = Math.ceil((yMax - yMin) / yScale) * yScale;
 var scale = _.map([dimX, dimY], function (dim, i) {
     return plotDimensions[i] / dim;
 });
-var padX = 25 / scale[0];
-var padY = 25 / scale[1];
+var padX = 20 / scale[0];
+var padY = 20 / scale[1];
 var padYTop = title ? padY * 3 : padY;
-var legandSpace = 120 / scale[1];
+var legendSpace = 120 / scale[1];
 var range = [
-    [-3 * padX, dimX + padX], 
-    [-3 * padY - legandSpace, dimY + padYTop],
+    [-3 * padX, dimX], 
+    [-3 * padY - legendSpace, dimY + padYTop],
 ];
 
 // Initialize graph
@@ -104,7 +104,7 @@ _.each(data, function(item, i) {
     var scaledTickHeight = tickHeight / scale[1];
     style({stroke: "#000", strokeWidth: 2, opacity: 1.0});
     line([x, -scaledTickHeight], [x, 0]);
-    label([x, 0], category, "below", false);
+    label([x, 0], "<center>"+category+"</center>", "below", false);
 
     // Plot bar
     var skinnyBarWidth = barWidth/data[0][1].length;
@@ -135,24 +135,25 @@ if (title) {
 }
 
 // Add axis labels
-label([dimX / 2, -35 / scale[1]],
+label([dimX / 2, -45 / scale[1]],
     xLabel,
     "below", false)
     .css("font-weight", "bold");
 
-label([-60 / scale[0], dimY / 2],
+label([-55 / scale[0], dimY / 2],
     yLabel,
     "center", false)
     .css("font-weight", "bold")
     .css("transform", "rotate(-90deg)");
     
     
-/* Add Legand */
+/* Add Legend */
 var xLegend = 0; // modify to shift legend right/left
 var yLegend = 0; // modify to shift legend up/down
+groupNames.reverse();
 _.each(groupNames, function(name, i){
-    var y = -legandSpace - (padY*2) + yCategoryLabelSpacing*i;
-    color = colors[i % colors.length];
+    var y = -legendSpace - (padY*2) + yCategoryLabelSpacing*i;
+    color = colors[groupNames.length-(i % colors.length)-1];
     drawPolygon({points: [
         [xLegend + 0, yLegend + y + squareWidth / scale[1] / 2],
         [xLegend + squareWidth / scale[0], yLegend + y + squareWidth / scale[1] / 2],

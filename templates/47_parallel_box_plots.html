@@ -54,7 +54,7 @@ var yMin = axisLabel ? -4.5 : -3.5;
 
 init({
     range: [xrange, [ yMin, dataSets.length * 2.8 * boxHeight - boxHeight - 0.5]],
-    scale: _.min([30, Perseus.Util.scaleFromExtent(xrange, 480)])
+    scale: _.min([30, Perseus.Util.scaleFromExtent(xrange, 320)])
 });
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -68,11 +68,14 @@ var denormalize = function(position) {
 };
 
 /* Draw the number line */
+var labelStep=Perseus.Util.tickStepFromExtent([numberLineMin,numberLineMax],320);
 line([ 0, -2 ], [ numberLineTickCount, -2 ]);
 for (tick = 0; tick <= numberLineTickCount; tick+=1) {
     var tickValue = denormalize(tick);
     line([ tick, -1.75 ], [ tick, -2.25 ]);
-    label([ tick, -2.25 ], roundTo(1, tickValue), "below");
+    if((tickValue-numberLineMin)%labelStep===0){
+        label([ tick, -2.25 ], roundTo(1, tickValue), "below");
+    }
 }
 
 for (var i = 0; i < dataSets.length; i++) {
@@ -112,7 +115,7 @@ for (var i = 0; i < dataSets.length; i++) {
     line([nq3, 0 + y], [nq4, 0 + y]);
     
     // draw label
-    label([nmedian, y - boxHeight/2], dataSets[i].name, "below", false, {color: dataSets[i].color, "font-weight": "bold"})
+    label([nmedian, y - boxHeight], dataSets[i].name, "center", false, {color: dataSets[i].color, "font-weight": "bold"});
     
     // draw outliers
     var outliers = dataSets[i].outliers;
@@ -125,4 +128,5 @@ for (var i = 0; i < dataSets.length; i++) {
 if (axisLabel) {
     label([numberLineTickCount/2, -3.4], axisLabel, "below", false, {"font-weight": "bold", "font-size": "16px"});
 }
+
 </script>

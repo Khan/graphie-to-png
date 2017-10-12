@@ -22,7 +22,7 @@ var yLabel = "Y values";
 // Bar plots typically use light colors
 var colors = [BLUE_C, RED_C, GREEN_C];
 var tickHeight = 6;
-var plotDimensions = [380, 300];
+var plotDimensions = [240,180];
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Setup the canvas                                       */
@@ -42,15 +42,17 @@ var dimY = Math.ceil((yMax - yMin) / yScale) * yScale;
 var scale = _.map([dimX, dimY], function (dim, i) {
     return plotDimensions[i] / dim;
 });
-var padX = 25 / scale[0];
-var padY = 25 / scale[1];
-var range = [[-3 * padX, dimX + padX], [-3 * padY, dimY + padY]];
+var padX = 20 / scale[0];
+var padY = 20 / scale[1];
+var range = [[-3 * padX, dimX], [-3 * padY, dimY + padY]];
 
 // Initialize graph
 init({
     range: range,
     scale: scale
 });
+var labelStep=Perseus.Util.tickStepFromExtent([yMin,yMax],plotDimensions[1]);
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
@@ -58,12 +60,14 @@ init({
 /* axes. This ensures proper layout on the z-axis.                      */
 for (var y = 0; y <= dimY; y += yScale) {
     style({opacity: 1.0});
-    label(
-        [0, y],
-        roundToApprox(y, 2),
-        "left",
-        /* isTeX */ true /* for the \approx symbol */
-    );
+    if(y%labelStep===0){
+        label(
+            [0, y],
+            roundToApprox(y, 2),
+            "left",
+            /* isTeX */ true /* for the \approx symbol */
+        );
+    }
     style({stroke: "#000", strokeWidth: 1, opacity: 0.3});
     line([0, y], [dimX, y]);
 }
@@ -112,9 +116,10 @@ label([dimX / 2, -35 / scale[1]],
     "below", false)
     .css("font-weight", "bold");
 
-label([-60 / scale[0], dimY / 2],
+label([-45 / scale[0], dimY / 2],
     yLabel,
     "center", false)
     .css("font-weight", "bold")
     .css("transform", "rotate(-90deg)");
+
 </script>

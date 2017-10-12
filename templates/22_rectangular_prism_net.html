@@ -1,45 +1,4 @@
 <script type="text/graphie" data-use-simple="true" data-range="[[0, 11.5], [0, 9.5]]" data-title="22. Rectangular Prism Net">
-/* Helper functions for drawing simple polygons            */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-var rotatePoints = function(center, angle, points) {
-    return _.map(points, function(pt) {
-        return rotatePoint(pt, angle, center);
-    });
-};
-
-var drawSimpleRectangle = function(description) {
-    var x = description.x || 0;
-    var y = description.y || 0;
-    var rotate = description.rotate || 0;
-    var width  = description.width || 1;
-    var height = description.height || 1;
-    var showLabels = description.showLabels || false;
-
-    var points = rotatePoints([x, y], rotate, [
-            [x - width/2, y - height/2],
-            [x - width/2, y + height/2],
-            [x + width/2, y + height/2],
-            [x + width/2, y - height/2]
-    ]);
-
-    drawPolygon({
-        points: points,
-        angleLabels: [],
-        sideLabels: [
-            null,
-            null,
-            showLabels ? "$len0" : null,
-            showLabels ? "$len0" : null
-        ],
-        ticks: description.ticks,
-        fill: GREEN,
-        fillOpacity: 0.2,
-        stroke: GREEN_E
-    });
-};
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-
 var showLabels = true;
 
 drawSimpleRectangle({
@@ -94,4 +53,45 @@ drawSimpleRectangle({
     showLabels: showLabels,
     ticks: [3, 2, 3, 2]
 });
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+/* Helper functions for drawing simple polygons            */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+function rotatePoints(center, angle, points) {
+    return _.map(points, function(pt) {
+        return rotatePoint(pt, angle, center);
+    });
+}
+
+function drawSimpleRectangle(description) {
+    var x = description.x || 0;
+    var y = description.y || 0;
+    var rotate = description.rotate || 0;
+    var width  = description.width || 1;
+    var height = description.height || 1;
+    var showLabels = description.showLabels || false;
+
+    var points = rotatePoints([x, y], rotate, [
+            [x - width/2, y - height/2],
+            [x - width/2, y + height/2],
+            [x + width/2, y + height/2],
+            [x + width/2, y - height/2]
+    ]);
+
+    drawPolygon({
+        points: points,
+        angleLabels: [],
+        sideLabels: [
+            null,
+            null,
+            showLabels ? "$len0" : null,
+            showLabels ? "$len0" : null
+        ],
+        ticks: description.ticks,
+        fill: GREEN_D,
+        fillOpacity: 0.2,
+        stroke: GREEN_E
+    });
+}
 </script>

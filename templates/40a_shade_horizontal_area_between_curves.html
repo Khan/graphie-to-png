@@ -1,12 +1,12 @@
-<script type="text/graphie" data-use-grid="true" data-title="40. Shade area between curves">
-var fn1 = function(x) {
+<script type="text/graphie" data-use-grid="true" data-title="40a. Shade horizontal area between curves">
+var fn1 = function(t) {
     // Define first function here
-    return - 0.5 * x * x + 3.0 * x - 2.0;
+    return [- 0.5 * t * t + 3.0 * t - 2.0,t];
 };
 
-var fn2 = function(x) {
+var fn2 = function(t) {
     // Define second function here
-    return x * x * x - 2.5 * x * x + 4 * x - 1.0;
+    return [t * t * t - 2.5 * t * t + 4 * t - 1.0,t];
 };
 
 // Styling for first function
@@ -16,7 +16,7 @@ style({
     strokeWidth: 3
 });
 
-plot(fn1, X_RANGE);
+plotParametric(fn1, Y_RANGE);
 
 // Styling for second function
 style({
@@ -24,11 +24,10 @@ style({
     fill: "none"
 });
 
-plot(fn2, X_RANGE);
+plotParametric(fn2, Y_RANGE);
 
-plot(fn1,
-    [-2, 4], // <-- x-range to shade
-    false, // Don't swap axes, because it doesn't work with shading between functions
+plotParametric(fn1,
+    [-2, 4], // <-- y-range to shade
     true, //Do shade between functions
     fn2,
     // Styling for shaded region between functions

@@ -13,6 +13,7 @@
 <div id="samples">
 <script type="text/graphie" data-title="0. Blank page"></script>
 {% include "01_simple_plot.html" %}
+{% include "01a_simple_plot_SAT.html" %}
 {% include "02_piecewise_function.html" %}
 {% include "03_parametric_plots.html" %}
 {% include "04_triangle_old.html" %}
@@ -53,6 +54,7 @@
 {% include "38_riemann_sums.html" %}
 {% include "39_bar_plot.html" %}
 {% include "40_shade_area_between_curves.html" %}
+{% include "40a_shade_horizontal_area_between_curves.html" %}
 {% include "41_shade_area_bounded_by_polar_curve.html" %}
 {% include "42_slope_field.html" %}
 {% include "43_histogram.html" %}
@@ -111,6 +113,10 @@ keUtilsLoaded.then(function() {
     var simpleSetupPost = $("#simple-setup-post").html();
     var polarSetupPre = $("#polar-setup-pre").html();
     var polarSetupPost = $("#polar-setup-post").html();
+    var satGridSetupPre = $("#sat-grid-setup-pre").html();
+    var satGridSetupPost = $("#sat-grid-setup-post").html();
+    var nonsquareGridSetupPre = $("#nonsquare-grid-setup-pre").html();
+    var nonsquareGridSetupPost = $("#nonsquare-grid-setup-post").html();
     var samples = _.map($samples, function(el, i) {
         var $el = $(el);
         var code = $el.html();
@@ -123,6 +129,12 @@ keUtilsLoaded.then(function() {
         }
         if ($el.data("use-polar")) {
             code = polarSetupPre + code + polarSetupPost;
+        }
+        if ($el.data("use-SAT")) {
+            code = satGridSetupPre + code + satGridSetupPost;
+        }
+        if ($el.data("use-nonsquare")) {
+            code = nonsquareGridSetupPre + code + nonsquareGridSetupPost;
         }
         var sample = {
             title: $el.data("title"),

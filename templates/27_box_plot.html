@@ -1,6 +1,4 @@
 <script type="text/graphie" data-title="27. Box Plot">
-// For an interactive example, see:
-// khan-exercises/exercises/creating_box_and_whisker_plots.html
 
 var axisLabel = "Axis label";
 var color = BLUE_D;
@@ -30,7 +28,7 @@ var yMin = axisLabel ? -4.5 : -3.5;
 
 init({
     range: [xrange, [ yMin, 1.5 ]],
-    scale: _.min([30, Perseus.Util.scaleFromExtent(xrange, 480)])
+    scale: _.min([30, Perseus.Util.scaleFromExtent(xrange, 320)])
 });
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -44,11 +42,14 @@ var denormalize = function(position) {
 };
 
 /* Draw the number line */
+var labelStep=Perseus.Util.tickStepFromExtent([numberLineMin,numberLineMax],320);
 line([ 0, -2 ], [ numberLineTickCount, -2 ]);
 for (tick = 0; tick <= numberLineTickCount; tick+=1) {
     var tickValue = denormalize(tick);
     line([ tick, -1.75 ], [ tick, -2.25 ]);
-    label([ tick, -2.25 ], roundTo(1, tickValue), "below");
+    if((tickValue-numberLineMin)%labelStep===0){
+        label([ tick, -2.25 ], roundTo(1, tickValue), "below");
+    }
 }
 
 var nq0 = normalize(q0);
@@ -91,6 +92,6 @@ for (var i=0; i < outliers.length; i++) {
 
 // axis label
 if (axisLabel) {
-    label([numberLineTickCount/2, -3.5], axisLabel, "below", false, {"font-weight": "bold"});
+    label([numberLineTickCount/2, -3.4], axisLabel, "below", false, {"font-weight": "bold"});
 }
 </script>

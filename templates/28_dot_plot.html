@@ -3,7 +3,7 @@ var axisLabel = "Axis label";
 
 /* Variables */
 var min = 0;            // number line start
-var max = 10;           // number line end
+var max = 7;           // number line end
 
 var labelInterval = 1;  // interval at which line will be labeled
 var tickInterval = 1/4; // interval at which ticks will be drawn
@@ -20,8 +20,6 @@ var data = {
     4.50: 6,
     4.75: 2,
     6.00: 2,
-    8.25: 1,
-    9.50: 2
 };
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -52,7 +50,7 @@ var yRange = [yMin, _.max(data) * ySpacing];
 /* Prevent width from exceeding 480 pixels */
 init({
     range: [xRange, yRange],
-    scale: _.min([30, Perseus.Util.scaleFromExtent(xRange, 480)])
+    scale: _.min([30, Perseus.Util.scaleFromExtent(xRange, 320)])
 });
 
 var normalize = function(number) {

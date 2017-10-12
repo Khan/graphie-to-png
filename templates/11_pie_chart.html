@@ -30,15 +30,17 @@ var maxX = _.max(_.pluck(boundingBoxes, 1)) + pad;
 var minY = _.min(_.pluck(boundingBoxes, 2)) - pad;
 var maxY = _.max(_.pluck(boundingBoxes, 3)) + pad;
 
+var scaleFactor=min(1,320/(maxX-minX));
+
 init({
     range: [[minX, maxX], [minY, maxY]],
-    scale: 1
+    scale: scaleFactor,
 });
 
 _.each(CHART, function(row, n) {
     var tr = row[3];
     var color = row[4];
-    piechart(row[0], row[1], row[2], color).translate(tr[0], tr[1]);
+    piechart(row[0], row[1], row[2]*scaleFactor, color).translate(tr[0]*scaleFactor, tr[1]*scaleFactor);
 });
 
 </script>
