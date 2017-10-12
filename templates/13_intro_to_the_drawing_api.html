@@ -1,13 +1,4 @@
 <script type="text/graphie" data-use-simple="true" data-title="13. Intro to the Drawing API">
-/* The X and Y ranges of this canvas */
-var range = [[-10, 10], [-10, 10]];
-
-/* The output's largest side is limited to this many pixels */
-var size = 320;
-
-setup();
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
 drawLine({
     points: [[-5, 8], [5, 8]],
     showPoints: true, // whether to actually show points
@@ -120,13 +111,5 @@ drawAngleLabel({
     label: "$deg1", // "$deg" is relaced by angle measure
     arcs: 2         // the 2 means 2 decimal places are shown
 });
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-function setup() {
-    var scales = _.map(range, function(extent) {
-        return Perseus.Util.scaleFromExtent(extent, size);
-    });
-    init({range: range, scale: _.min(scales)});
-}
 
 </script>
