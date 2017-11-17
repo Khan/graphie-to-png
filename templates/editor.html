@@ -286,10 +286,28 @@ keUtilsLoaded.then(function() {
 
     function updateGraphie() {
         try {
+            var js = editor.getValue();
+
+            // Invalid backspace characters cause problems in translation,
+            // where a match between original and translated string may not be
+            // found.
+            (js.match(/\\+(b|x08)/g) || []).forEach(function(match) {
+                // Count the number of backslashes in the matched string.
+                var backslashes = match.split("").reduce(function(count, ch) {
+                    return count + (ch === "\\" ? 1 : 0);
+                }, 0);
+                // An odd number indicates an unescaped backslash, resulting
+                // in backspace character in the string.
+                if (backslashes % 2) {
+                    throw SyntaxError(
+                        "Graphie contains backspace character (\\b \\x08)");
+                }
+            });
+
             $("#output > div")
                     .data("graphie", null)
                     .removeClass("error")
-                    .text(editor.getValue()).graphie();
+                    .text(js).graphie();
 
             // This should throw an error if there is a problem with the labels
             window.getData();
@@ -300,7 +318,7 @@ keUtilsLoaded.then(function() {
 
             formSubmit.attr("disabled", false);
 
-            storedValue = editor.getValue();
+            storedValue = js;
 
             $(".error-text").text("");
             $(".image-link").hide().val("");
