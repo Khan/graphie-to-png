@@ -145,7 +145,7 @@ def _clip_paths(tree):
                     del path[-1]
 
                 element.set("d", path.d())
-            except:
+            except Exception:
                 # Sometimes, svg.path fails to re-generate the path if it's
                 # strange. We ignore this and leave the original path.
                 continue
