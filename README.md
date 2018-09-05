@@ -15,3 +15,6 @@ To run this locally, fill in `secrets.py` using the template at `secrets.py.exam
 ## Deploying
 
 Fill in `secrets.py` once again then run `./server.sh` in a screen or something along those lines. (TODO(alpert): Create a launchd config or something.)
+
+This service is hosted on Kubernetes under `internal-services`:
+https://github.com/Khan/internal-services/tree/master/graphie-to-png
