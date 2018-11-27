@@ -4,7 +4,7 @@ A tool for converting graphie JS code to a png image, available at http://graphi
 
 ## Warning to Devs
 
-Khan Exercises is very out of date. This is because graphie-to-png will not work after some changes made in January, 2015. See [this support ticket](https://app.asana.com/0/27216215224639/36842953088193) for more information.
+Khan Exercises is very out of date. This is because graphie-to-png will not work after some changes made in January, 2015. See [this support ticket](https://app.asana.com/0/27216215224639/36842953088193) (see also /r/asana-links) for more information.
 
 Upgrading Khan Exercises would be a fairly large task, so you may want to consider other alternatives instead (like cherry picking into the `graphie-to-png` branch of Khan Exercises).
 
