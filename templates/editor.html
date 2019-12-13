@@ -173,10 +173,16 @@ keUtilsLoaded.then(function() {
             e.preventDefault();
             updateGraphie();
         } else if (e.keyCode === 8) { // Backspace
-            var message = "Are you sure you want to leave the page?";
-            var leave = window.confirm(message);
-            if (!leave) {
+            // Do nothing if focused in text box
+            // ACE search field doesn't have type attr so selecting by class
+            var textInputHasFocus =
+              $("input[type='text'], input.ace_search_field").is(':focus');
+            if (!textInputHasFocus) {
+              var message = "Are you sure you want to leave the page?";
+              var leave = window.confirm(message);
+              if (!leave) {
                 e.preventDefault();
+              }
             }
         }
     });
@@ -189,15 +195,6 @@ keUtilsLoaded.then(function() {
                 }
             })
             .on("click", updateGraphie);
-
-    $("input[type='text']").on("keydown", function(e) {
-        // To counter our code that prevents us from leaving the page when
-        // pressing backspace, we don't propogate events that start in text
-        // boxes.
-        if (e.keyCode === 8) {
-            e.stopPropagation();
-        }
-    });
 
     var throbber = $(".convert-throbber");
     throbber.hide();
