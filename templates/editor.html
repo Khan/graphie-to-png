@@ -69,7 +69,10 @@
   <input type="button" value="Regraph" class="btn-rerender">
   <select class="example-selector"></select><br>
   <input type="button" value="Convert to Image" class="btn-create-svg">
-  <input type="text" class="image-link" readonly="" /><span class="error-text"></span><span class="convert-throbber"><img src="/static/images/throbber.gif" /></span>
+  <input type="text" class="image-link" readonly=""/>
+    <span class="error-text"></span>
+    <span class="convert-throbber"><img src="/static/images/throbber.gif" /></span>
+    <span class="link-copied">Copied!</span>
 </div>
 
 <div id="preview">
@@ -176,6 +179,10 @@ keUtilsLoaded.then(function() {
                 (e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey) {
             e.preventDefault();
             $(".btn-create-svg").click();
+        } else if (e.keyCode === "C".charCodeAt(0) &&
+                (e.ctrlKey || e.metaKey) && !e.altKey && e.shiftKey) {
+            e.preventDefault();
+            copyImageLink();
         } else if (e.keyCode === 8) { // Backspace
             // Do nothing if focused in text box
             // ACE search field doesn't have type attr so selecting by class
@@ -289,6 +296,15 @@ keUtilsLoaded.then(function() {
             loadUrl(url);
         }
     });
+
+    function copyImageLink() {
+        var link = $(".image-link:visible");
+        if (link.length > 0) {
+          link.select();
+          document.execCommand("copy");
+          $(".link-copied").show().delay(1000).fadeOut();
+        }
+    };
 
     var storedValue = null;
     var formSubmit = $(".btn-create-svg");
