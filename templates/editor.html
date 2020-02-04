@@ -179,10 +179,6 @@ keUtilsLoaded.then(function() {
                 (e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey) {
             e.preventDefault();
             $(".btn-create-svg").click();
-        } else if (e.keyCode === "C".charCodeAt(0) &&
-                (e.ctrlKey || e.metaKey) && !e.altKey && e.shiftKey) {
-            e.preventDefault();
-            copyImageLink();
         } else if (e.keyCode === 8) { // Backspace
             // Do nothing if focused in text box
             // ACE search field doesn't have type attr so selecting by class
@@ -222,6 +218,7 @@ keUtilsLoaded.then(function() {
                return "Convert to Image (Ctrl-I)";
            }
        })
+       //TODO(danielhollas):extract this to a function
       .on("click", function(e) {
         throbber.show();
         var js = editor.getValue();
@@ -240,6 +237,7 @@ keUtilsLoaded.then(function() {
             },
             success: function(data) {
                 $(".image-link").show().val(data);
+                copyImageLink();
             },
             error: function(a, b, error) {
                 $(".error-text").text("Error: " + error);
