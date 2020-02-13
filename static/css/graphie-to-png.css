@@ -52,7 +52,7 @@ body {
     display: inline-block;
 }
 
-.link-copied {
+.link-copied, .link-explanation {
     display: none;
     padding: 2px;
     font-size: 12px;
