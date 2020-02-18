@@ -42,7 +42,7 @@ body {
     border-bottom: 1px solid #ccc;
 }
 #controls .image-link {
-    width: 300px;
+    width: 276px;
 }
 
 #preview {
@@ -50,4 +50,15 @@ body {
 }
 #preview > form {
     display: inline-block;
+}
+
+.link-copied, .link-explanation {
+    display: none;
+    padding: 2px;
+    font-size: 12px;
+}
+
+.btn-rerender, .btn-create-svg {
+    width: 160px;
+    text-align: center;
 }
