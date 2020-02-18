@@ -67,13 +67,14 @@
 
 <div id="controls">
   <input type="button" value="Regraph" class="btn-rerender">
-  <select class="example-selector"></select><br>
-  <input type="button" value="Convert to Image" title="Link will be copied to clipboard automatically" class="btn-create-svg">
+  <select class="example-selector"></select>
+  <span class="link-copied">Copied!</span>
+  <br>
+  <input type="button" value="Convert to Image" class="btn-create-svg">
   <input type="text" class="image-link" readonly=""/>
-    <span class="error-text"></span>
-    <span class="convert-throbber"><img src="/static/images/throbber.gif" /></span>
-    <span class="link-explanation">Link will be copied to clipboard automatically.</span>
-    <span class="link-copied">Copied!</span>
+  <input type="button" value=" " title="Copy link to clipboard" class="btn-copy-link i-copy-link">
+  <span class="error-text"></span>
+  <span class="convert-throbber"><img src="/static/images/throbber.gif" /></span>
 </div>
 
 <div id="preview">
@@ -205,9 +206,11 @@ keUtilsLoaded.then(function() {
             .on("click", updateGraphie);
 
     var throbber = $(".convert-throbber");
-    var linkExplain = $(".link-explanation");
+    var linkCopied = $(".link-copied");
     throbber.hide();
-    linkExplain.hide();
+    linkCopied.hide();
+
+    $(".btn-copy-link").hide().on("click", copyImageLink);
 
     $(".image-link").hide().click(function() {
         $(this).select();
@@ -273,14 +276,14 @@ keUtilsLoaded.then(function() {
         var link = $(".image-link:visible");
         if (link.length > 0) {
           link.select();
-          document.execCommand("copy");
-          $(".link-copied").show().delay(1000).fadeOut();
+          if (document.execCommand("copy")) {
+            linkCopied.show().delay(1000).fadeOut();
+          }
         }
     }
 
     function createSvg() {
         throbber.show();
-        linkExplain.show();
         var js = editor.getValue();
 
         // To get identical hashes to the old graphie-to-png, we replace all
@@ -289,6 +292,7 @@ keUtilsLoaded.then(function() {
 
         $(".error-text").text("");
         $(".image-link").hide().val("");
+        $(".btn-copy-link").hide();
         $.ajax({
             url: "/svg",
             type: "POST",
@@ -296,15 +300,14 @@ keUtilsLoaded.then(function() {
                 js: js
             },
             success: function(data) {
-                $(".image-link").show().val(data);
-                copyImageLink();
+                $(".image-link").show().val(data).select();
+                $(".btn-copy-link").show();
             },
             error: function(a, b, error) {
                 $(".error-text").text("Error: " + error);
             },
             complete: function() {
                 throbber.hide();
-                linkExplain.hide();
             }
         });
     }
@@ -350,6 +353,7 @@ keUtilsLoaded.then(function() {
 
             $(".error-text").text("");
             $(".image-link").hide().val("");
+            $(".btn-copy-link").hide();
         } catch (e) {
             $("#output > div")
                     .addClass("error")
