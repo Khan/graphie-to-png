@@ -42,7 +42,12 @@ body {
     border-bottom: 1px solid #ccc;
 }
 #controls .image-link {
-    width: 276px;
+    width: 50%;
+    font-size: 12px
+}
+
+#controls .example-selector {
+  font-size: 12px;
 }
 
 #preview {
@@ -52,13 +57,30 @@ body {
     display: inline-block;
 }
 
-.link-copied, .link-explanation {
+.link-copied {
     display: none;
     padding: 2px;
     font-size: 12px;
 }
 
+.i-copy-link {
+  background: url("../images/copy-link.svg") center center no-repeat;
+  background-size: contain;
+  border: none;
+}
+
+.i-copy-link:hover {
+  background-color: #e6e6e6;
+}
+
+.i-copy-link:active {
+  background-color: #ffffff;
+}
+
 .btn-rerender, .btn-create-svg {
-    width: 160px;
+    width: 35%;
+    padding-left: 2px;
+    padding-right: 2px;
+    font-size: 12px;
     text-align: center;
 }
