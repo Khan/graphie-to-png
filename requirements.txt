@@ -1,5 +1,3 @@
-# This forces jinja2 to use a python2 version of this lib
-MarkupSafe<1.0.0
 Flask==1.0.0
 Jinja2==2.10.1
 boto==2.9.8
@@ -7,3 +5,8 @@ Werkzeug==0.15.3
 gunicorn==19.5.0
 lxml==3.4.0
 svg.path==2.1.1
+
+# This forces jinja2 to use a python2 version of this lib
+MarkupSafe<1.0.0
+# This forces flask to use a python2 (?) version of this lib
+click==7.1.2
