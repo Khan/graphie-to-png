@@ -1,3 +1,5 @@
+# This forces jinja2 to use a python2 version of this lib
+MarkupSafe<1.0.0
 Flask==1.0.0
 Jinja2==2.10.1
 boto==2.9.8
