@@ -1,6 +1,6 @@
 # graphie-to-png
 
-A tool for converting graphie JS code to a png image, available at http://graphie-to-png.khanacademy.org/.
+A tool for converting graphie JS code to a png image, available at http://graphie-to-png.khanacademy.systems/.
 
 ## Warning to Devs
 
