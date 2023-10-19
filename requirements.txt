@@ -10,3 +10,7 @@ svg.path==2.1.1
 MarkupSafe<1.0.0
 # This forces flask to use a python2 (?) version of this lib
 click==7.1.2
+# This forces svg.path to use a python2 version of this lib
+setuptools==44.1.1
+# This forces flask to use a python2 version of this lib
+itsdangerous==1.1.0
