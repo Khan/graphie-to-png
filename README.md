@@ -14,7 +14,7 @@ To run this locally, fill in `secrets.py` using the template at `secrets.py.exam
 
 ## Deploying
 
-Fill in `secrets.py` once again then run `./server.sh` in a screen or something along those lines. (TODO(alpert): Create a launchd config or something.)
+graphie-to-png is deployed via Kubernetes, and is accessible at http://graphie-to-png.kasandbox.org/.
 
-This service is hosted on Kubernetes under `internal-services`:
-https://github.com/Khan/internal-services/tree/master/graphie-to-png
+The deployment scripts for this repo are [in the khan/internal-services repo](https://github.com/Khan/internal-services/tree/master/graphie-to-png).
+
