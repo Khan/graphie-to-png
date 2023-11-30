@@ -13,3 +13,6 @@
 [submodule "third_party/rappar"]
 	path = third_party/rappar
 	url = https://github.com/DmitryBaranovskiy/rappar.git
+[submodule "mathjax-renderer"]
+	path = mathjax-renderer
+	url = git@github.com:khan/mathjax-renderer
