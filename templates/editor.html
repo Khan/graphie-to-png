@@ -297,7 +297,9 @@ keUtilsLoaded.then(function() {
             url: "/svg",
             type: "POST",
             data: {
-                js: js
+                js: js,
+                svg: window.getSVG(),
+                other_data: JSON.stringify(window.getData()),
             },
             success: function(data) {
                 $(".image-link").show().val(data).select();
