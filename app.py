@@ -126,7 +126,12 @@ def _js_to_svg(js):
     if json_data is None:
         raise RenderTimeout()
 
-    data = json.loads(json_data)
+    data = {}
+    try:
+        data = json.loads(json_data)
+    except:
+        print("Failed to parse JSON: " + json_data)
+        raise RenderTimeout()
 
     return data['svg'], data['other_data']
 
