@@ -61,12 +61,6 @@
     }
 </script>
 
-{# For cachebusting, we append the hash of the latest build of
-KAthJax to its URL. You'll need to manually update this every time
-the KAthJax hash changes: the hash is found at the end of the filename at
-khan-exercises/third_party/MathJax/2.1/config/KAthJax-{hash}.js #}
-{% set KATHJAX_HASH = "eaf1d9cafdc2fc68897cf72d30d67d5a" %}
-
 <script src="static/js/mathjax-renderer/dist/mathjax-renderer.min.js"></script>
 <script src="static/js/mathjax-adapter.js"></script>
 <script src="static/js/khan-exercises/local-only/jquery.js"></script>
@@ -402,11 +396,9 @@ window.getSVG = function() {
 try {
     $(".graphie").graphie();
 
-    MathJax.Hub.Queue(function() {
-        waitForImages(function() {
-            webkit2png.start();
-            window.callPhantom({type: "rendered"});
-        });
+    waitForImages(function() {
+        webkit2png.start();
+        window.callPhantom({type: "rendered"});
     });
 } catch(e) {
     $(".graphie").empty().append($("<div class='error'>").text(e.message));
