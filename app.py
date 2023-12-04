@@ -40,7 +40,7 @@ def svg():
     """
     js = request.form['js']
     svg = request.form['svg']
-    other_data = json.loads(request.form['other_data'])
+    other_data = request.form['other_data']
 
     hash = hashlib.sha1(js.encode('utf-8')).hexdigest()
     _put_to_s3('%s.js' % hash, js, 'application/javascript')
