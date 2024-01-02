@@ -1,5 +1,6 @@
-// Adapt MathJax to look like KaTeX, so Khan Exercises can use it
-
+// Adapt MathJax to look like KaTeX, so Khan Exercises can use it.
+// The MathJaxRenderer global comes from mathjax-renderer.min.js in the
+// @khanacademy/mathjax-renderer NPM package.
 const renderer = new window.MathJaxRenderer({
     fontURL: "https://cdn.kastatic.org/fonts/mathjax",
     shouldFixUnicodeLayout: true,

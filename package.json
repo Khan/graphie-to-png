@@ -2,6 +2,7 @@
   "name": "graphie-to-png",
   "version": "1.0.0",
   "dependencies": {
+    "@khanacademy/mathjax-renderer": "git+ssh://git@github.com:Khan/mathjax-renderer.git#v1.3.0",
     "svgo": "^0.7.1"
   },
   "repository": {
