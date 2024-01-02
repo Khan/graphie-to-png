@@ -36,14 +36,6 @@ body {
     display: block;
     margin-top: 3px;
 }
-#caveats {
-    margin: 0.2em 0 1em;
-    color: rgba(33,36,44,0.64);
-}
-#caveats:before {
-    display: inline;
-    content: 'ⓘ ';
-}
 
 #controls {
     padding: 5px;

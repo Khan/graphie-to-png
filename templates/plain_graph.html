@@ -5,7 +5,9 @@
 <title>graphie to png</title>
 {% endblock head %}
 <link rel="stylesheet" href="static/css/graphie-to-png.css" />
-<link rel="stylesheet" href="static/js/khan-exercises/local-only/katex/katex.css" />
+<link rel="stylesheet" href="static/css/mathjax-renderer/mathjax.css" />
+<link rel="stylesheet" href="static/css/mathjax-renderer/safari-hacks.css" />
+<link rel="stylesheet" href="static/css/mathjax-renderer/selectable.css" />
 <link rel="stylesheet" href="static/css/font-awesome-font.css" />
 </head>
 <body>
@@ -59,20 +61,14 @@
     }
 </script>
 
-{# For cachebusting, we append the hash of the latest build of
-KAthJax to its URL. You'll need to manually update this every time
-the KAthJax hash changes: the hash is found at the end of the filename at
-khan-exercises/third_party/MathJax/2.1/config/KAthJax-{hash}.js #}
-{% set KATHJAX_HASH = "eaf1d9cafdc2fc68897cf72d30d67d5a" %}
-
+<script src="static/js/mathjax-renderer/dist/mathjax-renderer.min.js"></script>
+<script src="static/js/mathjax-adapter.js"></script>
 <script src="static/js/khan-exercises/local-only/jquery.js"></script>
 <script src="static/js/khan-exercises/local-only/jed.js"></script>
 <script src="static/js/khan-exercises/local-only/i18n.js"></script>
 <script src="static/js/khan-exercises/local-only/localeplanet/icu.en.js"></script>
 <script src="static/js/khan-exercises/local-only/underscore.js"></script>
-<script src="static/js/khan-exercises/third_party/MathJax/2.1/MathJax.js?config=KAthJax-{{ KATHJAX_HASH }}"></script>
 
-<script src="static/js/khan-exercises/local-only/katex/katex.js"></script>
 <script src="static/js/khan-exercises/exercises-stub.js"></script>
 <script>Exercises.useKatex = true;</script>
 <script src="static/js/khan-exercises/local-only/require.js"></script>
@@ -400,11 +396,9 @@ window.getSVG = function() {
 try {
     $(".graphie").graphie();
 
-    MathJax.Hub.Queue(function() {
-        waitForImages(function() {
-            webkit2png.start();
-            window.callPhantom({type: "rendered"});
-        });
+    waitForImages(function() {
+        webkit2png.start();
+        window.callPhantom({type: "rendered"});
     });
 } catch(e) {
     $(".graphie").empty().append($("<div class='error'>").text(e.message));

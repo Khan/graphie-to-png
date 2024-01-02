@@ -86,7 +86,6 @@
 </div>
 
 <div id="output">
-  <p id="caveats">This preview is approximate. Please review graphies in the exercise editor before publishing.</p>
   <div class="graphie"></div>
   <span class="size"></span>
 </div>
@@ -298,7 +297,9 @@ keUtilsLoaded.then(function() {
             url: "/svg",
             type: "POST",
             data: {
-                js: js
+                js: js,
+                svg: window.getSVG(),
+                other_data: JSON.stringify(window.getData()),
             },
             success: function(data) {
                 $(".image-link").show().val(data).select();

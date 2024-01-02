@@ -2,7 +2,6 @@
   "name": "graphie-to-png",
   "version": "1.0.0",
   "dependencies": {
-    "phantomjs": "^1.9.12",
     "svgo": "^0.7.1"
   },
   "repository": {
