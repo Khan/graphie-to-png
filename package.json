@@ -2,7 +2,8 @@
   "name": "graphie-to-png",
   "version": "1.0.0",
   "dependencies": {
-    "svgo": "^0.7.1"
+    "rappar": "^0.0.2",
+    "svgo": "^3.2.0"
   },
   "repository": {
     "type": "git",

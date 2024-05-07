@@ -1,15 +1,12 @@
-#!/usr/bin/env python
-# TODO(colin): fix these lint errors (http://pep8.readthedocs.io/en/release-1.7.x/intro.html#error-codes)
-# pep8-disable:E128
+#!/usr/bin/env python3
 
 import hashlib
 import os
 import re
-import json
 
-import third_party.boto
-import third_party.boto.s3.connection
-import third_party.boto.s3.key
+import boto
+import boto.s3.connection
+import boto.s3.key
 import flask
 from flask import request
 import werkzeug.contrib.cache
@@ -47,7 +44,7 @@ def svg():
     _put_to_s3('%s-data.json' % hash,
                _jsonp_wrap(other_data, 'svgData%s' % hash), 'application/json')
     svg_url = _put_to_s3('%s.svg' % hash, cleanup_svg.cleanup_svg(svg),
-                     'image/svg+xml')
+                         'image/svg+xml')
 
     match = URL_REGEX.match(svg_url)
 
@@ -59,13 +56,13 @@ def _jsonp_wrap(data, func_name):
 
 
 def _put_to_s3(key, data, mimetype):
-    conn = third_party.boto.s3.connection.S3Connection(
+    conn = boto.s3.connection.S3Connection(
             secrets.aws_access_key_id,
             secrets.aws_secret_access_key,
         )
     bucket = conn.get_bucket(secrets.aws_s3_bucket, validate=False)
 
-    k = third_party.boto.s3.key.Key(bucket)
+    k = boto.s3.key.Key(bucket)
     k.key = key
     k.set_contents_from_string(
             data,
