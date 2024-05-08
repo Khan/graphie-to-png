@@ -1,7 +1,6 @@
 Flask==3.0.3
 Jinja2==3.1.4
 boto==2.49.0
-Werkzeug==3.0.3
 gunicorn==22.0.0
 lxml==5.2.1
 svg.path==6.3

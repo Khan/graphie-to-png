@@ -9,15 +9,13 @@ import boto.s3.connection
 import boto.s3.key
 import flask
 from flask import request
-import werkzeug.contrib.cache
 
 import cleanup_svg
 
-import secrets
+import boto_secrets
 
 app = flask.Flask(__name__)
 root = os.path.realpath(os.path.dirname(__file__))
-cache = werkzeug.contrib.cache.SimpleCache()
 
 
 URL_REGEX = re.compile(
@@ -57,10 +55,10 @@ def _jsonp_wrap(data, func_name):
 
 def _put_to_s3(key, data, mimetype):
     conn = boto.s3.connection.S3Connection(
-            secrets.aws_access_key_id,
-            secrets.aws_secret_access_key,
+            boto_secrets.aws_access_key_id,
+            boto_secrets.aws_secret_access_key,
         )
-    bucket = conn.get_bucket(secrets.aws_s3_bucket, validate=False)
+    bucket = conn.get_bucket(boto_secrets.aws_s3_bucket, validate=False)
 
     k = boto.s3.key.Key(bucket)
     k.key = key
