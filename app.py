@@ -2,7 +2,6 @@
 
 import hashlib
 import os
-import re
 
 import boto
 import boto.s3.connection
@@ -16,10 +15,6 @@ import boto_secrets
 
 app = flask.Flask(__name__)
 root = os.path.realpath(os.path.dirname(__file__))
-
-
-URL_REGEX = re.compile(
-    r'https://([^/]+)/([a-f0-9]{40})\.svg')
 
 
 @app.route('/', methods=['GET'])
@@ -44,9 +39,7 @@ def svg():
     svg_url = _put_to_s3('%s.svg' % hash, cleanup_svg.cleanup_svg(svg),
                          'image/svg+xml')
 
-    match = URL_REGEX.match(svg_url)
-
-    return 'web+graphie://%s/%s' % match.groups()
+    return svg_url.replace("https://", "web+graphie://").replace(":443", "")
 
 
 def _jsonp_wrap(data, func_name):
