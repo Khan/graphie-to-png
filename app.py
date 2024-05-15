@@ -39,7 +39,10 @@ def svg():
     svg_url = _put_to_s3('%s.svg' % hash, cleanup_svg.cleanup_svg(svg),
                          'image/svg+xml')
 
-    return svg_url.replace("https://", "web+graphie://").replace(":443", "")
+    return (svg_url.
+            replace("https://", "web+graphie://").
+            replace(".svg", "").
+            replace(":443", ""))
 
 
 def _jsonp_wrap(data, func_name):
