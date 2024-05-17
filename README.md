@@ -10,7 +10,7 @@ Upgrading Khan Exercises would be a fairly large task, so you may want to consid
 
 ## Local server
 
-To run this locally, fill in `secrets.py` using the template at `secrets.py.example` then run `python app.py`.
+To run this locally, fill in `boto_secrets.py` using the template at `boto_secrets.py.example` then run `./server.sh`.
 
 ## Deploying
 

@@ -1,18 +1,9 @@
 [submodule "khan-exercises"]
 	path = khan-exercises
 	url = https://github.com/Khan/khan-exercises.git
-[submodule "third_party/webkit2png"]
-	path = third_party/webkit2png
-	url = https://github.com/spicyj/webkit2png
 [submodule "third_party/ace-builds"]
 	path = third_party/ace-builds
 	url = https://github.com/ajaxorg/ace-builds.git
-[submodule "third_party/boto-src"]
-	path = third_party/boto-src
-	url = https://github.com/boto/boto.git
-[submodule "third_party/rappar"]
-	path = third_party/rappar
-	url = https://github.com/DmitryBaranovskiy/rappar.git
 [submodule "mathjax-renderer"]
 	path = mathjax-renderer
 	url = git@github.com:khan/mathjax-renderer

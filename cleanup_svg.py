@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Adapted from elements of https://github.com/petercollingridge/SVG-Optimiser
 
@@ -36,10 +36,12 @@ clip_path_url_regex = re.compile(r'url\(\#([^\)]+)\)')
 
 def _run_svgo(svg):
     """Given the contents of an svg, return the svgo-ized contents."""
-    p = subprocess.Popen([os.path.join(_ROOT, "node_modules", ".bin", "svgo"),
+    p = subprocess.Popen([os.path.join("node_modules", ".bin", "svgo"),
                           '-i', '-', '-o', '-'],
+                         cwd=_ROOT,
                          stdin=subprocess.PIPE,
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         encoding='utf-8')
     (stdout, stderr) = p.communicate(input=svg)
     rc = p.wait()
     if stderr or rc != 0:
@@ -93,7 +95,7 @@ def _cleanup_clip_paths(tree):
     clip_urls = {}
 
     # Generate a mapping from old ids to remaining ids
-    for urls in clip_paths.itervalues():
+    for urls in clip_paths.values():
         # The new url is the first thing in the list
         new_url = urls[0]
         for url in urls[1:]:
@@ -161,12 +163,12 @@ def cleanup_svg(svgdata):
         # We do our passes first, then the svgo pass, since it's easier
         # to modify the unoptimized svg than the optimized.
 
-        tree = lxml.etree.fromstring(svgdata)
+        tree = lxml.etree.fromstring(svgdata.encode('utf-8'))
         _cleanup_clip_paths(tree)
         _clip_paths(tree)
         new_svgdata = lxml.etree.tostring(tree)
 
-        return _run_svgo(new_svgdata)
+        return _run_svgo(new_svgdata.decode('utf-8'))
 
     except Exception:
         logging.exception("Cleanup svg failed")
@@ -174,4 +176,4 @@ def cleanup_svg(svgdata):
 
 if __name__ == '__main__':
     import sys
-    print cleanup_svg(sys.stdin.read())
+    print(cleanup_svg(sys.stdin.read()))

@@ -1,16 +1,6 @@
-Flask==1.0.0
-Jinja2==2.10.1
-boto==2.9.8
-Werkzeug==0.15.3
-gunicorn==19.5.0
-lxml==3.4.0
-svg.path==2.1.1
-
-# This forces jinja2 to use a python2 version of this lib
-MarkupSafe<1.0.0
-# This forces flask to use a python2 (?) version of this lib
-click==7.1.2
-# This forces svg.path to use a python2 version of this lib
-setuptools==44.1.1
-# This forces flask to use a python2 version of this lib
-itsdangerous==1.1.0
+Flask==3.0.3
+Jinja2==3.1.4
+boto==2.49.0
+gunicorn==22.0.0
+lxml==5.2.1
+svg.path==6.3
