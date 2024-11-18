@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import hashlib
+import logging
 import os
 
 import boto
@@ -14,6 +15,7 @@ import cleanup_svg
 import boto_secrets
 
 app = flask.Flask(__name__)
+app.logger.setLevel(logging.INFO)
 root = os.path.realpath(os.path.dirname(__file__))
 
 
@@ -58,7 +60,9 @@ def _put_to_s3(key, data, mimetype):
 
     k = boto.s3.key.Key(bucket)
     k.key = key
-    if not k.exists():
+    if k.exists():
+        app.logger.info('File already exists, skipping upload: %s' % key)
+    else:
         k.set_contents_from_string(
                 data,
                 headers={'Content-Type': mimetype},
