@@ -35,11 +35,12 @@ def svg():
     other_data = request.form['other_data']
 
     hash = hashlib.sha1(js.encode('utf-8')).hexdigest()
-    _put_to_s3('%s.js' % hash, js, 'application/javascript')
-    _put_to_s3('%s-data.json' % hash,
-               _jsonp_wrap(other_data, 'svgData%s' % hash), 'application/json')
-    svg_url = _put_to_s3('%s.svg' % hash, cleanup_svg.cleanup_svg(svg),
-                         'image/svg+xml')
+    _maybe_upload_to_s3('%s.js' % hash, js, 'application/javascript')
+    _maybe_upload_to_s3('%s-data.json' % hash,
+                        _jsonp_wrap(other_data, 'svgData%s' % hash),
+                        'application/json')
+    svg_url = _maybe_upload_to_s3('%s.svg' % hash, cleanup_svg.cleanup_svg(svg),
+                                  'image/svg+xml')
 
     return (svg_url.
             replace("https://", "web+graphie://").
@@ -51,7 +52,7 @@ def _jsonp_wrap(data, func_name):
     return '%s(%s);' % (func_name, data)
 
 
-def _put_to_s3(key, data, mimetype):
+def _maybe_upload_to_s3(key, data, mimetype):
     conn = boto.s3.connection.S3Connection(
             boto_secrets.aws_access_key_id,
             boto_secrets.aws_secret_access_key,
