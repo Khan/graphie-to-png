@@ -58,11 +58,12 @@ def _put_to_s3(key, data, mimetype):
 
     k = boto.s3.key.Key(bucket)
     k.key = key
-    k.set_contents_from_string(
-            data,
-            headers={'Content-Type': mimetype},
-            policy='public-read',
-        )
+    if not k.exists():
+        k.set_contents_from_string(
+                data,
+                headers={'Content-Type': mimetype},
+                policy='public-read',
+            )
 
     return k.generate_url(expires_in=0, query_auth=False)
 
