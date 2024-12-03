@@ -30,6 +30,16 @@ def svg():
 
     Returns a web+graphie link as the response.
     """
+    # We're having to disable max_form_memory_size in order to be able to
+    # parse the largest of Graphies in our template bank submitted in the body.
+    # But we also need to ensure that the request itself is not too large so as
+    # to represent a security issue.
+    if request.content_length > 3000000:
+        return "Request entity too large", 413
+    # https://flask.palletsprojects.com/en/stable/web-security/#resource-use
+    # https://flask.palletsprojects.com/en/stable/config/#MAX_FORM_MEMORY_SIZE
+    request.max_form_memory_size = None
+
     js = request.form['js']
     svg = request.form['svg']
     other_data = request.form['other_data']
