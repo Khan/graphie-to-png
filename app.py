@@ -26,12 +26,9 @@ def editor():
 
 def contains_forbidden_js(js_code):
     """
-    Parses JavaScript code and checks for:
-    - Function calls to eval(), alert(), require(), Function()
-    - References to document in expressions
+    Parses JavaScript code and checks for function calls to eval(), alert()
     """
-    forbidden_calls = {"eval", "alert", "require", "Function"}
-    forbidden_identifiers = {"document"}
+    forbidden_calls = {"eval", "alert"}
 
     try:
         # Parse JavaScript into AST and convert to dictionary
@@ -45,23 +42,17 @@ def contains_forbidden_js(js_code):
             if not isinstance(node, dict) or 'type' not in node:
                 continue
 
-            # Check for function calls like eval(), alert(), require(), Function()
+            # Check for function calls eval() and alert()
             if node["type"] == "CallExpression" and "callee" in node:
                 callee = node["callee"]
                 if callee.get("type") == "Identifier" and callee.get("name") in forbidden_calls:
                     return f"Error: Forbidden function '{callee['name']}' used", 400
 
-            # Check for usage of 'document' (e.g., document.getElementById())
-            if node["type"] == "MemberExpression" and "object" in node:
-                obj = node["object"]
-                if obj.get("type") == "Identifier" and obj.get("name") in forbidden_identifiers:
-                    return f"Error: Forbidden identifier '{obj['name']}' used", 400
-
             # Add child nodes to the stack for further inspection
             for key, value in node.items():
-                if isinstance(value, dict):  # If it's a nested object, add it to the stack
+                if isinstance(value, dict):
                     stack.append(value)
-                elif isinstance(value, list):  # If it's a list of nodes, add all to the stack
+                elif isinstance(value, list):
                     stack.extend([child for child in value if isinstance(child, dict)])
 
         return None
