@@ -9,6 +9,7 @@ import boto.s3.connection
 import boto.s3.key
 import flask
 from flask import request
+import esprima
 
 import cleanup_svg
 
@@ -23,6 +24,41 @@ root = os.path.realpath(os.path.dirname(__file__))
 def editor():
     return flask.render_template('editor.html')
 
+def contains_forbidden_js(js_code):
+    """
+    Parses JavaScript code and checks for function calls to eval(), alert()
+    """
+    forbidden_calls = {"eval", "alert"}
+
+    try:
+        # Parse JavaScript into AST and convert to dictionary
+        tree = esprima.parseScript(js_code, tolerant=True).toDict()
+        
+        stack = [tree]
+
+        while stack:
+            node = stack.pop()
+
+            if not isinstance(node, dict) or 'type' not in node:
+                continue
+
+            # Check for function calls eval() and alert()
+            if node["type"] == "CallExpression" and "callee" in node:
+                callee = node["callee"]
+                if callee.get("type") == "Identifier" and callee.get("name") in forbidden_calls:
+                    return f"Error: Forbidden function '{callee['name']}' used", 400
+
+            # Add child nodes to the stack for further inspection
+            for key, value in node.items():
+                if isinstance(value, dict):
+                    stack.append(value)
+                elif isinstance(value, list):
+                    stack.extend([child for child in value if isinstance(child, dict)])
+
+        return None
+
+    except Exception as e:
+        return f"Error parsing JavaScript: {str(e)}", 400
 
 @app.route('/svg', methods=['POST'])
 def svg():
@@ -44,6 +80,11 @@ def svg():
     svg = request.form['svg']
     other_data = request.form['other_data']
 
+    # Check JavaScript security using AST
+    js_error = contains_forbidden_js(js)
+    if js_error:
+        return js_error
+
     hash = hashlib.sha1(js.encode('utf-8')).hexdigest()
     _maybe_upload_to_s3('%s.js' % hash, js, 'application/javascript')
     _maybe_upload_to_s3('%s-data.json' % hash,
@@ -56,7 +97,6 @@ def svg():
             replace("https://", "web+graphie://").
             replace(".svg", "").
             replace(":443", ""))
-
 
 def _jsonp_wrap(data, func_name):
     return '%s(%s);' % (func_name, data)

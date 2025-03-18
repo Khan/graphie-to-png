@@ -306,7 +306,8 @@ keUtilsLoaded.then(function() {
                 $(".btn-copy-link").show();
             },
             error: function(a, b, error) {
-                $(".error-text").text("Error: " + error);
+                var errorMessage = a.responseText || "Error: " + error;
+                $(".error-text").text(errorMessage);
             },
             complete: function() {
                 throbber.hide();
